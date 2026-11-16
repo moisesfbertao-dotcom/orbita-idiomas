@@ -1,0 +1,1643 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1026">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Órbita">
+<meta name="description" content="Tutor de idiomas com cartas curtas, pronúncia, escrita, cultura e matérias da escola.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<style>
+:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<title>Órbita Idiomas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Press+Start+2P&family=Unbounded:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: feed vertical em tela cheia (estilo vídeo curto) no celular; no desktop, avatar à esquerda, feed no centro, tutor à direita. */
+:root{
+  --bg:#0b1026; --surface:#151c3d; --surface2:#1f2850; --ink:#eef1ff; --muted:#a9b2d9; --line:#2c3666;
+  --accent:#8ea8ff; --accent2:#ffb86b; --on-accent:#0b1026; --on-accent2:#0b1026;
+  --ok:#2fbf71; --warn:#f0a020; --bad:#e5484d;
+  --display:"Unbounded","Fredoka",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cjk:"Hiragino Sans","PingFang SC","Noto Sans CJK JP","Noto Sans CJK SC","Yu Gothic","Microsoft YaHei",sans-serif;
+  --radius:16px; --fs:16px;
+  color-scheme:dark;
+}
+[data-skin="espaco"]{--bg:#0b1026;--surface:#151c3d;--surface2:#1f2850;--ink:#eef1ff;--muted:#a9b2d9;--line:#2c3666;color-scheme:dark}
+[data-skin="oceano"]{--bg:#04232b;--surface:#0a3640;--surface2:#0f4652;--ink:#e6fbff;--muted:#9cc9d1;--line:#1a5966;color-scheme:dark}
+[data-skin="neon"]{--bg:#120a1c;--surface:#1e1230;--surface2:#2a1a42;--ink:#f7ecff;--muted:#bba6d6;--line:#3b2a5a;color-scheme:dark}
+[data-skin="floresta"]{--bg:#e6eed8;--surface:#fbfdf6;--surface2:#dce7c8;--ink:#1f2a17;--muted:#56664a;--line:#c2d2a8;color-scheme:light}
+[data-skin="neve"]{--bg:#e6eef9;--surface:#ffffff;--surface2:#d9e4f4;--ink:#13233a;--muted:#4f6283;--line:#c3d2e8;color-scheme:light}
+[data-skin="estudio"]{--bg:#f3e8ff;--surface:#ffffff;--surface2:#e9d8fa;--ink:#2a1638;--muted:#6a5580;--line:#d8c2ef;color-scheme:light}
+[data-skin="games"]{--bg:#0e0b1a;--surface:#181428;--surface2:#241e3a;--ink:#f1edff;--muted:#a79fc9;--line:#3a3160;color-scheme:dark}
+[data-skin="games"] .tag,[data-skin="games"] .eyebrow,[data-skin="games"] .stat{font-family:"Press Start 2P",monospace;font-size:.58em;letter-spacing:.04em;line-height:1.6}
+[data-skin="games"] .card-in,[data-skin="games"] .panel,[data-skin="games"] .btn,[data-skin="games"] .opt{border-radius:4px}
+[data-skin="games"] .card-in{box-shadow:6px 6px 0 color-mix(in srgb,var(--accent) 55%,transparent)}
+[data-skin="games"] .btn{box-shadow:3px 3px 0 color-mix(in srgb,var(--ink) 25%,transparent)}
+[data-age="kid"]{--display:"Fredoka","Unbounded",system-ui,sans-serif;--radius:26px;--fs:17px}
+[data-age="teen"]{--display:"Unbounded","Fredoka",system-ui,sans-serif;--radius:14px;--fs:15.5px}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:var(--fs);line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow:hidden;transition:background .6s ease,color .6s ease;-webkit-tap-highlight-color:transparent}
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9;transition:opacity .6s}
+[data-skin="espaco"] .bgfx{background:
+  radial-gradient(1.5px 1.5px at 12% 18%,var(--ink) 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,var(--ink) 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 85% 64%,var(--ink) 50%,transparent 51%),radial-gradient(1px 1px at 30% 82%,var(--ink) 50%,transparent 51%),
+  radial-gradient(1px 1px at 52% 40%,var(--muted) 50%,transparent 51%),radial-gradient(1px 1px at 8% 60%,var(--muted) 50%,transparent 51%),
+  radial-gradient(60% 50% at 90% 0%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),
+  radial-gradient(50% 40% at 0% 100%,color-mix(in srgb,var(--accent2) 16%,transparent),transparent 70%)}
+[data-skin="oceano"] .bgfx{background:
+  radial-gradient(120% 60% at 50% 120%,color-mix(in srgb,var(--accent) 26%,transparent),transparent 60%),
+  repeating-radial-gradient(circle at 20% 30%,transparent 0 22px,color-mix(in srgb,var(--ink) 4%,transparent) 22px 23px)}
+[data-skin="neon"] .bgfx{background:
+  linear-gradient(transparent 0 calc(100% - 1px),color-mix(in srgb,var(--accent) 18%,transparent) 0) 0 0/100% 38px,
+  linear-gradient(90deg,transparent 0 calc(100% - 1px),color-mix(in srgb,var(--accent2) 12%,transparent) 0) 0 0/38px 100%,
+  radial-gradient(70% 50% at 50% 0%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%)}
+[data-skin="floresta"] .bgfx{background:
+  radial-gradient(40% 30% at 10% 10%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),
+  radial-gradient(40% 30% at 90% 90%,color-mix(in srgb,var(--accent2) 20%,transparent),transparent 70%)}
+[data-skin="neve"] .bgfx{background:
+  radial-gradient(2px 2px at 20% 30%,#fff 50%,transparent 51%),radial-gradient(2px 2px at 70% 20%,#fff 50%,transparent 51%),
+  radial-gradient(2px 2px at 40% 70%,#fff 50%,transparent 51%),radial-gradient(2px 2px at 85% 80%,#fff 50%,transparent 51%),
+  linear-gradient(180deg,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%)}
+[data-skin="games"] .bgfx{background:
+  linear-gradient(90deg,color-mix(in srgb,var(--accent) 10%,transparent) 2px,transparent 2px) 0 0/24px 24px,
+  linear-gradient(color-mix(in srgb,var(--accent) 10%,transparent) 2px,transparent 2px) 0 0/24px 24px,
+  radial-gradient(60% 45% at 85% 5%,color-mix(in srgb,var(--accent2) 26%,transparent),transparent 70%),
+  radial-gradient(55% 45% at 5% 95%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 70%)}
+.gchips{display:flex;flex-wrap:wrap;gap:6px}
+.scoreboard{display:grid;gap:8px}
+.score-row{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;font-weight:800}
+.score-row svg{width:36px;height:36px}
+.score-row .xpbar{height:8px;margin-top:4px}
+[data-skin="estudio"] .bgfx{background:
+  radial-gradient(30% 25% at 85% 15%,color-mix(in srgb,var(--accent2) 30%,transparent),transparent 70%),
+  radial-gradient(35% 30% at 10% 85%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%)}
+
+#scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.card-in,.panel,.kid,.how div{background:color-mix(in srgb,var(--surface) 80%,transparent)!important;-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 10%,transparent),0 18px 40px -18px color-mix(in srgb,var(--bg) 70%,#000)}
+[data-skin="games"] .card-in{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 10%,transparent),6px 6px 0 color-mix(in srgb,var(--accent) 55%,transparent)}
+.btn{transition:transform .18s cubic-bezier(.3,1.6,.5,1),filter .2s,box-shadow .2s}
+.btn:hover:not([disabled]){filter:brightness(1.08);transform:translateY(-1px)}
+.card.active .card-mid>*,.card.active .actions>*{animation:rise .5s cubic-bezier(.2,.9,.3,1.2) both}
+.card.active .card-mid>*:nth-child(2){animation-delay:.06s}.card.active .card-mid>*:nth-child(3){animation-delay:.12s}
+.card.active .card-mid>*:nth-child(4){animation-delay:.18s}.card.active .card-mid>*:nth-child(n+5){animation-delay:.24s}
+.card.active .actions>*{animation-delay:.28s}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.big{text-shadow:0 2px 24px color-mix(in srgb,var(--accent) 35%,transparent);letter-spacing:-.01em}
+#app{position:relative;z-index:2;height:100%;max-width:1320px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.btn{border:0;border-radius:calc(var(--radius) * .7);padding:.7em 1.1em;font-weight:800;background:var(--accent);color:var(--on-accent);display:inline-flex;align-items:center;gap:.45em;justify-content:center;min-height:44px;transition:transform .12s ease,filter .2s}
+.btn:active{transform:scale(.96)}
+.btn.alt{background:var(--accent2);color:var(--on-accent2)}
+.btn.ghost{background:var(--surface2);color:var(--ink)}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.sm{min-height:36px;padding:.45em .8em;font-size:.88em}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.72em;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--muted)}
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--surface2);border:1.5px solid var(--line);border-radius:calc(var(--radius) * .6);padding:.7em .9em;width:100%;min-height:44px}
+textarea{resize:vertical}
+
+/* ---------- Seleção de perfil ---------- */
+.picker{height:100%;overflow-y:auto;padding-block:28px 40px;display:flex;flex-direction:column;gap:22px;max-width:880px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:44px;height:44px;flex:none}
+.brand h1{font-size:1.5em}
+.picker .lead{max-width:60ch;color:var(--muted);margin:0}
+.kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.kid{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.kid-top{display:flex;gap:14px;align-items:center}
+.kid-top svg{width:76px;height:76px;flex:none}
+.kid h2{font-size:1.25em}
+.kid .row{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:.35em;font-size:.78em;font-weight:800;padding:.25em .65em;border-radius:999px;background:var(--surface2);color:var(--ink)}
+.pill.acc{background:var(--accent);color:var(--on-accent)}
+.picker-foot{display:flex;gap:10px;flex-wrap:wrap}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.how div{background:color-mix(in srgb,var(--surface) 70%,transparent);border-radius:var(--radius);padding:14px;border:1px solid var(--line)}
+.how b{display:block;font-family:var(--display);font-size:.95em;margin-bottom:4px}
+.how p{margin:0;color:var(--muted);font-size:.9em}
+
+/* ---------- Questionário ---------- */
+.quiz{height:100%;display:flex;flex-direction:column;max-width:640px;margin:0 auto;padding-block:16px}
+.quiz-head{display:flex;align-items:center;gap:12px}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .4s ease}
+.quiz-body{flex:1;overflow-y:auto;padding-block:22px;display:flex;flex-direction:column;gap:16px}
+.quiz-body h2{font-size:clamp(1.3em,4.6vw,1.75em)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:var(--radius);padding:14px;text-align:left;font-weight:700;display:flex;flex-direction:column;gap:6px;min-height:64px;transition:border-color .2s,transform .12s}
+.opt:active{transform:scale(.97)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--surface))}
+.opt small{font-weight:600;color:var(--muted)}
+.opt .sw{display:flex;gap:6px}
+.opt .sw i{width:28px;height:28px;border-radius:50%;display:block;border:2px solid var(--surface)}
+.world-prev{height:46px;border-radius:calc(var(--radius) * .6);border:1px solid var(--line)}
+.ages{display:flex;flex-wrap:wrap;gap:8px}
+.ages .opt{min-height:48px;min-width:56px;align-items:center;padding:10px}
+.quiz-foot{display:flex;gap:10px;justify-content:space-between;padding-top:10px}
+.av-builder{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
+.av-builder svg{width:150px;height:150px}
+.av-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:.35em .8em;font-weight:700;font-size:.88em;min-height:36px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface))}
+.dot{width:34px;height:34px;padding:0;border-radius:50%}
+@media (max-width:520px){.av-builder{grid-template-columns:1fr;justify-items:center}.av-builder>div{width:100%}}
+
+/* ---------- App ---------- */
+.shell{height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:0}
+.topbar{display:flex;align-items:center;gap:10px;padding-block:10px 8px}
+.topbar .me{display:flex;align-items:center;gap:8px;min-width:0;background:none;border:0;padding:0}
+.topbar .me svg{width:40px;height:40px;flex:none}
+.topbar .me b{font-family:var(--display);font-size:.95em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:.85em;padding:.3em .6em;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.spacer{flex:1}
+.langsel{appearance:none;-webkit-appearance:none;width:auto;min-height:36px;padding:.3em 1.8em .3em .8em;font-weight:800;border-radius:999px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E") no-repeat right .7em center}
+.main{min-height:0;display:grid;grid-template-columns:1fr;gap:16px}
+.side{display:none;min-height:0;overflow-y:auto}
+.feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none;border-radius:var(--radius)}
+.feed::-webkit-scrollbar{display:none}
+.card{height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding-block:6px}
+.card-in{height:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px 18px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.card-in::before{content:"";position:absolute;inset:auto -30% -40% auto;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);pointer-events:none}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative}
+.tag{font-size:.72em;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.35em .75em;border-radius:999px;background:var(--surface2)}
+.tag.p-pron{background:var(--accent);color:var(--on-accent)}
+.tag.p-escr{background:var(--accent2);color:var(--on-accent2)}
+.tag.p-cult{background:color-mix(in srgb,var(--accent) 45%,var(--accent2));color:var(--on-accent)}
+.card-mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;position:relative;min-height:0;overflow-y:auto}
+.big{font-family:var(--display);font-size:clamp(1.9em,8vw,2.8em);line-height:1.1;word-break:break-word}
+.big.cjk{font-family:var(--cjk);font-weight:700;font-size:clamp(2.4em,11vw,3.6em)}
+.rom{font-size:1.15em;color:var(--muted);font-weight:700}
+.pt{font-size:1.05em}
+.hook{font-size:.95em;color:var(--muted);border-left:3px solid var(--accent2);padding-left:10px}
+.fact{font-size:1.02em;max-width:60ch}
+.actions{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.reveal{background:var(--surface2);border:2px dashed var(--line);border-radius:calc(var(--radius) * .6);padding:12px;text-align:left;width:100%;font-weight:700}
+.result{font-weight:800;padding:10px 12px;border-radius:calc(var(--radius) * .6);background:var(--surface2)}
+.result.ok{background:color-mix(in srgb,var(--ok) 22%,var(--surface));}
+.result.mid{background:color-mix(in srgb,var(--warn) 22%,var(--surface));}
+.result.bad{background:color-mix(in srgb,var(--bad) 18%,var(--surface));}
+.heard{font-size:1.05em;min-height:1.5em;font-weight:700}
+.heard i{color:var(--muted);font-style:normal}
+.mcq{display:grid;gap:8px}
+.mcq button{text-align:left;padding:12px 14px;border-radius:calc(var(--radius) * .6);border:2px solid var(--line);background:var(--surface2);font-weight:700;min-height:48px}
+.mcq button.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 22%,var(--surface2))}
+.mcq button.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,var(--surface2))}
+.trace{position:relative;width:100%;max-width:340px;aspect-ratio:1.6;align-self:center;border-radius:calc(var(--radius) * .6);background:var(--surface2);border:1.5px solid var(--line);overflow:hidden;touch-action:none}
+.trace span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--cjk);font-size:clamp(3em,16vw,5em);color:var(--ink);opacity:.14;pointer-events:none;white-space:nowrap}
+.trace canvas{position:absolute;inset:0;width:100%;height:100%}
+.swipe-hint{text-align:center;font-size:.78em;color:var(--muted);font-weight:700;position:relative}
+.swipe-hint::after{content:"";display:block;width:14px;height:14px;margin:4px auto 0;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px) rotate(45deg)}}
+.verse{margin:0;padding:12px 14px;border-radius:calc(var(--radius) * .6);background:var(--surface2);border-left:4px solid var(--accent2);display:flex;flex-direction:column;gap:6px}
+.verse span{font-family:Georgia,"Times New Roman",serif;font-size:1.08em;font-style:italic}
+.verse cite{font-style:normal;font-size:.78em;font-weight:800;color:var(--muted);letter-spacing:.04em}
+.verse-pt{font-size:.95em}
+.ctx summary{font-weight:800;cursor:pointer;min-height:32px;display:flex;align-items:center}
+.ctx p{margin:4px 0 0;font-size:.95em}
+.bword b{font-size:1.2em}
+.bword b.cjk{font-family:var(--cjk)}
+.mic{width:76px;height:76px;border-radius:50%;padding:0;border:0;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;align-self:center;position:relative}
+.mic svg{width:32px;height:32px}
+.mic.on{animation:pulse 1.2s ease-in-out infinite;background:var(--bad);color:#fff}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--bad) 60%,transparent)}100%{box-shadow:0 0 0 22px transparent}}
+.nav{display:flex;justify-content:space-around;gap:6px;padding-block:6px calc(6px + env(safe-area-inset-bottom,0px))}
+.nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72em;font-weight:800;color:var(--muted);padding:6px 10px;min-width:64px;min-height:44px;border-radius:12px}
+.nav button[aria-current="true"]{color:var(--ink);background:var(--surface)}
+.nav svg{width:22px;height:22px}
+.sheet{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet-head{display:flex;align-items:center;gap:10px;padding-bottom:10px}
+.sheet-head h2{font-size:1.15em;flex:1}
+.sheet-body{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:16px}
+
+.panel{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel h3{font-size:1em}
+.me-big{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.me-big svg{width:132px;height:132px}
+.xpbar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;width:100%}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pillars{display:grid;gap:10px}
+.pillar{display:grid;grid-template-columns:92px 1fr 44px;align-items:center;gap:8px;font-size:.88em;font-weight:700}
+.pillar .xpbar{height:8px}
+.pillar span:last-child{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.langs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.lang-b{border:2px solid var(--line);background:var(--surface2);border-radius:12px;padding:8px;text-align:left;font-weight:800;font-size:.85em;display:flex;flex-direction:column;gap:2px}
+.lang-b small{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.lang-b[aria-pressed="true"]{border-color:var(--accent)}
+
+/* Tutor */
+.chat{display:flex;flex-direction:column;gap:10px;min-height:0;flex:1}
+.msgs{flex:1;min-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px}
+.msg{max-width:88%;padding:10px 12px;border-radius:16px;white-space:pre-wrap;word-break:break-word;font-size:.95em}
+.msg.bot{background:var(--surface2);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:var(--accent);color:var(--on-accent);align-self:flex-end;border-bottom-right-radius:4px}
+.composer{display:flex;gap:8px;align-items:flex-end}
+.composer textarea{min-height:44px;max-height:120px}
+.suggest{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Pais */
+.parents{height:100%;overflow-y:auto;padding-block:20px 40px;display:flex;flex-direction:column;gap:16px;max-width:980px;margin:0 auto}
+.kv{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:6px 14px;font-size:.92em}
+.kv dt{color:var(--muted);font-weight:700}
+.kv dd{margin:0;font-weight:700}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88em;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-size:.8em;text-transform:uppercase;letter-spacing:.06em}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.tech{display:grid;gap:8px}
+.tech div{font-size:.9em}
+.tech b{font-family:var(--display);font-size:.92em}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,var(--bad) 14%,var(--surface));padding:10px;border-radius:12px}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);opacity:0;z-index:50;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:14px;font-weight:800;max-width:min(92vw,420px);text-align:center;transition:all .35s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:60}
+
+@media (min-width:980px){
+  .main{grid-template-columns:270px minmax(360px,460px) 1fr}
+  .side{display:flex;flex-direction:column;gap:14px;padding-bottom:16px}
+  .nav{display:none}
+  .shell{grid-template-rows:auto 1fr}
+  .shell.has-nav{grid-template-rows:auto 1fr}
+  .side.right .panel{flex:1;min-height:0}
+  .card{padding-block:8px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.feed{scroll-behavior:auto}}
+</style>
+
+<div class="bgfx" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div id="app"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas class="burst" id="burst" aria-hidden="true"></canvas>
+
+<script>
+"use strict";
+/* =====================================================================
+   DADOS: idiomas, frases, conceitos escolares, cultura, interesses
+   ===================================================================== */
+const LANGS = {
+  en:{name:'Inglês',native:'English',tts:'en-US',dict:'en',code:'EN'},
+  it:{name:'Italiano',native:'Italiano',tts:'it-IT',dict:'it',code:'IT'},
+  fr:{name:'Francês',native:'Français',tts:'fr-FR',dict:'fr',code:'FR'},
+  ja:{name:'Japonês',native:'日本語',tts:'ja-JP',dict:'ja',code:'JA',cjk:true},
+  de:{name:'Alemão',native:'Deutsch',tts:'de-DE',dict:'de',code:'DE'},
+  es:{name:'Espanhol',native:'Español',tts:'es-ES',dict:'es',code:'ES'},
+  zh:{name:'Mandarim',native:'中文',tts:'zh-CN',dict:'zh',code:'ZH',cjk:true},
+};
+const LKEYS = Object.keys(LANGS);
+
+const PHRASES = [
+  {id:'ola',pt:'Olá',en:['Hello'],it:['Ciao'],fr:['Bonjour'],ja:['こんにちは','konnichiwa'],de:['Hallo'],es:['Hola'],zh:['你好','nǐ hǎo']},
+  {id:'obg',pt:'Obrigado(a)',en:['Thank you'],it:['Grazie'],fr:['Merci'],ja:['ありがとう','arigatō'],de:['Danke'],es:['Gracias'],zh:['谢谢','xièxie']},
+  {id:'nome',pt:'Meu nome é {n}',en:['My name is {n}'],it:['Mi chiamo {n}'],fr:["Je m'appelle {n}"],ja:['わたしは{n}です','watashi wa {n} desu'],de:['Ich heiße {n}'],es:['Me llamo {n}'],zh:['我叫{n}','wǒ jiào {n}']},
+  {id:'tudo',pt:'Tudo bem?',en:['How are you?'],it:['Come stai?'],fr:['Ça va ?'],ja:['元気？','genki?'],de:["Wie geht's?"],es:['¿Qué tal?'],zh:['你好吗？','nǐ hǎo ma?']},
+  {id:'pf',pt:'Por favor',en:['Please'],it:['Per favore'],fr:["S'il te plaît"],ja:['お願いします','onegai shimasu'],de:['Bitte'],es:['Por favor'],zh:['请','qǐng']},
+  {id:'tchau',pt:'Até logo',en:['See you later'],it:['A dopo'],fr:['À plus tard'],ja:['またね','mata ne'],de:['Bis später'],es:['Hasta luego'],zh:['再见','zàijiàn']},
+  {id:'sim',pt:'Sim / Não',en:['Yes / No'],it:['Sì / No'],fr:['Oui / Non'],ja:['はい / いいえ','hai / iie'],de:['Ja / Nein'],es:['Sí / No'],zh:['是 / 不是','shì / bú shì']},
+  {id:'bomdia',pt:'Bom dia',en:['Good morning'],it:['Buongiorno'],fr:['Bonjour'],ja:['おはよう','ohayō'],de:['Guten Morgen'],es:['Buenos días'],zh:['早上好','zǎoshang hǎo']},
+];
+
+const SUBJECTS = ['Matemática','Português','Biologia','Física','Química','História','Geografia','Artes','Inglês'];
+const CONCEPTS = [
+  {id:'celula',subj:'Biologia',pt:'célula',fact:'Seu corpo tem cerca de 37 trilhões de células. Cada uma é uma pequena fábrica com membrana, citoplasma e núcleo.',
+   en:['cell'],it:['cellula'],fr:['cellule'],ja:['細胞','saibō'],de:['Zelle'],es:['célula'],zh:['细胞','xìbāo']},
+  {id:'fotos',subj:'Biologia',pt:'fotossíntese',fact:'As plantas usam luz, água e gás carbônico para produzir glicose e liberar oxigênio. Por isso florestas como a Amazônia importam tanto.',
+   en:['photosynthesis'],it:['fotosintesi'],fr:['photosynthèse'],ja:['光合成','kōgōsei'],de:['Photosynthese'],es:['fotosíntesis'],zh:['光合作用','guānghé zuòyòng']},
+  {id:'coracao',subj:'Biologia',pt:'coração',fact:'O coração bate cerca de 100 mil vezes por dia e bombeia o sangue por duas circulações: a pulmonar e a sistêmica.',
+   en:['heart'],it:['cuore'],fr:['cœur'],ja:['心臓','shinzō'],de:['Herz'],es:['corazón'],zh:['心脏','xīnzàng']},
+  {id:'grav',subj:'Física',pt:'gravidade',fact:'O inglês Isaac Newton descreveu a gravitação em 1687. Na Lua a gravidade é cerca de 1/6 da Terra: você pularia seis vezes mais alto.',
+   en:['gravity'],it:['gravità'],fr:['gravité'],ja:['重力','jūryoku'],de:['Schwerkraft'],es:['gravedad'],zh:['重力','zhònglì']},
+  {id:'energia',subj:'Física',pt:'energia',fact:'Energia não se cria nem se destrói, só se transforma: a energia química da comida vira energia de movimento quando você corre.',
+   en:['energy'],it:['energia'],fr:['énergie'],ja:['エネルギー','enerugī'],de:['Energie'],es:['energía'],zh:['能量','néngliàng']},
+  {id:'atomo',subj:'Química',pt:'átomo',fact:'Tudo é feito de átomos: prótons e nêutrons no núcleo, elétrons ao redor. A largura de um fio de cabelo equivale a centenas de milhares de átomos.',
+   en:['atom'],it:['atomo'],fr:['atome'],ja:['原子','genshi'],de:['Atom'],es:['átomo'],zh:['原子','yuánzǐ']},
+  {id:'agua',subj:'Química',pt:'água',fact:'H₂O: dois átomos de hidrogênio ligados a um de oxigênio. Ao nível do mar, a água ferve a 100 °C e congela a 0 °C.',
+   en:['water'],it:['acqua'],fr:['eau'],ja:['水','mizu'],de:['Wasser'],es:['agua'],zh:['水','shuǐ']},
+  {id:'tri',subj:'Matemática',pt:'triângulo',fact:'A soma dos ângulos internos de qualquer triângulo é 180°. No triângulo retângulo vale Pitágoras: a² = b² + c².',
+   en:['triangle'],it:['triangolo'],fr:['triangle'],ja:['三角形','sankakukei'],de:['Dreieck'],es:['triángulo'],zh:['三角形','sānjiǎoxíng']},
+  {id:'planeta',subj:'Geografia',pt:'planeta',fact:'O Sistema Solar tem 8 planetas. A Terra é o terceiro a partir do Sol e o único com água líquida na superfície que conhecemos.',
+   en:['planet'],it:['pianeta'],fr:['planète'],ja:['惑星','wakusei'],de:['Planet'],es:['planeta'],zh:['行星','xíngxīng']},
+  {id:'rio',subj:'Geografia',pt:'rio',fact:'O Amazonas é o rio com maior volume de água do mundo: sozinho, despeja perto de 20% da água doce que chega aos oceanos.',
+   en:['river'],it:['fiume'],fr:['rivière'],ja:['川','kawa'],de:['Fluss'],es:['río'],zh:['河','hé']},
+  {id:'montanha',subj:'Geografia',pt:'montanha',fact:'O Monte Fuji, com 3.776 m, é o ponto mais alto do Japão. No Brasil, o mais alto é o Pico da Neblina, com 2.995 m, no Amazonas.',
+   en:['mountain'],it:['montagna'],fr:['montagne'],ja:['山','yama'],de:['Berg'],es:['montaña'],zh:['山','shān']},
+  {id:'indep',subj:'História',pt:'independência',fact:'O Brasil se declarou independente de Portugal em 7 de setembro de 1822, com D. Pedro I, às margens do riacho Ipiranga.',
+   en:['independence'],it:['indipendenza'],fr:['indépendance'],ja:['独立','dokuritsu'],de:['Unabhängigkeit'],es:['independencia'],zh:['独立','dúlì']},
+  {id:'imperio',subj:'História',pt:'império',fact:'O Império Romano ia da Britânia ao Egito. O latim falado pelos romanos deu origem ao português, italiano, francês e espanhol.',
+   en:['empire'],it:['impero'],fr:['empire'],ja:['帝国','teikoku'],de:['Imperium'],es:['imperio'],zh:['帝国','dìguó']},
+  {id:'pintura',subj:'Artes',pt:'pintura',fact:'A Mona Lisa foi pintada por Leonardo da Vinci no Renascimento italiano e hoje fica no Museu do Louvre, em Paris.',
+   en:['painting'],it:['pittura'],fr:['peinture'],ja:['絵画','kaiga'],de:['Malerei'],es:['pintura'],zh:['绘画','huìhuà']},
+  {id:'verbo',subj:'Português',pt:'verbo',fact:'Verbo indica ação, estado ou fenômeno. Em português ele muda com a pessoa (eu falo, nós falamos); em japonês e em chinês, não muda!',
+   en:['verb'],it:['verbo'],fr:['verbe'],ja:['動詞','dōshi'],de:['Verb'],es:['verbo'],zh:['动词','dòngcí']},
+];
+
+const INTERESTS = [
+  {id:'games',pt:'jogo',l:'Games',en:['game'],it:['gioco'],fr:['jeu'],ja:['ゲーム','gēmu'],de:['Spiel'],es:['juego'],zh:['游戏','yóuxì']},
+  {id:'futebol',pt:'futebol',l:'Futebol / esportes',en:['soccer'],it:['calcio'],fr:['football'],ja:['サッカー','sakkā'],de:['Fußball'],es:['fútbol'],zh:['足球','zúqiú']},
+  {id:'musica',pt:'música',l:'Música',en:['music'],it:['musica'],fr:['musique'],ja:['音楽','ongaku'],de:['Musik'],es:['música'],zh:['音乐','yīnyuè']},
+  {id:'desenho',pt:'desenho',l:'Desenhar',en:['drawing'],it:['disegno'],fr:['dessin'],ja:['絵','e'],de:['Zeichnung'],es:['dibujo'],zh:['画画','huàhuà']},
+  {id:'anime',pt:'anime',l:'Anime / mangá',en:['anime'],it:['anime'],fr:['anime'],ja:['アニメ','anime'],de:['Anime'],es:['anime'],zh:['动画','dònghuà']},
+  {id:'ciencia',pt:'ciência',l:'Ciência / experimentos',en:['science'],it:['scienza'],fr:['science'],ja:['科学','kagaku'],de:['Wissenschaft'],es:['ciencia'],zh:['科学','kēxué']},
+  {id:'filmes',pt:'filme',l:'Filmes / séries',en:['movie'],it:['film'],fr:['film'],ja:['映画','eiga'],de:['Film'],es:['película'],zh:['电影','diànyǐng']},
+  {id:'construir',pt:'construir',l:'Construir (Lego, Minecraft)',en:['to build'],it:['costruire'],fr:['construire'],ja:['作る','tsukuru'],de:['bauen'],es:['construir'],zh:['建造','jiànzào']},
+  {id:'animais',pt:'animal',l:'Animais',en:['animal'],it:['animale'],fr:['animal'],ja:['動物','dōbutsu'],de:['Tier'],es:['animal'],zh:['动物','dòngwù']},
+  {id:'viagem',pt:'viagem',l:'Viajar',en:['trip'],it:['viaggio'],fr:['voyage'],ja:['旅行','ryokō'],de:['Reise'],es:['viaje'],zh:['旅行','lǚxíng']},
+  {id:'comida',pt:'comida',l:'Cozinhar / comer bem',en:['food'],it:['cibo'],fr:['nourriture'],ja:['食べ物','tabemono'],de:['Essen'],es:['comida'],zh:['食物','shíwù']},
+  {id:'tecno',pt:'tecnologia',l:'Tecnologia / programar',en:['technology'],it:['tecnologia'],fr:['technologie'],ja:['技術','gijutsu'],de:['Technik'],es:['tecnología'],zh:['技术','jìshù']},
+];
+
+const CULTURE = {
+  en:[{title:'Hora do chá',text:'No Reino Unido, uma "cuppa" (xícara de chá) resolve quase tudo. Os britânicos tomam cerca de 100 milhões de xícaras por dia.',w:['a cup of tea']},
+      {title:'Thanksgiving',text:'Nos EUA, na quarta quinta-feira de novembro, famílias se reúnem para o Dia de Ação de Graças, com peru assado e torta de abóbora.',w:['Thanksgiving']},
+      {title:'Inglês pelo mundo',text:'Na Austrália, "mate" quer dizer amigo. O inglês é idioma oficial em dezenas de países, e cada um tem suas gírias.',w:["G'day, mate!"]}],
+  it:[{title:'Pizza é patrimônio',text:'A arte do pizzaiolo napolitano é Patrimônio Imaterial da UNESCO desde 2017. A margherita tem as cores da bandeira.',w:['pizza margherita']},
+      {title:'Fala com as mãos',text:'Italianos usam muitos gestos. Juntar a ponta dos dedos e balançar a mão pode significar "mas o que você quer?".',w:['Ma che vuoi?']},
+      {title:'Renascimento',text:'Leonardo da Vinci, Michelangelo e Rafael viveram no Renascimento, quando Florença virou o centro da arte europeia.',w:['Rinascimento']}],
+  fr:[{title:'A baguette',text:'A baguette francesa entrou para o Patrimônio da UNESCO em 2022. Na França se vendem bilhões delas por ano.',w:['une baguette']},
+      {title:'La bise',text:'Na França as pessoas se cumprimentam com beijinhos no rosto. Em algumas regiões são 2, em outras 3 ou 4!',w:['faire la bise']},
+      {title:'Torre Eiffel',text:'Construída para a Exposição Universal de 1889, a torre ia ser desmontada depois de 20 anos. Hoje é o símbolo de Paris.',w:['la tour Eiffel']}],
+  ja:[{title:'Tire os sapatos',text:'No Japão, você tira os sapatos na entrada da casa, o genkan, e usa chinelos dentro. Até em algumas escolas!',w:['玄関','genkan']},
+      {title:'Hanami',text:'Na primavera, famílias fazem piquenique sob as cerejeiras floridas para ver as flores: isso se chama hanami.',w:['花見','hanami']},
+      {title:'Itadakimasu',text:'Antes de comer, os japoneses dizem "itadakimasu", um agradecimento pela comida e por quem a preparou.',w:['いただきます','itadakimasu']}],
+  de:[{title:'Kindergarten',text:'A palavra "jardim de infância" veio do alemão: Kindergarten significa "jardim das crianças". Foi criada por Friedrich Fröbel em 1840.',w:['Kindergarten']},
+      {title:'Palavras gigantes',text:'O alemão junta palavras. Handschuh (luva) é literalmente "sapato de mão". Dá para montar palavras enormes como Lego.',w:['Handschuh']},
+      {title:'Mercados de Natal',text:'Em dezembro, as cidades alemãs ganham mercados de Natal com luzes, biscoitos de gengibre e pretzels, os Brezeln.',w:['Weihnachtsmarkt']}],
+  es:[{title:'Espanhol em 20 países',text:'O espanhol é língua oficial em mais de 20 países e é a segunda língua nativa mais falada do mundo.',w:['¡Hola, amigos!']},
+      {title:'Día de los Muertos',text:'No México, em 1 e 2 de novembro, famílias homenageiam quem já se foi com altares coloridos, flores de cempasúchil e caveirinhas de açúcar.',w:['Día de los Muertos']},
+      {title:'Tapas',text:'Na Espanha é comum pedir várias porções pequenas, as tapas, para dividir com os amigos.',w:['¿Vamos de tapas?']}],
+  zh:[{title:'Quatro tons',text:'No mandarim o tom muda o sentido: mā (mãe), má (cânhamo), mǎ (cavalo), mà (xingar). Treine o ouvido!',w:['妈 麻 马 骂','mā má mǎ mà']},
+      {title:'Envelope vermelho',text:'No Ano Novo Chinês, crianças ganham envelopes vermelhos com dinheiro, os hóngbāo. Vermelho significa sorte.',w:['红包','hóngbāo']},
+      {title:'Grande Muralha',text:'A Grande Muralha, somando todos os trechos, passa de 20 mil km. Em chinês ela se chama "muralha longa".',w:['长城','Chángchéng']}],
+};
+
+/* Histórias bíblicas: versículo da King James (1611, domínio público) em inglês,
+   referência e paráfrase em português para conferir na Almeida Revista e Atualizada,
+   contexto histórico, mensagem espiritual e uma palavra-chave no idioma em estudo. */
+const BWORDS = {
+  lingua:{pt:'língua',en:['language'],it:['lingua'],fr:['langue'],ja:['言葉','kotoba'],de:['Sprache'],es:['idioma'],zh:['语言','yǔyán']},
+  fe:{pt:'fé',en:['faith'],it:['fede'],fr:['foi'],ja:['信仰','shinkō'],de:['Glaube'],es:['fe'],zh:['信心','xìnxīn']},
+  luz:{pt:'luz',en:['light'],it:['luce'],fr:['lumière'],ja:['光','hikari'],de:['Licht'],es:['luz'],zh:['光','guāng']},
+  arco:{pt:'arco-íris',en:['rainbow'],it:['arcobaleno'],fr:['arc-en-ciel'],ja:['虹','niji'],de:['Regenbogen'],es:['arcoíris'],zh:['彩虹','cǎihóng']},
+  perdao:{pt:'perdão',en:['forgiveness'],it:['perdono'],fr:['pardon'],ja:['許し','yurushi'],de:['Vergebung'],es:['perdón'],zh:['宽恕','kuānshù']},
+  coragem:{pt:'coragem',en:['courage'],it:['coraggio'],fr:['courage'],ja:['勇気','yūki'],de:['Mut'],es:['valor'],zh:['勇气','yǒngqì']},
+  sabedoria:{pt:'sabedoria',en:['wisdom'],it:['saggezza'],fr:['sagesse'],ja:['知恵','chie'],de:['Weisheit'],es:['sabiduría'],zh:['智慧','zhìhuì']},
+  peixe:{pt:'peixe',en:['fish'],it:['pesce'],fr:['poisson'],ja:['魚','sakana'],de:['Fisch'],es:['pez'],zh:['鱼','yú']},
+  esperanca:{pt:'esperança',en:['hope'],it:['speranza'],fr:['espoir'],ja:['希望','kibō'],de:['Hoffnung'],es:['esperanza'],zh:['希望','xīwàng']},
+  verdade:{pt:'verdade',en:['truth'],it:['verità'],fr:['vérité'],ja:['真理','shinri'],de:['Wahrheit'],es:['verdad'],zh:['真理','zhēnlǐ']},
+  amor:{pt:'amor',en:['love'],it:['amore'],fr:['amour'],ja:['愛','ai'],de:['Liebe'],es:['amor'],zh:['爱','ài']},
+};
+const BIBLE = [
+  {id:'babel',title:'A Torre de Babel',ref:'Gênesis 11.1-9',kref:'Genesis 11:1',hook:'Por que o mundo tem mais de 7 mil idiomas?',
+   kjv:'And the whole earth was of one language, and of one speech.',para:'Toda a terra falava uma só língua e usava as mesmas palavras.',
+   hist:'Na Mesopotâmia se construíam zigurates, torres em degraus feitas de tijolo. O de Babilônia, chamado Etemenanki, tinha perto de 90 metros de altura.',
+   spirit:'Os construtores queriam "fazer um nome" para si mesmos. A história fala do orgulho humano e de como Deus espalhou os povos, dando origem à variedade de línguas que você está aprendendo agora.',subj:'História',w:'lingua'},
+  {id:'pentecostes',title:'Pentecostes',ref:'Atos 2.1-11',kref:'Acts 2:4',hook:'O dia em que cada um ouviu a mensagem na própria língua.',
+   kjv:'And they were all filled with the Holy Ghost, and began to speak with other tongues, as the Spirit gave them utterance.',para:'Todos ficaram cheios do Espírito Santo e começaram a falar em outras línguas, conforme o Espírito lhes concedia.',
+   hist:'Na festa judaica de Pentecostes (Shavuot), 50 dias depois da Páscoa, Jerusalém recebia peregrinos de muitas regiões: partos, medos, egípcios, romanos, árabes, cada um com seu idioma.',
+   spirit:'É como o avesso de Babel: as línguas diferentes deixam de separar e passam a unir. A mensagem de Deus alcança cada pessoa no idioma do seu coração.',subj:'História',w:'fe'},
+  {id:'criacao',title:'Haja luz',ref:'Gênesis 1.3',kref:'Genesis 1:3',hook:'A primeira frase falada na Bíblia é sobre luz.',
+   kjv:'And God said, Let there be light: and there was light.',para:'Deus disse: que exista a luz. E a luz passou a existir.',
+   hist:'O texto foi escrito para o povo de Israel, cercado de povos que adoravam o Sol e a Lua como deuses. Gênesis apresenta o Sol e a Lua como criaturas, não como divindades.',
+   spirit:'O mundo não é acaso nem caos: é obra com ordem e propósito. Na Física, a luz viaja a quase 300 mil km por segundo, a coisa mais rápida que existe.',subj:'Física',w:'luz'},
+  {id:'noe',title:'Noé e o arco-íris',ref:'Gênesis 9.13',kref:'Genesis 9:13',hook:'Um sinal pendurado no céu depois da tempestade.',
+   kjv:'I do set my bow in the cloud, and it shall be for a token of a covenant between me and the earth.',para:'Coloco o meu arco nas nuvens como sinal da aliança entre mim e a terra.',
+   hist:'Povos antigos da Mesopotâmia também contavam histórias de um grande dilúvio, como a Epopeia de Gilgamesh, um dos textos escritos mais antigos do mundo.',
+   spirit:'O arco-íris é sinal de promessa: Deus cumpre o que diz. Na Física, ele aparece quando a luz do Sol se refrata e se separa em cores dentro das gotas de chuva.',subj:'Física',w:'arco'},
+  {id:'jose',title:'José do Egito',ref:'Gênesis 37–50',kref:'Genesis 50:20',hook:'Vendido pelos irmãos, virou o segundo homem mais poderoso do Egito.',
+   kjv:'But as for you, ye thought evil against me; but God meant it unto good.',para:'Vocês planejaram o mal contra mim, mas Deus transformou aquilo em bem.',
+   hist:'Graças às cheias do rio Nilo, o Egito era o celeiro do mundo antigo. Arqueólogos encontraram sinais de povos semitas vivendo no delta do Nilo nessa época.',
+   spirit:'José escolheu perdoar quem o feriu. A história mostra que até os dias ruins podem fazer parte de um plano maior.',subj:'Geografia',w:'perdao'},
+  {id:'davi',title:'Davi e Golias',ref:'1 Samuel 17',kref:'1 Samuel 17:45',hook:'Um pastor adolescente contra um gigante armado.',
+   kjv:'Thou comest to me with a sword, and with a spear, and with a shield: but I come to thee in the name of the LORD of hosts.',para:'Você vem contra mim com espada, lança e escudo; eu vou contra você em nome do Senhor dos Exércitos.',
+   hist:'Os filisteus viviam na costa de Canaã e dominavam o uso do ferro por volta do século XI a.C. A funda de Davi era uma arma séria: a pedra podia passar dos 100 km/h.',
+   spirit:'Coragem não é ausência de medo: é confiar em Deus e agir mesmo quando o problema parece gigante.',subj:'Física',w:'coragem'},
+  {id:'daniel',title:'Daniel na Babilônia',ref:'Daniel 1',kref:'Daniel 1:17',hook:'Um adolescente que teve de aprender uma língua estrangeira. Soa familiar?',
+   kjv:'As for these four children, God gave them knowledge and skill in all learning and wisdom.',para:'A esses quatro jovens Deus deu conhecimento e inteligência em toda cultura e sabedoria.',
+   hist:'Por volta de 605 a.C., o rei Nabucodonosor II levou jovens de Judá para a Babilônia. Lá eles estudaram a língua e a escrita dos caldeus, gravada em tabuinhas de argila.',
+   spirit:'Daniel estudou com excelência numa cultura estrangeira sem perder quem ele era. Aprender outro idioma não muda seus valores; amplia seu mundo.',subj:'História',w:'sabedoria'},
+  {id:'jonas',title:'Jonas e o grande peixe',ref:'Jonas 1–4',kref:'Jonah 1:17',hook:'Ele fugiu na direção oposta. Não deu muito certo.',
+   kjv:'Now the LORD had prepared a great fish to swallow up Jonah.',para:'O Senhor preparou um grande peixe para engolir Jonas.',
+   hist:'Nínive era a capital do Império Assírio, temido em todo o Oriente Médio. Suas ruínas ficam perto da cidade de Mossul, no atual Iraque.',
+   spirit:'Deus dá segunda chance a Jonas e também aos inimigos dele. A história fala de obediência e de uma misericórdia maior do que a nossa.',subj:'Geografia',w:'peixe'},
+  {id:'natal',title:'O nascimento de Jesus',ref:'Lucas 2.1-20',kref:'Luke 2:1',hook:'Um recenseamento romano mudou o lugar onde Jesus nasceu.',
+   kjv:'And it came to pass in those days, that there went out a decree from Caesar Augustus, that all the world should be taxed.',para:'Naqueles dias saiu um decreto de César Augusto mandando recensear todo o mundo.',
+   hist:'Augusto foi o primeiro imperador de Roma (27 a.C. a 14 d.C.). Os romanos faziam censos para cobrar impostos, e por isso José e Maria viajaram a Belém.',
+   spirit:'O Rei nasce numa manjedoura, entre pastores, longe dos palácios. É a mensagem de esperança para os pequenos e simples.',subj:'História',w:'esperanca'},
+  {id:'atenas',title:'Paulo em Atenas',ref:'Atos 17.22-28',kref:'Acts 17:28',hook:'Paulo citou poetas gregos para falar de Deus aos filósofos.',
+   kjv:'For in him we live, and move, and have our being.',para:'Pois nele vivemos, nos movemos e existimos.',
+   hist:'O Areópago era uma colina de Atenas onde se discutiam ideias. Paulo conversou com filósofos estoicos e epicureus e citou o poeta grego Arato.',
+   spirit:'Fé e razão podem conversar. Paulo partiu do que os atenienses já conheciam para apresentar o Deus que eles chamavam de "desconhecido".',subj:'História',w:'verdade'},
+  {id:'amor',title:'O maior é o amor',ref:'1 Coríntios 13',kref:'1 Corinthians 13:13',hook:'Na King James, "charity" quer dizer amor. Por quê?',
+   kjv:'And now abideth faith, hope, charity, these three; but the greatest of these is charity.',para:'Permanecem a fé, a esperança e o amor, estes três; mas o maior deles é o amor.',
+   hist:'Corinto era uma cidade portuária grega rica e cheia de divisões. Paulo escreveu essa carta por volta do ano 55. A King James usou "charity", do latim caritas, para traduzir o grego agapē.',
+   spirit:'Dons, inteligência e conhecimento valem pouco sem amor. É o capítulo que descreve o amor paciente e bondoso, que não procura os próprios interesses.',subj:'Português',w:'amor'},
+];
+
+/* Mundo dos games: jogos favoritos, vocabulário gamer, perguntas do tutor e curiosidades */
+const GAMES = ['Minecraft','Roblox','Fortnite','Free Fire','EA Sports FC','Valorant','League of Legends','Brawl Stars','Clash Royale','Pokémon','Zelda','Rocket League','Among Us','Mario Kart'];
+const GSTYLES = [{v:'fps',l:'Tiro (FPS)'},{v:'build',l:'Construção e sobrevivência'},{v:'sport',l:'Esporte'},{v:'rpg',l:'RPG e aventura'},{v:'moba',l:'Estratégia e MOBA'},{v:'race',l:'Corrida'},{v:'fight',l:'Luta'}];
+const GAMEVOCAB = [
+  {id:'vitoria',pt:'vitória',en:['victory'],it:['vittoria'],fr:['victoire'],ja:['勝利','shōri'],de:['Sieg'],es:['victoria'],zh:['胜利','shènglì']},
+  {id:'derrota',pt:'derrota',en:['defeat'],it:['sconfitta'],fr:['défaite'],ja:['敗北','haiboku'],de:['Niederlage'],es:['derrota'],zh:['失败','shībài']},
+  {id:'equipe',pt:'equipe',en:['team'],it:['squadra'],fr:['équipe'],ja:['チーム','chīmu'],de:['Mannschaft'],es:['equipo'],zh:['队伍','duìwu']},
+  {id:'missao',pt:'missão',en:['quest'],it:['missione'],fr:['mission'],ja:['ミッション','misshon'],de:['Mission'],es:['misión'],zh:['任务','rènwu']},
+  {id:'chefao',pt:'chefão',en:['boss'],it:['boss'],fr:['boss'],ja:['ボス','bosu'],de:['Endgegner'],es:['jefe'],zh:['首领','shǒulǐng']},
+  {id:'jogador',pt:'jogador',en:['player'],it:['giocatore'],fr:['joueur'],ja:['プレイヤー','pureiyā'],de:['Spieler'],es:['jugador'],zh:['玩家','wánjiā']},
+  {id:'nivel',pt:'nível',en:['level'],it:['livello'],fr:['niveau'],ja:['レベル','reberu'],de:['Level'],es:['nivel'],zh:['等级','děngjí']},
+  {id:'vamosjogar',pt:'Vamos jogar!',en:["Let's play!"],it:['Giochiamo!'],fr:['On joue !'],ja:['遊ぼう！','asobō!'],de:['Lass uns spielen!'],es:['¡Vamos a jugar!'],zh:['我们玩吧！','wǒmen wán ba!']},
+  {id:'gg',pt:'Boa partida! (GG)',en:['Good game!'],it:['Bella partita!'],fr:['Bien joué !'],ja:['ナイスゲーム！','naisu gēmu!'],de:['Gutes Spiel!'],es:['¡Buena partida!'],zh:['打得好！','dǎ de hǎo!']},
+  {id:'ajuda',pt:'Me ajuda!',en:['Help me!'],it:['Aiutami!'],fr:['Aide-moi !'],ja:['助けて！','tasukete!'],de:['Hilf mir!'],es:['¡Ayúdame!'],zh:['帮帮我！','bāngbang wǒ!']},
+  {id:'salvar',pt:'salvar (o jogo)',en:['save'],it:['salvare'],fr:['sauvegarder'],ja:['セーブ','sēbu'],de:['speichern'],es:['guardar'],zh:['保存','bǎocún']},
+];
+const GAMEQ = [
+  {id:'fav',pt:'Qual é o seu jogo favorito?',en:["What's your favorite game?"],it:['Qual è il tuo gioco preferito?'],fr:['Quel est ton jeu préféré ?'],ja:['好きなゲームは何？','suki na gēmu wa nani?'],de:['Was ist dein Lieblingsspiel?'],es:['¿Cuál es tu juego favorito?'],zh:['你最喜欢什么游戏？','nǐ zuì xǐhuan shénme yóuxì?'],
+   ans:{en:['My favorite game is {g}.'],it:['Il mio gioco preferito è {g}.'],fr:["Mon jeu préféré, c'est {g}."],ja:['好きなゲームは{g}です。','suki na gēmu wa {g} desu.'],de:['Mein Lieblingsspiel ist {g}.'],es:['Mi juego favorito es {g}.'],zh:['我最喜欢的游戏是{g}。','wǒ zuì xǐhuan de yóuxì shì {g}.']}},
+  {id:'char',pt:'Qual é o seu personagem favorito?',en:['Who is your favorite character?'],it:['Chi è il tuo personaggio preferito?'],fr:['Qui est ton personnage préféré ?'],ja:['好きなキャラは誰？','suki na kyara wa dare?'],de:['Wer ist deine Lieblingsfigur?'],es:['¿Quién es tu personaje favorito?'],zh:['你最喜欢哪个角色？','nǐ zuì xǐhuan nǎge juésè?'],
+   ans:{en:['My favorite character is ___.'],it:['Il mio personaggio preferito è ___.'],fr:["Mon personnage préféré, c'est ___."],ja:['好きなキャラは___です。','suki na kyara wa ___ desu.'],de:['Meine Lieblingsfigur ist ___.'],es:['Mi personaje favorito es ___.'],zh:['我最喜欢的角色是___。','wǒ zuì xǐhuan de juésè shì ___.']}},
+  {id:'friends',pt:'Você joga com amigos?',en:['Do you play with friends?'],it:['Giochi con gli amici?'],fr:['Tu joues avec tes amis ?'],ja:['友達とゲームする？','tomodachi to gēmu suru?'],de:['Spielst du mit Freunden?'],es:['¿Juegas con amigos?'],zh:['你和朋友一起玩吗？','nǐ hé péngyou yìqǐ wán ma?'],
+   ans:{en:['Yes, I play with my friends.'],it:['Sì, gioco con i miei amici.'],fr:['Oui, je joue avec mes amis.'],ja:['うん、友達とするよ。','un, tomodachi to suru yo.'],de:['Ja, ich spiele mit meinen Freunden.'],es:['Sí, juego con mis amigos.'],zh:['是的，我和朋友一起玩。','shì de, wǒ hé péngyou yìqǐ wán.']}},
+  {id:'win',pt:'Qual foi sua melhor vitória num jogo?',en:['What was your best win in a game?'],it:['Qual è stata la tua vittoria migliore?'],fr:['Quelle a été ta meilleure victoire ?'],ja:['一番うれしかった勝利は？','ichiban ureshikatta shōri wa?'],de:['Was war dein bester Sieg?'],es:['¿Cuál fue tu mejor victoria?'],zh:['你最棒的一次胜利是什么？','nǐ zuì bàng de yí cì shènglì shì shénme?'],
+   ans:{en:['I won against ___!'],it:['Ho vinto contro ___!'],fr:["J'ai gagné contre ___ !"],ja:['___に勝った！','___ ni katta!'],de:['Ich habe gegen ___ gewonnen!'],es:['¡Gané contra ___!'],zh:['我赢了___！','wǒ yíng le ___!']}},
+];
+const GAMECULT = {
+  en:[{title:'O primeiro videogame',text:'Em 1958, nos EUA, o físico William Higinbotham criou "Tennis for Two" num osciloscópio. É um dos primeiros jogos eletrônicos da história.',w:['Tennis for Two']},
+      {title:'Pong',text:'Em 1972 a Atari lançou Pong, o fliperama que popularizou os videogames. A Física da bolinha quicando era o jogo inteiro.',w:['Insert coin']}],
+  it:[{title:'Mamma mia!',text:'O personagem mais famoso dos games é um encanador ítalo-americano. Por isso tantos jogadores no mundo conhecem expressões como "mamma mia!".',w:['Mamma mia!']},
+      {title:'Gamer em italiano',text:'Na Itália, "videogioco" é videogame e "giocatore" é jogador. Repare: vem de "gioco", jogo.',w:['videogioco']}],
+  fr:[{title:'Ubisoft é francesa',text:'A Ubisoft, criadora de séries como Assassin\'s Creed e Rayman, nasceu em 1986 na Bretanha, França.',w:['jeu vidéo']},
+      {title:'Gamer em francês',text:'Na França, quem perde a partida por pouco ouve: "pas de chance!" (que azar!). E "manette" é o controle.',w:['la manette']}],
+  ja:[{title:'Nintendo, desde 1889',text:'A Nintendo nasceu em 1889, em Quioto, fabricando cartas de baralho hanafuda. Só décadas depois virou gigante dos videogames.',w:['任天堂','Nintendō']},
+      {title:'Paku-paku',text:'Pac-Man (1980) veio do som japonês "paku paku", que imita alguém comendo de boca aberta e fechada.',w:['パクパク','paku paku']}],
+  de:[{title:'Gamescom',text:'A Gamescom, em Colônia, na Alemanha, é uma das maiores feiras de games do mundo, com centenas de milhares de visitantes por ano.',w:['Gamescom']},
+      {title:'Gamer em alemão',text:'O alemão junta palavras: "Spielkonsole" é console (Spiel = jogo). E "Endgegner", o chefão, é literalmente "inimigo do fim".',w:['Spielkonsole']}],
+  es:[{title:'Gíria gamer',text:'Na Espanha, quem joga mal é chamado de "manco" e quem é muito bom é "un crack". Agora você já pode zoar em espanhol.',w:['¡Eres un crack!']},
+      {title:'Esports na América Latina',text:'A América Latina tem torcidas enormes de esports. Narradores em espanhol gritam "¡Golazo!" até em jogos de futebol virtual.',w:['¡Golazo!']}],
+  zh:[{title:'Wukong',text:'O jogo Black Myth: Wukong (2024) se baseia em "Jornada ao Oeste", clássico da literatura chinesa sobre o Rei Macaco Sun Wukong.',w:['孙悟空','Sūn Wùkōng']},
+      {title:'Maior mercado gamer',text:'A China tem centenas de milhões de jogadores, o maior público de games do planeta. "Wánjiā" (玩家) quer dizer jogador.',w:['玩家','wánjiā']}],
+};
+const BDAY = {en:['Happy birthday!'],it:['Buon compleanno!'],fr:['Joyeux anniversaire !'],ja:['お誕生日おめでとう！','otanjōbi omedetō!'],de:['Alles Gute zum Geburtstag!'],es:['¡Feliz cumpleaños!'],zh:['生日快乐！','shēngrì kuàilè!']};
+const BIRTHS = {};
+function ageOf(b){if(!b)return null;const [y,m,d]=b.split('-').map(Number);const n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1===m&&n.getDate()<d))a--;return a;}
+function gradeFor(b){if(!b)return null;const [y,m,d]=b.split('-').map(Number);const entry=(m<3||(m===3&&d<=31))?y+6:y+7;const n=new Date().getFullYear()-entry+1;return GRADES[Math.max(0,Math.min(GRADES.length-1,n-3))];}
+function isBirthday(b){if(!b)return false;const n=new Date();const [,m,d]=b.split('-').map(Number);return n.getMonth()+1===m&&n.getDate()===d;}
+function likesGames(p){return (p.map?.interests||[]).includes('games')||(p.ans?.games||[]).length>0;}
+function worldsOf(p){const w=[p.ans.world,...(p.ans.reserve||[])].filter(Boolean);if(likesGames(p)&&!w.includes('games'))w.push('games');return w;}
+function favGame(p){return p.ans?.nowGame||(p.ans?.games||[])[0]||'';}
+
+const THEMES = {
+  games:{l:'Mundo Gamer',a:['#8b5cff','#29e3ff']},
+  espaco:{l:'Espaço profundo',a:['#8ea8ff','#ffb86b']},
+  oceano:{l:'Oceano abissal',a:['#3fe0c5','#ff7a8a']},
+  neon:{l:'Cidade neon',a:['#ff3d9a','#2ef2ff']},
+  floresta:{l:'Floresta viva',a:['#3e8b3a','#e3892f']},
+  neve:{l:'Montanha de neve',a:['#2f6fde','#e8455a']},
+  estudio:{l:'Estúdio de criação',a:['#8a3ffc','#ffb000']},
+};
+const PALETTES = [['#ff3d9a','#2ef2ff'],['#3fe0c5','#ff7a8a'],['#8ea8ff','#ffb86b'],['#3e8b3a','#e3892f'],['#2f6fde','#e8455a'],['#8a3ffc','#ffb000'],['#ff6b2b','#1fb6ff'],['#c6f432','#7a5cff']];
+const SKINS = ['#f6d3b3','#e5b48f','#c68a5f','#8d5a3b','#5a3a26'];
+const HAIRS = {curto:'Curto',cacheado:'Cacheado',longo:'Longo',moicano:'Moicano',raspado:'Raspado'};
+const HAIRC = ['#1d1410','#5a3a1e','#b07a3a','#e8c66a','#e0457b','#3d7bff'];
+const ACCS = {nenhum:'Nada',fones:'Fones',oculos:'Óculos',bone:'Boné',coroa:'Coroa'};
+const PETS = {robo:'Robô',gato:'Gato',raposa:'Raposa',dragao:'Dragão',axolote:'Axolote'};
+
+/* =====================================================================
+   QUESTIONÁRIO (cada pergunta parece um jogo; o mapa por trás fica no painel dos pais)
+   ===================================================================== */
+const GRADES = ['3º ano EF','4º ano EF','5º ano EF','6º ano EF','7º ano EF','8º ano EF','9º ano EF','1º ano EM','2º ano EM','3º ano EM'];
+const QUIZ = [
+  {k:'nick',type:'text',t:'Primeiro: como a Órbita deve te chamar?',s:'Pode ser seu nome ou um apelido de jogador.'},
+  {k:'age',type:'age',t:'Quantas voltas ao Sol você já deu?',s:'É a sua idade. E em que ano você está na escola?'},
+  {k:'world',type:'world',t:'Escolha o mundo onde suas aulas vão acontecer'},
+  {k:'reserve',type:'reserve',max:2,t:'Agora escolha 2 mundos reserva',s:'Se a aula ficar chata, eu troco o cenário sozinho pra um desses.'},
+  {k:'colors',type:'colors',t:'Qual dupla de cores é a sua cara?'},
+  {k:'avatar',type:'avatar',t:'Monte seu avatar'},
+  {k:'pet',type:'single',t:'Todo viajante tem um parceiro. Qual é o seu?',opts:Object.entries(PETS).map(([v,l])=>({v,l}))},
+  {k:'interests',type:'multi',max:4,t:'Sábado livre! O que você faria?',s:'Escolha até 4.',opts:INTERESTS.map(i=>({v:i.id,l:i.l}))},
+  {k:'games',type:'multi',max:4,t:'Quais jogos você mais curte?',s:'Escolha até 4. Eles vão aparecer nas suas aulas.',opts:GAMES.map(v=>({v,l:v}))},
+  {k:'gstyle',type:'single',t:'E qual é o seu estilo de jogo favorito?',opts:GSTYLES},
+  {k:'nowGame',type:'text2',t:'Qual jogo está te prendendo agora?',s:'Pode ser um que não estava na lista. Se preferir, deixe em branco.'},
+  {k:'vak1',type:'single',t:'Você foi num lugar novo pela primeira vez. Na volta, como acha o caminho?',opts:[{v:'V',l:'Lembro do que vi: prédios, placas, cores'},{v:'A',l:'Lembro do que me explicaram ou do que ouvi no caminho'},{v:'K',l:'Meu corpo lembra: vou andando e acho'}]},
+  {k:'vak2',type:'single',t:'Pra aprender um jogo novo, você prefere…',opts:[{v:'V',l:'Ver alguém jogando ou um vídeo'},{v:'A',l:'Que alguém me explique as regras'},{v:'K',l:'Sair jogando e descobrir errando'}]},
+  {k:'vak3',type:'single',t:'Uma palavra nova gruda na sua cabeça quando você…',opts:[{v:'V',l:'Vê escrita, de preferência colorida'},{v:'A',l:'Escuta e repete em voz alta'},{v:'K',l:'Escreve à mão ou usa numa frase'}]},
+  {k:'play',type:'single',t:'Num jogo com amigos, você é quem…',opts:[{v:'comp',l:'Quer ganhar e ver o placar'},{v:'coop',l:'Ajuda o time a vencer junto'},{v:'expl',l:'Explora cada canto e coleciona tudo'},{v:'criar',l:'Inventa regras e cria coisas novas'}]},
+  {k:'span',type:'single',t:'Qual vídeo você assiste até o fim sem pular?',opts:[{v:'15s',l:'Só os de 15 segundos'},{v:'1m',l:'Até 1 minuto'},{v:'5m',l:'Uns 5 minutos'},{v:'20m',l:'Episódio inteiro, 20 min ou mais'}]},
+  {k:'boss',type:'multi',max:3,t:'Qual matéria parece um chefão difícil de vencer?',s:'Escolha até 3. Vou te dar umas armas secretas.',opts:SUBJECTS.map(v=>({v,l:v}))},
+  {k:'power',type:'single',t:'E qual matéria é o seu superpoder?',opts:SUBJECTS.map(v=>({v,l:v}))},
+  {k:'trip',type:'multi',max:3,t:'Teletransporte liberado! Pra onde você vai primeiro?',s:'Escolha até 3.',opts:[{v:'ja',l:'Japão'},{v:'it',l:'Itália'},{v:'fr',l:'França'},{v:'de',l:'Alemanha'},{v:'es',l:'Espanha ou México'},{v:'zh',l:'China'},{v:'en',l:'EUA ou Inglaterra'}]},
+  {k:'pace',type:'single',t:'Quantos idiomas você quer aprender ao mesmo tempo?',s:'Dá pra mudar depois, na tela de progresso.',opts:[{v:'1',l:'Um de cada vez, com foco total'},{v:'2',l:'Dois ao mesmo tempo'},{v:'3',l:'Três ao mesmo tempo'}]},
+  {k:'start',type:'start',t:'Por qual idioma você quer começar?'},
+  {k:'humor',type:'single',t:'Que tipo de tutor combina com você?',opts:[{v:'bobo',l:'Engraçado, cheio de piadas'},{v:'zoeiro',l:'Zoeiro e desafiador'},{v:'direto',l:'Direto ao ponto'},{v:'calmo',l:'Calmo e paciente'}]},
+  {k:'reward',type:'single',t:'O que te faz jogar mais uma rodada?',opts:[{v:'skins',l:'Desbloquear visual novo'},{v:'medalhas',l:'Medalhas e conquistas'},{v:'ranking',l:'Ganhar do meu irmão no placar'},{v:'segredos',l:'Descobrir curiosidades secretas'}]},
+  {k:'audio',type:'single',t:'Quando você usa o celular, normalmente está…',opts:[{v:'fones',l:'De fone de ouvido'},{v:'som',l:'Com o som no alto-falante'},{v:'mudo',l:'No mudo'}]},
+  {k:'time',type:'single',t:'Que horas seu cérebro entra no modo turbo?',opts:[{v:'manha',l:'De manhã'},{v:'tarde',l:'À tarde'},{v:'noite',l:'À noite'}]},
+];
+const LABELS = {
+  vak:{V:'Visual (aprende vendo: cores, imagens, texto)',A:'Auditivo (aprende ouvindo e repetindo)',K:'Cinestésico (aprende fazendo: escrever, desenhar, falar)'},
+  play:{comp:'Competidor: placar, desafios e duelos',coop:'Cooperativo: missões em dupla e metas de equipe',expl:'Explorador: coleções, curiosidades e caminhos novos',criar:'Criador: inventar frases, histórias e personagens'},
+  span:{'15s':'Muito curta (blocos de ~4 min)','1m':'Curta (blocos de ~7 min)','5m':'Média (blocos de ~12 min)','20m':'Longa (blocos de ~20 min)'},
+  humor:{bobo:'Engraçado',zoeiro:'Zoeiro e desafiador',direto:'Direto',calmo:'Calmo e paciente'},
+  reward:{skins:'Visuais novos para o avatar',medalhas:'Medalhas e conquistas',ranking:'Placar contra o irmão',segredos:'Curiosidades secretas'},
+  audio:{fones:'Usa fones (bom para pronúncia)',som:'Alto-falante (sugerir fones na pronúncia)',mudo:'Celular no mudo (priorizar legenda e escrita)'},
+  time:{manha:'Manhã',tarde:'Tarde',noite:'Noite'},
+};
+const SPAN_MIN = {'15s':4,'1m':7,'5m':12,'20m':20};
+
+/* =====================================================================
+   ESTADO + PERSISTÊNCIA (localStorage + sincronização opcional entre aparelhos)
+   ===================================================================== */
+const LS_KEY = 'orbita.v1';
+function blankProfile(name){
+  const id=name.toLowerCase().normalize('NFD').replace(/[^\w]/g,'');
+  return {id,name,birth:BIRTHS[id]||null,gameTalk:[],done:false,updatedAt:0,ans:{},map:null,
+    av:{skin:SKINS[1],hair:'curto',hairc:HAIRC[0],acc:'fones'},xp:0,streak:0,lastDay:'',lang:null,
+    themeIdx:0,stats:{},srs:{},custom:{},engLog:[],chat:{}};
+}
+let S = load();
+function migrate(p){
+  if(!p)return p;
+  if(!p.birth&&BIRTHS[p.id])p.birth=BIRTHS[p.id];
+  if(p.birth&&p.ans){p.ans.age=ageOf(p.birth);}
+  p.gameTalk=p.gameTalk||[];
+  if(p.map&&!p.map.active){p.map.active=[p.lang||p.map.langs[0]];p.map.pace='1';}
+  return p;
+}
+function load(){
+  try{const raw=localStorage.getItem(LS_KEY); if(raw){const s=JSON.parse(raw); if(s&&s.profiles){Object.values(s.profiles).forEach(migrate);return s;}}}catch(e){}
+  const s={profiles:{},active:null};
+  for(const n of ['Felipe','Lucas']){const p=blankProfile(n); s.profiles[p.id]=p;}
+  return s;
+}
+function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(S));}catch(e){}}
+let dbRef=null; const dirty=new Set(); let syncTimer=null; let writing=false;
+function touch(p){p.updatedAt=Date.now(); saveLocal(); dirty.add(p.id); clearTimeout(syncTimer); syncTimer=setTimeout(flush,2000);}
+async function flush(){
+  if(!dbRef||writing) return; writing=true;
+  try{
+    for(const id of [...dirty]){
+      dirty.delete(id); const p=S.profiles[id]; if(!p) continue;
+      try{await dbRef.collection('alunos').doc(id).set({updatedAt:p.updatedAt,profile:p});}catch(e){dirty.add(id);break;}
+    }
+  }finally{writing=false;}
+}
+function startSync(){
+  if(!window.claude||!window.claude.use) return;
+  window.claude.use('db').then(db=>{
+    if(!db) return; dbRef=db;
+    db.collection('alunos').onSnapshot(snap=>{
+      let changed=false;
+      for(const d of snap.docs){
+        const body=d.data(); if(!body||!body.profile) continue;
+        const local=S.profiles[d.id];
+        if(!local||(body.updatedAt||0)>(local.updatedAt||0)){S.profiles[d.id]=migrate(body.profile); changed=true;}
+        else if((local.updatedAt||0)>(body.updatedAt||0)){dirty.add(d.id);}
+      }
+      for(const id of Object.keys(S.profiles)) if(!snap.docs.find(d=>d.id===id)) dirty.add(id);
+      saveLocal();
+      if(changed&&(view==='picker'||view==='parents')) render();
+      if(changed&&view==='app') refreshStats();
+      if(dirty.size){clearTimeout(syncTimer);syncTimer=setTimeout(flush,1500);}
+    },()=>{});
+  }).catch(()=>{});
+}
+
+/* =====================================================================
+   UTILITÁRIOS
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const today=()=>new Date().toISOString().slice(0,10);
+function lum(hex){const n=parseInt(hex.slice(1),16);const c=[(n>>16)&255,(n>>8)&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+function onColor(hex){return lum(hex)>.36?'#10131f':'#ffffff';}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/\p{M}/gu,'').replace(/[^\p{L}\p{N}]+/gu,'');}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let prev=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++){cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));}prev=cur;}return prev[n];}
+function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;return Math.max(0,1-lev(a,b)/Math.max(a.length,b.length));}
+function level(xp){return Math.floor(Math.sqrt(xp/40))+1;}
+function lvlRange(l){return [40*(l-1)*(l-1),40*l*l];}
+function toast(msg,ms=3200){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),ms);}
+
+/* Som de ancoragem: um acorde curto quando acerta (âncora positiva) */
+let actx=null;
+function chime(good=true){
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const now=actx.currentTime;
+    const notes=good?[523.25,659.25,783.99]:[311.13,293.66];
+    notes.forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='triangle';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.07);g.gain.linearRampToValueAtTime(.12,now+i*.07+.02);g.gain.exponentialRampToValueAtTime(.001,now+i*.07+.35);
+      o.connect(g).connect(actx.destination);o.start(now+i*.07);o.stop(now+i*.07+.4);});}catch(e){}
+}
+function burst(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('#burst'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+  const cs=getComputedStyle(document.documentElement);const cols=[cs.getPropertyValue('--accent').trim(),cs.getPropertyValue('--accent2').trim(),'#ffffff'];
+  const ps=Array.from({length:70},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*12,vy:-Math.random()*12-3,r:Math.random()*5+3,c:rnd(cols),a:1}));
+  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.4;p.a-=.016;x.globalAlpha=Math.max(0,p.a);x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();});if(++f<70)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height);})();
+}
+
+/* Voz modelo: síntese de fala do próprio aparelho (funciona no iPhone e no desktop) */
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()||[];}catch(e){voices=[];}}
+try{loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}catch(e){}
+function speak(text,lang,slow){
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/\s*\/\s*/g,', '));
+    const tag=LANGS[lang]?.tts||lang;u.lang=tag;u.rate=slow?.6:.92;
+    const v=voices.find(v=>v.lang===tag)||voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(lang));
+    if(v)u.voice=v;
+    speechSynthesis.speak(u);return true;
+  }catch(e){toast('Este aparelho não tem voz para '+(LANGS[lang]?.name||lang)+'.');return false;}
+}
+
+/* =====================================================================
+   AVATAR (SVG gerado a partir das respostas; ganha anéis a cada 3 níveis)
+   ===================================================================== */
+function avatarSVG(p,lvl=1){
+  const av=p.av||{},sk=av.skin||SKINS[1],hc=av.hairc||HAIRC[0],pal=p.ans?.colors||THEMES[p.ans?.world||'espaco']?.a||['#8ea8ff','#ffb86b'];
+  const rings=Math.min(4,Math.floor((lvl-1)/3));
+  let hair='';
+  switch(av.hair){
+    case 'cacheado':hair=[34,44,54,64,74,84,40,80,60].map((x,i)=>`<circle cx="${x}" cy="${i>5?44:36+(i%2)*4}" r="${i>5?9:10}" fill="${hc}"/>`).join('');break;
+    case 'longo':hair=`<path d="M28 64 Q28 28 60 28 Q92 28 92 64 L94 96 L82 96 L84 62 Q60 46 36 62 L38 96 L26 96 Z" fill="${hc}"/>`;break;
+    case 'moicano':hair=`<path d="M52 22 Q60 14 68 22 L68 44 L52 44 Z" fill="${hc}"/>`;break;
+    case 'raspado':hair=`<path d="M32 56 Q32 32 60 32 Q88 32 88 56 Q60 44 32 56Z" fill="${hc}" opacity=".55"/>`;break;
+    default:hair=`<path d="M30 60 Q28 28 60 28 Q92 28 90 60 Q78 44 60 44 Q42 44 30 60Z" fill="${hc}"/>`;
+  }
+  let acc='';
+  switch(av.acc){
+    case 'fones':acc=`<path d="M28 62 Q28 22 60 22 Q92 22 92 62" fill="none" stroke="${pal[0]}" stroke-width="6" stroke-linecap="round"/><rect x="20" y="56" width="14" height="22" rx="6" fill="${pal[0]}"/><rect x="86" y="56" width="14" height="22" rx="6" fill="${pal[0]}"/>`;break;
+    case 'oculos':acc=`<g fill="none" stroke="#1b1b28" stroke-width="3"><circle cx="48" cy="64" r="9"/><circle cx="72" cy="64" r="9"/><path d="M57 64h6"/></g>`;break;
+    case 'bone':acc=`<path d="M30 52 Q32 26 60 26 Q88 26 90 52 Z" fill="${pal[0]}"/><path d="M60 50 L102 52 Q100 58 88 56 L60 54Z" fill="${pal[1]}"/>`;break;
+    case 'coroa':acc=`<path d="M38 36 L42 18 L52 30 L60 14 L68 30 L78 18 L82 36 Z" fill="#ffc83d" stroke="#d99a00" stroke-width="2"/>`;break;
+  }
+  const pets={
+    robo:`<g transform="translate(86 86)"><rect x="0" y="6" width="26" height="22" rx="6" fill="${pal[1]}"/><circle cx="8" cy="16" r="3" fill="#10131f"/><circle cx="18" cy="16" r="3" fill="#10131f"/><path d="M13 6 V0" stroke="${pal[1]}" stroke-width="2.5"/><circle cx="13" cy="0" r="3" fill="${pal[0]}"/></g>`,
+    gato:`<g transform="translate(86 88)"><path d="M2 6 L6 -4 L11 5 M17 5 L22 -4 L26 6" fill="${pal[1]}"/><circle cx="14" cy="14" r="12" fill="${pal[1]}"/><circle cx="10" cy="13" r="2" fill="#10131f"/><circle cx="18" cy="13" r="2" fill="#10131f"/></g>`,
+    raposa:`<g transform="translate(86 86)"><path d="M0 4 L14 30 L28 4 L20 10 L14 6 L8 10Z" fill="#f08a2c"/><circle cx="10" cy="14" r="2" fill="#10131f"/><circle cx="18" cy="14" r="2" fill="#10131f"/></g>`,
+    dragao:`<g transform="translate(86 86)"><path d="M4 8 L8 0 L12 7 L16 -1 L20 7 L24 0 L26 9" fill="#2fbf71"/><circle cx="15" cy="17" r="12" fill="#2fbf71"/><circle cx="11" cy="15" r="2" fill="#10131f"/><circle cx="19" cy="15" r="2" fill="#10131f"/></g>`,
+    axolote:`<g transform="translate(86 88)"><path d="M0 8 h-4 M0 13 h-5 M28 8 h4 M28 13 h5" stroke="#ff8fb8" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="14" cy="13" rx="14" ry="11" fill="#ffb3cf"/><circle cx="9" cy="12" r="2" fill="#10131f"/><circle cx="19" cy="12" r="2" fill="#10131f"/></g>`,
+  };
+  const ringsSvg=Array.from({length:rings},(_,i)=>`<ellipse cx="60" cy="64" rx="${56-i*2}" ry="${14+i*5}" fill="none" stroke="${i%2?pal[1]:pal[0]}" stroke-width="2" opacity=".7" transform="rotate(${-18+i*24} 60 64)"/>`).join('');
+  return `<svg viewBox="0 0 120 120" role="img" aria-label="Avatar de ${esc(p.ans?.nick||p.name)}">
+    <circle cx="60" cy="60" r="58" fill="${pal[0]}" opacity=".22"/>${ringsSvg}
+    ${av.hair==='longo'?hair:''}
+    <circle cx="60" cy="64" r="30" fill="${sk}"/>
+    ${av.hair!=='longo'?hair:''}
+    <ellipse cx="49" cy="65" rx="3.4" ry="4.4" fill="#1b1b28"/><ellipse cx="71" cy="65" rx="3.4" ry="4.4" fill="#1b1b28"/>
+    <circle cx="44" cy="74" r="4" fill="#ff7a8a" opacity=".35"/><circle cx="76" cy="74" r="4" fill="#ff7a8a" opacity=".35"/>
+    <path d="M51 78 Q60 86 69 78" fill="none" stroke="#1b1b28" stroke-width="3" stroke-linecap="round"/>
+    ${acc}${pets[p.ans?.pet]||''}
+  </svg>`;
+}
+const BRAND=`<svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="9" fill="var(--accent)"/><ellipse cx="22" cy="22" rx="20" ry="8" fill="none" stroke="var(--accent2)" stroke-width="2.5" transform="rotate(-24 22 22)"/><circle cx="39" cy="15" r="3" fill="var(--accent2)"/></svg>`;
+
+/* =====================================================================
+   TEMA (cenário + cores do aluno + faixa etária)
+   ===================================================================== */
+function applyTheme(p){
+  const root=document.documentElement;
+  if(!p||!p.done){root.dataset.skin='espaco';root.dataset.age='teen';setAcc(THEMES.espaco.a);return;}
+  const worlds=worldsOf(p);
+  const w=worlds[p.themeIdx%worlds.length]||'espaco';
+  root.dataset.skin=w;root.dataset.age=(p.ans.age||12)<=11?'kid':'teen';
+  setAcc(p.themeIdx===0&&p.ans.colors?p.ans.colors:THEMES[w].a);
+}
+function setAcc([a,b]){const r=document.documentElement.style;r.setProperty('--accent',a);r.setProperty('--accent2',b);r.setProperty('--on-accent',onColor(a));r.setProperty('--on-accent2',onColor(b));Scene.set(document.documentElement.dataset.skin||'espaco');}
+
+/* =====================================================================
+   CENÁRIOS ANIMADOS: arte generativa desenhada em tempo real para cada mundo
+   ===================================================================== */
+const Scene=(()=>{
+  const cv=document.getElementById('scene');if(!cv||!cv.getContext)return {set(){}};
+  const x=cv.getContext('2d');let W=0,H=0,skin='',P=[],C={},last=0,raf=0,still=false;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+  const R=(a,b)=>a+Math.random()*(b-a);
+  const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function alpha(hex,a){if(!hex||hex[0]!=='#')return hex;const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+  function resize(){const D=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;x.setTransform(D,0,0,D,0,0);init();frame(performance.now(),true);}
+  function init(){
+    P=[];const area=Math.min(1.4,(W*H)/(900*800));const n=k=>Math.round(k*Math.max(.45,area));
+    switch(skin){
+      case 'espaco':for(let i=0;i<n(150);i++)P.push({k:'s',x:R(0,W),y:R(0,H),r:R(.4,1.7),p:R(0,7),v:R(.002,.012)});P.push({k:'shoot',t:0});break;
+      case 'oceano':for(let i=0;i<n(45);i++)P.push({k:'b',x:R(0,W),y:R(0,H),r:R(1,4),v:R(.2,.7),p:R(0,7)});for(let i=0;i<3;i++)P.push({k:'j',x:R(.1,.9)*W,y:R(.15,.9)*H,s:R(14,30),p:R(0,7),v:R(.08,.2)});break;
+      case 'neon':{let bx=-10;while(bx<W+20){const w=R(30,80),h=R(H*.12,H*.42);const win=[];for(let wy=H-h+12;wy<H-10;wy+=14)for(let wx=bx+6;wx<bx+w-8;wx+=12)if(Math.random()<.35)win.push({x:wx,y:wy,c:Math.random()<.5?'A':'B',p:R(0,7)});P.push({k:'bld',x:bx,w,h,win});bx+=w+R(2,10);}
+        for(let i=0;i<n(90);i++)P.push({k:'rain',x:R(0,W),y:R(0,H),l:R(8,18),v:R(6,11)});break;}
+      case 'games':for(let i=0;i<n(70);i++)P.push({k:'px',x:R(0,W),y:R(0,H*.6),s:R(1.5,3.5),p:R(0,7)});for(let i=0;i<n(9);i++)P.push({k:'coin',x:R(.05,.95)*W,y:R(.08,.6)*H,s:R(9,15),p:R(0,7)});for(let i=0;i<3;i++)P.push({k:'plat',x:R(.05,.75)*W,y:R(.2,.55)*H,w:R(60,120),p:R(0,7)});break;
+      case 'floresta':for(let i=0;i<n(34);i++)P.push({k:'fly',x:R(0,W),y:R(H*.25,H),p:R(0,7),v:R(.15,.45)});for(let i=0;i<n(14);i++)P.push({k:'fern',x:R(0,W),h:R(H*.12,H*.3),p:R(0,7),s:Math.random()<.5?-1:1});break;
+      case 'neve':for(let L=0;L<3;L++){const pts=[];let px=-40;while(px<W+80){pts.push([px,H*(.5+L*.12)+R(-H*.12,H*.05)]);px+=R(70,160);}P.push({k:'mt',L,pts});}for(let i=0;i<n(110);i++)P.push({k:'snow',x:R(0,W),y:R(0,H),r:R(1,3.2),v:R(.3,1.1),p:R(0,7)});break;
+      case 'estudio':for(let i=0;i<7;i++)P.push({k:'blob',x:R(0,W),y:R(0,H),r:R(70,170),c:i%2?'B':'A',p:R(0,7),v:R(.0002,.0005)});for(let i=0;i<4;i++)P.push({k:'sq',x:R(.05,.7)*W,y:R(.1,.9)*H,w:R(80,180),c:i%2?'A':'B',p:R(0,7)});break;
+    }
+  }
+  function frame(now,force){
+    if(!force){raf=requestAnimationFrame(frame);if(document.hidden||now-last<33)return;}
+    last=now;const t=now;const A=C.A,B=C.B,I=C.I;
+    x.fillStyle=C.BG;x.fillRect(0,0,W,H);
+    const glow=(gx,gy,r,c,a)=>{const g=x.createRadialGradient(gx,gy,0,gx,gy,r);g.addColorStop(0,alpha(c,a));g.addColorStop(1,alpha(c,0));x.fillStyle=g;x.fillRect(gx-r,gy-r,r*2,r*2);};
+    switch(skin){
+      case 'espaco':{
+        glow(W*.85,H*.08,Math.max(W,H)*.55,A,.22);glow(W*.08,H*.95,Math.max(W,H)*.5,B,.16);
+        for(const s of P){if(s.k==='s'){x.globalAlpha=.25+.75*Math.abs(Math.sin(t*s.v*.1+s.p));x.fillStyle=I;x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill();}}
+        x.globalAlpha=1;const pr=Math.min(W,H)*.085,px=W*.84,py=H*.15+Math.sin(t*.0003)*6;
+        const g=x.createRadialGradient(px-pr*.4,py-pr*.4,pr*.1,px,py,pr);g.addColorStop(0,alpha(B,.95));g.addColorStop(1,alpha(A,.85));x.fillStyle=g;x.beginPath();x.arc(px,py,pr,0,7);x.fill();
+        x.strokeStyle=alpha(I,.55);x.lineWidth=2.5;x.beginPath();x.ellipse(px,py,pr*1.8,pr*.45,-.35,0,7);x.stroke();
+        const sh=P.find(p=>p.k==='shoot');if(t-sh.t>6500){sh.t=t;sh.x=R(.1,.6)*W;sh.y=R(.05,.35)*H;}const k=(t-sh.t)/900;
+        if(k<1){x.strokeStyle=alpha(I,.8*(1-k));x.lineWidth=2;x.beginPath();x.moveTo(sh.x+k*220,sh.y+k*90);x.lineTo(sh.x+k*220-60,sh.y+k*90-25);x.stroke();}
+        break;}
+      case 'oceano':{
+        const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,alpha(A,.22));g.addColorStop(.6,alpha(A,0));x.fillStyle=g;x.fillRect(0,0,W,H);
+        for(let i=0;i<5;i++){const bx=W*(.1+i*.2)+Math.sin(t*.0004+i)*30;x.fillStyle=alpha(I,.045);x.beginPath();x.moveTo(bx-20,0);x.lineTo(bx+30,0);x.lineTo(bx+140,H*.75);x.lineTo(bx+40,H*.75);x.fill();}
+        for(const p of P){
+          if(p.k==='b'){p.y-=p.v;p.x+=Math.sin(t*.002+p.p)*.3;if(p.y<-10){p.y=H+10;p.x=R(0,W);}x.strokeStyle=alpha(I,.3);x.lineWidth=1;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.stroke();}
+          if(p.k==='j'){p.y-=p.v*(1+Math.sin(t*.002+p.p));if(p.y<-80){p.y=H+60;p.x=R(.1,.9)*W;}const pulse=1+Math.sin(t*.002+p.p)*.12;
+            glow(p.x,p.y,p.s*3,B,.28);x.fillStyle=alpha(B,.55);x.beginPath();x.ellipse(p.x,p.y,p.s*pulse,p.s*.8,0,Math.PI,0);x.fill();
+            x.strokeStyle=alpha(B,.45);x.lineWidth=1.5;for(let k2=-2;k2<=2;k2++){x.beginPath();x.moveTo(p.x+k2*p.s*.35,p.y);for(let s2=1;s2<=6;s2++)x.lineTo(p.x+k2*p.s*.35+Math.sin(t*.003+s2+k2+p.p)*4,p.y+s2*p.s*.4);x.stroke();}}
+        }
+        x.fillStyle=alpha('#000000',.35);x.beginPath();x.moveTo(0,H);for(let i=0;i<=12;i++)x.lineTo(W*i/12,H-30-Math.abs(Math.sin(i*1.7))*45);x.lineTo(W,H);x.fill();
+        break;}
+      case 'neon':{
+        glow(W*.5,H*1.02,Math.max(W,H)*.7,A,.35);glow(W*.15,H*.1,W*.6,B,.12);
+        for(const p of P){
+          if(p.k==='bld'){x.fillStyle=alpha('#05020c',.82);x.fillRect(p.x,H-p.h,p.w,p.h);x.fillStyle=alpha(A,.6);x.fillRect(p.x,H-p.h,p.w,2);
+            for(const w of p.win){const on=Math.sin(t*.0015+w.p)>-.6;if(!on)continue;x.fillStyle=alpha(w.c==='A'?A:B,.75);x.fillRect(w.x,w.y,5,7);}}
+          if(p.k==='rain'){p.y+=p.v;p.x-=p.v*.15;if(p.y>H){p.y=-20;p.x=R(0,W+40);}x.strokeStyle=alpha(I,.16);x.lineWidth=1;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x+p.l*.15,p.y-p.l);x.stroke();}
+        }
+        break;}
+      case 'games':{
+        glow(W*.5,H*.1,Math.max(W,H)*.6,B,.18);const hz=H*.64;glow(W*.5,hz,W*.8,A,.4);
+        x.strokeStyle=alpha(A,.45);x.lineWidth=1.2;const off=(t*.03)%1;
+        for(let i=0;i<14;i++){const k=Math.pow((i+off)/14,2);const y=hz+(H-hz)*k;x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke();}
+        for(let i=-12;i<=12;i++){x.beginPath();x.moveTo(W/2+i*8,hz);x.lineTo(W/2+i*W*.16,H);x.stroke();}
+        for(const p of P){
+          if(p.k==='px'){x.globalAlpha=.3+.7*Math.abs(Math.sin(t*.002+p.p));x.fillStyle=I;x.fillRect(p.x,p.y,p.s,p.s);x.globalAlpha=1;}
+          if(p.k==='plat'){const y=p.y+Math.sin(t*.001+p.p)*8;x.fillStyle=alpha(A,.55);for(let b=0;b<p.w;b+=12)x.fillRect(p.x+b,y,11,11);x.fillStyle=alpha(B,.7);x.fillRect(p.x,y,p.w-1,3);}
+          if(p.k==='coin'){const y=p.y+Math.sin(t*.0015+p.p)*10,sx=Math.abs(Math.cos(t*.003+p.p));x.fillStyle='#ffc83d';x.fillRect(p.x-p.s*sx/2,y-p.s/2,Math.max(2,p.s*sx),p.s);x.fillStyle='#d99a00';x.fillRect(p.x-p.s*sx/4,y-p.s/4,Math.max(1,p.s*sx/2),p.s/2);}
+        }
+        break;}
+      case 'floresta':{
+        glow(W*.15,-H*.05,Math.max(W,H)*.75,'#fff4b8',.75);
+        for(let i=0;i<4;i++){const bx=W*(.05+i*.22)+Math.sin(t*.0003+i)*20;x.fillStyle='rgba(255,255,240,.16)';x.beginPath();x.moveTo(bx,0);x.lineTo(bx+50,0);x.lineTo(bx+260,H);x.lineTo(bx+160,H);x.fill();}
+        for(const p of P){
+          if(p.k==='fern'){const sw=Math.sin(t*.0008+p.p)*.06;x.fillStyle=alpha(A,.32);x.save();x.translate(p.x,H);x.rotate(sw*p.s);for(let s=0;s<9;s++){const y=-p.h*s/9,len=(1-s/9)*p.h*.35;x.beginPath();x.moveTo(0,y);x.quadraticCurveTo(len*.6,y-len*.4,len,y-len*.1);x.quadraticCurveTo(len*.5,y-len*.05,0,y+4);x.fill();x.beginPath();x.moveTo(0,y);x.quadraticCurveTo(-len*.6,y-len*.4,-len,y-len*.1);x.quadraticCurveTo(-len*.5,y-len*.05,0,y+4);x.fill();}x.fillRect(-1.5,-p.h,3,p.h);x.restore();}
+          if(p.k==='fly'){p.x+=Math.sin(t*.001+p.p)*p.v;p.y+=Math.cos(t*.0013+p.p)*p.v;const a=.35+.65*Math.abs(Math.sin(t*.002+p.p));glow(p.x,p.y,10,B,.5*a);x.fillStyle=alpha(B,a);x.beginPath();x.arc(p.x,p.y,2,0,7);x.fill();}
+        }
+        break;}
+      case 'neve':{
+        const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,alpha(A,.2));g.addColorStop(.7,alpha(A,0));x.fillStyle=g;x.fillRect(0,0,W,H);
+        for(const p of P){if(p.k==='mt'){x.fillStyle=alpha(A,.1+p.L*.08);x.beginPath();x.moveTo(-40,H);p.pts.forEach(([a,b])=>x.lineTo(a,b));x.lineTo(W+80,H);x.fill();
+          x.fillStyle='rgba(255,255,255,.75)';p.pts.forEach(([a,b],k)=>{if(k&&k<p.pts.length-1&&b<p.pts[k-1][1]&&b<p.pts[k+1][1]){x.beginPath();x.moveTo(a,b);x.lineTo(a-14,b+16);x.lineTo(a+14,b+16);x.fill();}});}}
+        for(const p of P){if(p.k==='snow'){p.y+=p.v;p.x+=Math.sin(t*.001+p.p)*.4;if(p.y>H+5){p.y=-5;p.x=R(0,W);}x.fillStyle='#ffffff';x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();x.strokeStyle=alpha(A,.25);x.lineWidth=.6;x.stroke();}}
+        break;}
+      case 'estudio':{
+        for(const p of P){
+          if(p.k==='blob'){const bx=p.x+Math.sin(t*p.v+p.p)*80,by=p.y+Math.cos(t*p.v*1.3+p.p)*60;glow(bx,by,p.r,p.c==='A'?A:B,.32);}
+          if(p.k==='sq'){x.strokeStyle=alpha(p.c==='A'?A:B,.38);x.lineWidth=7;x.lineCap='round';x.beginPath();for(let s=0;s<=20;s++){const sx=p.x+p.w*s/20,sy=p.y+Math.sin(s*.7+t*.0012+p.p)*14;s?x.lineTo(sx,sy):x.moveTo(sx,sy);}x.stroke();}
+        }
+        for(let i=0;i<5;i++){x.fillStyle=alpha(i%2?A:B,.5);x.beginPath();x.arc(W*(.12+i*.19),H*(.88+Math.sin(t*.001+i)*.01),5+i,0,7);x.fill();}
+        break;}
+    }
+    x.globalAlpha=1;
+  }
+  function set(s){
+    const nsk=s||'espaco';const nc={A:cssv('--accent'),B:cssv('--accent2'),I:cssv('--ink'),BG:cssv('--bg')};
+    const changed=nsk!==skin;skin=nsk;C=nc;
+    if(!W){resize();}else if(changed){init();}
+    frame(performance.now(),true);
+    if(!raf&&!still)raf=requestAnimationFrame(frame);
+  }
+  if(reduce.matches)still=true;
+  addEventListener('resize',()=>{clearTimeout(resize._t);resize._t=setTimeout(resize,150);});
+  return {set};
+})();
+
+/* =====================================================================
+   PERFIL DERIVADO (o "mapa" que guia o tutor)
+   ===================================================================== */
+function deriveMap(a){
+  const v=[a.vak1,a.vak2,a.vak3].filter(Boolean);const c={V:0,A:0,K:0};v.forEach(x=>c[x]++);
+  let vak=Object.keys(c).sort((x,y)=>c[y]-c[x])[0];if(c[vak]===1&&a.vak3)vak=a.vak3;
+  const first=[...(a.start||[]),...(a.trip||[])].filter((v,i,arr)=>arr.indexOf(v)===i);
+  const langs=[...first,...LKEYS.filter(l=>!first.includes(l))];
+  const active=(a.start&&a.start.length)?a.start.slice(0,3):[langs[0]];
+  return {active,pace:String(active.length),vak,vakCount:c,play:a.play,span:a.span,spanMin:SPAN_MIN[a.span]||7,boss:a.boss||[],power:a.power,interests:a.interests||[],humor:a.humor,reward:a.reward,audio:a.audio,time:a.time,langs};
+}
+function stats(p,l){p.stats[l]=p.stats[l]||{xp:0,pron:{ok:0,n:0},escr:{ok:0,n:0},cult:0,escola:{}};return p.stats[l];}
+function addXP(p,n,l){
+  const before=level(p.xp);p.xp+=n;stats(p,l).xp+=n;
+  const d=today();if(p.lastDay!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);p.streak=p.lastDay===y?p.streak+1:1;p.lastDay=d;}
+  touch(p);refreshStats();
+  if(level(p.xp)>before){burst();chime(true);toast(`Nível ${level(p.xp)}! Seu avatar ${level(p.xp)%3===1?'ganhou um anel de órbita novo':'está evoluindo'}.`);}
+}
+
+/* =====================================================================
+   ITENS E REPETIÇÃO ESPAÇADA (caixas de Leitner)
+   ===================================================================== */
+function items(p,l){
+  const n=p.ans?.nick||p.name;
+  const fill=s=>s.replace('{n}',n);
+  const out=[];
+  PHRASES.forEach(x=>out.push({id:'ph:'+x.id,kind:'phrase',pt:fill(x.pt),t:fill(x[l][0]),r:x[l][1]?fill(x[l][1]):''}));
+  CONCEPTS.forEach(x=>out.push({id:'co:'+x.id,kind:'concept',subj:x.subj,pt:x.pt,t:x[l][0],r:x[l][1]||'',fact:x.fact}));
+  INTERESTS.forEach(x=>out.push({id:'in:'+x.id,kind:'interest',interest:x.id,pt:x.pt,t:x[l][0],r:x[l][1]||''}));
+  if(likesGames(p))GAMEVOCAB.forEach(x=>out.push({id:'gv:'+x.id,kind:'game',pt:x.pt,t:x[l][0],r:x[l][1]||''}));
+  (p.custom[l]||[]).forEach(x=>out.push(x));
+  return out;
+}
+function srsGet(p,l,id){p.srs[l]=p.srs[l]||{};return p.srs[l][id];}
+function srsMark(p,l,id,ok){
+  p.srs[l]=p.srs[l]||{};const s=p.srs[l][id]||{box:0,due:0};
+  s.box=ok?Math.min(5,s.box+1):0;const days=[0,1,2,4,8,16][s.box];
+  s.due=Date.now()+(ok?days*864e5:5*60e3);p.srs[l][id]=s;touch(p);
+}
+function pickItem(p,l,filter){
+  const all=items(p,l).filter(filter||(()=>true));if(!all.length)return null;
+  const now=Date.now();
+  const due=all.filter(i=>{const s=srsGet(p,l,i.id);return s&&s.due<=now;});
+  const fresh=all.filter(i=>!srsGet(p,l,i.id));
+  const m=p.map;
+  const pref=fresh.filter(i=>i.kind==='game'||(i.kind==='interest'&&m.interests.includes(i.interest))||(i.kind==='concept'&&m.boss.includes(i.subj)));
+  const r=Math.random();
+  if(due.length&&r<.4)return rnd(due);
+  if(pref.length&&r<.75)return rnd(pref);
+  if(fresh.length)return rnd(fresh.filter(i=>i.kind!=='concept').length&&Math.random()<.5?fresh.filter(i=>i.kind!=='concept'):fresh);
+  return rnd(all);
+}
+
+/* =====================================================================
+   FEED: montagem das cartas (o mix muda conforme o canal VAK do aluno)
+   ===================================================================== */
+let feedCards=[];let lastTypes=[];
+function weights(p){
+  const v=p.map.vak;
+  return {learn:3,speak:v==='A'?5:3,write:v==='K'?5:2.5,quiz:v==='V'?3:2,school:3+Math.min(3,p.map.boss.length),culture:2,biblia:2,gamechat:likesGames(p)?2.5:.6,mission:.7,ai:.5};
+}
+function pickType(w){
+  const recent=lastTypes.slice(-2);
+  const entries=Object.entries(w).map(([k,v])=>[k,recent.includes(k)?v*.25:v]);
+  let t=Math.random()*entries.reduce((s,[,v])=>s+v,0);
+  for(const [k,v] of entries){if((t-=v)<=0)return k;}return 'learn';
+}
+function makeCard(p,l,type){
+  const L=LANGS[l];
+  switch(type){
+    case 'learn':{const it=pickItem(p,l,i=>i.kind!=='concept');return it&&{type,it};}
+    case 'speak':{const it=pickItem(p,l,i=>i.kind!=='concept'||Math.random()<.4);return it&&{type,it};}
+    case 'write':{const it=pickItem(p,l,i=>!L.cjk||i.t.replace(/\s|\{|\}/g,'').length<=4);return it&&{type,it,trace:!!L.cjk};}
+    case 'quiz':{const it=pickItem(p,l);if(!it)return null;const pool=items(p,l).filter(i=>i.id!==it.id&&i.t!==it.t);const opts=shuffle([it,...shuffle(pool).slice(0,2)]);return {type,it,opts};}
+    case 'school':{const boss=p.map.boss.filter(s=>CONCEPTS.some(c=>c.subj===s));const it=pickItem(p,l,i=>i.kind==='concept'&&(!boss.length||Math.random()<.35||boss.includes(i.subj)))||pickItem(p,l,i=>i.kind==='concept');return it&&{type,it};}
+    case 'culture':{const seen=new Set(feedCards.filter(c=>c.type==='culture').map(c=>c.c.title));const src=likesGames(p)?[...CULTURE[l],...GAMECULT[l].map(g=>({...g,game:true}))]:CULTURE[l];const pool=src.filter(c=>!seen.has(c.title));return {type,c:rnd(pool.length?pool:src)};}
+    case 'gamechat':{const asked=new Set(feedCards.filter(c=>c.type==='gamechat').map(c=>c.q.id));const pool=GAMEQ.filter(q=>!asked.has(q.id));return {type,q:rnd(pool.length?pool:GAMEQ)};}
+    case 'biblia':{const seen=p.bibleSeen||[];const pool=BIBLE.filter(b=>!seen.includes(b.id)&&!feedCards.some(c=>c.type==='biblia'&&c.b.id===b.id));return {type,b:rnd(pool.length?pool:BIBLE)};}
+    case 'mission':return {type,it:pickItem(p,l,i=>i.kind==='phrase')};
+    case 'ai':return {type};
+  }
+  return null;
+}
+let mixCount=0,mixLang=null;
+function mixing(p){return !!p.mix&&(p.map.active||[]).length>1;}
+function buildBatch(p,l,n=8){
+  const out=[];const w=weights(p);const mix=mixing(p);const act=mix?p.map.active:[l];
+  const langNow=()=>mix?act[Math.floor(mixCount/4)%act.length]:l;
+  if(!feedCards.length){
+    const l0=act[0];mixLang=l0;
+    const fav=p.map.interests[0]&&items(p,l0).find(i=>i.id==='in:'+p.map.interests[0]);
+    if(isBirthday(p.birth))out.push({type:'bday',l:l0});
+    out.push({type:'intro',l:l0});
+    if(!(p.ans.games||[]).length)out.push({type:'gamepick',sel:[],l:l0});
+    else out.push({type:'gamechat',q:GAMEQ[0],l:l0});
+    if(fav)out.push({type:'learn',it:fav,l:l0});
+    mixCount+=out.length;
+  }
+  while(out.length<n){
+    const L0=langNow();
+    if(mix&&L0!==mixLang){out.push({type:'switch',l:L0});mixLang=L0;}
+    const t=pickType(w);const c=makeCard(p,L0,t);if(c){c.l=L0;out.push(c);lastTypes.push(t);mixCount++;}
+  }
+  return out;
+}
+function cardLang(i){const p=P();return (i!=null&&feedCards[+i]&&feedCards[+i].l)||p.lang;}
+
+const ICON={
+  play:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" fill="currentColor"/></svg>',
+  slow:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5a7 7 0 0 0-7 7h2a5 5 0 1 1 5 5v2a7 7 0 0 0 0-14zm-1 3v5l4 2 .8-1.5-2.8-1.4V8z" fill="currentColor"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1a7 7 0 0 0 6-6.9h-2z" fill="currentColor"/></svg>',
+  feed:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 5v8l6-4z" fill="currentColor"/></svg>',
+  tutor:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H8l-4 4V4zm4 5v2h2V9H8zm4 0v2h2V9h-2zm4 0v2h2V9h-2z" fill="currentColor"/></svg>',
+  prog:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h3v10H4zm6 0V4h3v16h-3zm6 0v-7h3v7h-3z" fill="currentColor"/></svg>',
+  people:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 3.1-6 7-6s7 2.7 7 6H2zm15-6c2.8 0 5 2 5 4.5V20h-4c0-2.3-.4-4.3-1-6z" fill="currentColor"/></svg>',
+};
+
+function audioBtns(t,l){return `<button class="btn ghost sm" data-act="play" data-t="${esc(t)}">${ICON.play}Ouvir</button><button class="btn ghost sm" data-act="slow" data-t="${esc(t)}">${ICON.slow}Devagar</button>`;}
+function bigText(it,l){return `<div class="big ${LANGS[l].cjk?'cjk':''}" lang="${LANGS[l].tts}">${esc(it.t)}</div>${it.r?`<div class="rom">${esc(it.r)}</div>`:''}`;}
+function cardHTML(c,i,p,l){
+  l=c.l||l;const L=LANGS[l];let tag='',mid='',act='';
+  const subjTag=it=>it.kind==='concept'?`Escola · ${it.subj}`:'';
+  switch(c.type){
+    case 'intro':{
+      const n=esc(p.ans.nick||p.name);
+      tag=`<span class="tag">Missão de hoje</span>`;
+      mid=`<div class="eyebrow">${esc(L.native)}</div><h2 class="big" style="font-size:clamp(1.6em,7vw,2.3em)">${n}, imagine você daqui a 6 meses em ${({en:'Londres',it:'Roma',fr:'Paris',ja:'Tóquio',de:'Berlim',es:'Madri',zh:'Pequim'})[l]}, conversando sem medo.</h2>
+        ${mixing(p)?`<p class="fact"><b>Hoje, ${p.map.active.length} idiomas se revezam:</b> ${esc(p.map.active.map(k=>LANGS[k].name).join(', '))}. Começamos pelo ${esc(L.name)}.</p>`:''}
+        <p class="fact muted">Cada carta leva segundos. Arraste pra cima. Fale em voz alta sempre que puder: ${p.map.audio==='fones'?'com fone de ouvido o tutor te escuta melhor.':'usar fone de ouvido deixa a correção de pronúncia bem mais precisa.'}</p>`;
+      break;}
+    case 'learn':{
+      tag=`<span class="tag">${c.it.kind==='game'?'Vocabulário gamer':c.it.kind==='interest'?'Seu mundo':subjTag(c.it)||'Palavra nova'}</span>`;
+      mid=`${bigText(c.it,l)}<button class="reveal" data-act="reveal" data-i="${i}">O que você acha que significa? Toque para ver</button><div class="pt" hidden>${esc(c.it.pt)}</div>${c.it.hook?`<div class="hook">${esc(c.it.hook)}</div>`:''}`;
+      act=audioBtns(c.it.t,l);break;}
+    case 'speak':{
+      tag=`<span class="tag p-pron">Pronúncia</span>`;
+      mid=`<div class="muted">Ouça, depois fale igualzinho:</div>${bigText(c.it,l)}<div class="pt muted">${esc(c.it.pt)}</div>
+        <div class="actions">${audioBtns(c.it.t,l)}</div>
+        <div class="speak-zone" data-i="${i}">
+          ${dict?`<button class="mic" data-act="mic" data-i="${i}" aria-label="Falar">${ICON.mic}</button><div class="heard" aria-live="polite"><i>Toque no microfone e fale.</i></div>`
+               :`<input type="text" id="say-${i}" placeholder="Toque no 🎤 do teclado e fale" lang="${L.tts}" autocomplete="off" autocapitalize="off"><button class="btn sm" data-act="checksay" data-i="${i}">Conferir</button>
+               <details class="muted" style="font-size:.85em"><summary>Como ditar no iPhone</summary>Ajustes › Geral › Teclado › Teclados › Adicionar ${esc(L.name)}. Depois, no teclado, toque no globo para trocar de idioma e no microfone para falar.</details>
+               <div class="row" style="display:flex;gap:6px;flex-wrap:wrap"><span class="muted" style="font-size:.85em;align-self:center">Ou avalie você mesmo:</span><button class="btn line sm" data-act="self" data-v="1" data-i="${i}">Falei igual</button><button class="btn line sm" data-act="self" data-v="0" data-i="${i}">Ainda não</button></div>`}
+        </div><div class="res"></div>`;
+      break;}
+    case 'write':{
+      tag=`<span class="tag p-escr">Escrita</span>`;
+      if(c.trace){
+        mid=`<div class="muted">Trace os caracteres com o dedo. Escrever à mão ajuda a memória.</div>${bigText(c.it,l)}<div class="pt muted">${esc(c.it.pt)}</div>
+          <div class="trace"><span lang="${L.tts}">${esc(c.it.t)}</span><canvas data-i="${i}"></canvas></div>`;
+        act=`<button class="btn ghost sm" data-act="tclear" data-i="${i}">Limpar</button><button class="btn sm" data-act="tdone" data-i="${i}">Tracei!</button>${audioBtns(c.it.t,l)}`;
+      }else{
+        mid=`<div class="eyebrow">Escreva em ${esc(L.name)}</div><div class="big" style="font-size:clamp(1.5em,6vw,2.1em)">${esc(c.it.pt)}</div>
+          <input type="text" id="w-${i}" placeholder="Digite aqui" lang="${L.tts}" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <div class="res"></div>`;
+        act=`<button class="btn sm" data-act="checkw" data-i="${i}">Conferir</button><button class="btn ghost sm" data-act="hint" data-i="${i}">Dica</button>`;
+      }
+      break;}
+    case 'quiz':{
+      tag=`<span class="tag">Desafio rápido</span>`;
+      mid=`<div class="big" style="font-size:clamp(1.3em,5.5vw,1.8em)">Como se diz <u>${esc(c.it.pt)}</u> em ${esc(L.name)}?</div>
+        <div class="mcq">${c.opts.map((o,k)=>`<button data-act="mcq" data-i="${i}" data-k="${k}" lang="${L.tts}">${esc(o.t)}${o.r?` <span class="muted">· ${esc(o.r)}</span>`:''}</button>`).join('')}</div>`;
+      break;}
+    case 'school':{
+      tag=`<span class="tag">Escola · ${esc(c.it.subj)}</span>`;
+      mid=`<div class="eyebrow">${esc(c.it.pt)} em ${esc(L.name)}</div>${bigText(c.it,l)}<p class="fact">${esc(c.it.fact||'')}</p>`;
+      act=`${audioBtns(c.it.t,l)}<button class="btn sm" data-act="gotit" data-i="${i}">Aprendi</button>`;
+      break;}
+    case 'culture':{
+      tag=`<span class="tag p-cult">${c.c.game?'Cultura gamer':'Cultura'}</span>`;
+      mid=`<h2 style="font-size:1.4em">${esc(c.c.title)}</h2><p class="fact">${esc(c.c.text)}</p><div class="big ${L.cjk?'cjk':''}" style="font-size:clamp(1.5em,7vw,2.2em)" lang="${L.tts}">${esc(c.c.w[0])}</div>${c.c.w[1]?`<div class="rom">${esc(c.c.w[1])}</div>`:''}`;
+      act=`${audioBtns(c.c.w[0],l)}<button class="btn sm" data-act="culture" data-i="${i}">Curti</button>`;
+      break;}
+    case 'switch':{
+      const others=p.map.active.filter(k=>k!==l).map(k=>LANGS[k].name).join(' e ');
+      tag=`<span class="tag p-escr">Troca de idioma</span>`;
+      mid=`<div class="eyebrow">Próximo idioma</div><div class="big ${L.cjk?'cjk':''}" lang="${L.tts}">${esc(L.native)}</div><h2 style="font-size:1.4em">${esc(L.name)}</h2>
+        <p class="fact muted">Trocar de idioma de tempos em tempos obriga o cérebro a mudar de "canal", e isso ajuda a separar as línguas na memória.${others?' Daqui a pouco volta '+esc(others)+'.':''}</p>`;
+      act=`<button class="btn ghost sm" data-act="play" data-t="${esc(L.native)}">${ICON.play}Ouvir</button>`;
+      break;}
+    case 'gamechat':{
+      const q=c.q,tq=q[l],fav=favGame(p);
+      tag=`<span class="tag p-pron">Papo gamer</span>`;
+      mid=`<div class="eyebrow">O tutor quer saber${fav?' · '+esc(fav):''}</div>
+        <div class="big ${L.cjk?'cjk':''}" style="font-size:clamp(1.5em,6.5vw,2.2em)" lang="${L.tts}">${esc(tq[0])}</div>${tq[1]?`<div class="rom">${esc(tq[1])}</div>`:''}
+        <div class="pt muted">${esc(q.pt)}</div>
+        <input type="text" id="gc-${i}" placeholder="Responda em ${esc(L.name)} (ou em português)" lang="${L.tts}" autocomplete="off" autocapitalize="off">
+        <div class="res"></div>`;
+      act=`<button class="btn sm" data-act="gameans" data-i="${i}">Responder</button><button class="btn ghost sm" data-act="gameex" data-i="${i}">Ver exemplo</button><button class="btn ghost sm" data-act="play" data-t="${esc(tq[0])}">${ICON.play}Ouvir</button>`;
+      break;}
+    case 'gamepick':{
+      tag=`<span class="tag">Mundo Gamer</span>`;
+      mid=`<h2 style="font-size:1.45em">Rápido: quais jogos você mais curte?</h2><p class="muted" style="margin:0">Vou usar nas suas aulas e no papo com o tutor.</p>
+        <div class="gchips">${GAMES.map(g=>`<button class="chip" data-act="gpick" data-i="${i}" data-g="${esc(g)}" aria-pressed="${c.sel.includes(g)}">${esc(g)}</button>`).join('')}</div>
+        <input type="text" id="gp-${i}" placeholder="Outro jogo? Escreva aqui" autocomplete="off" maxlength="40">`;
+      act=`<button class="btn" data-act="gpsave" data-i="${i}">Salvar meus jogos</button>`;
+      break;}
+    case 'bday':{
+      const b=BDAY[l];
+      tag=`<span class="tag p-cult">Hoje é seu dia</span>`;
+      mid=`<div class="big ${L.cjk?'cjk':''}" lang="${L.tts}">${esc(b[0])}</div>${b[1]?`<div class="rom">${esc(b[1])}</div>`:''}
+        <h2 style="font-size:1.3em">Feliz aniversário, ${esc(p.ans.nick||p.name)}! ${ageOf(p.birth)} anos.</h2><p class="fact muted">Presente da nave: XP em dobro nesta carta. Aprenda a frase e diga em voz alta.</p>`;
+      act=`<button class="btn" data-act="bday" data-i="${i}" data-t="${esc(b[0])}">${ICON.play}Ouvir e comemorar</button>`;
+      break;}
+    case 'biblia':{
+      const b=c.b,wd=BWORDS[b.w],tw=wd[l];
+      tag=`<span class="tag p-cult">Bíblia · ${esc(b.subj)}</span>`;
+      mid=`<div class="eyebrow">${esc(b.hook)}</div><h2 style="font-size:1.45em">${esc(b.title)}</h2>
+        <blockquote class="verse" lang="en-GB"><span>“${esc(b.kjv)}”</span><cite>${esc(b.kref)} · King James, 1611</cite></blockquote>
+        <div class="verse-pt"><b>Em português:</b> ${esc(b.para)} <span class="muted">Leia ${esc(b.ref)} na Almeida Revista e Atualizada.</span></div>
+        <details class="ctx"><summary>Contexto histórico</summary><p>${esc(b.hist)}</p></details>
+        <details class="ctx"><summary>Mensagem</summary><p>${esc(b.spirit)}</p></details>
+        <div class="bword"><span class="muted">Palavra-chave, ${esc(wd.pt)}:</span> <b class="${L.cjk?'cjk':''}" lang="${L.tts}">${esc(tw[0])}</b>${tw[1]?` <span class="muted">${esc(tw[1])}</span>`:''}</div>`;
+      act=`<button class="btn ghost sm" data-act="playen" data-t="${esc(b.kjv)}">${ICON.play}Versículo em inglês</button><button class="btn ghost sm" data-act="play" data-t="${esc(tw[0])}">${ICON.play}${esc(tw[0])}</button><button class="btn sm" data-act="biblia" data-i="${i}">Guardei no coração</button>`;
+      break;}
+    case 'mission':{
+      tag=`<span class="tag">Missão no mundo real</span>`;
+      mid=`<h2 style="font-size:1.3em">Use isto hoje com alguém da sua casa:</h2>${bigText(c.it,l)}<div class="pt">${esc(c.it.pt)}</div><p class="muted">Usar a palavra fora da tela tira ela da memória curta e leva pra memória longa.</p>`;
+      act=`${audioBtns(c.it.t,l)}<button class="btn sm" data-act="mission" data-i="${i}">Aceito a missão</button>`;
+      break;}
+    case 'ai':{
+      tag=`<span class="tag">Tutor</span>`;
+      mid=`<h2 style="font-size:1.4em">Quer cartas novas feitas sob medida pra você?</h2><p class="fact muted">O tutor cria uma aula misturando ${esc(LANGS[l].name)} com ${esc(p.map.interests.map(id=>INTERESTS.find(x=>x.id===id)?.l).filter(Boolean).slice(0,2).join(' e ')||'o que você curte')} e ${esc(p.map.boss[0]||'as matérias da escola')}.</p><div class="res"></div>`;
+      act=`<button class="btn" data-act="aigen" data-i="${i}">Criar minha aula</button>`;
+      break;}
+    case 'break':{
+      tag=`<span class="tag">Pausa</span>`;
+      mid=`<h2 style="font-size:1.5em">Pausa de 60 segundos</h2><p class="fact">Levanta, estica os braços, bebe água. O cérebro guarda o que aprendeu justamente nas pausas.</p><div class="big" id="brk-${i}" style="font-variant-numeric:tabular-nums">60</div>`;
+      act=`<button class="btn" data-act="brk" data-i="${i}">Começar pausa</button>`;
+      break;}
+    case 'boost':{
+      tag=`<span class="tag p-pron">Mudança de cenário</span>`;
+      mid=`<h2 style="font-size:1.5em">${esc(c.msg)}</h2><p class="fact muted">Próximas cartas: mais ${({V:'imagens e desafios visuais',A:'áudio e pronúncia',K:'escrita e fala'})[p.map.vak]}, que é como você aprende melhor.</p>`;
+      break;}
+  }
+  return `<section class="card" data-i="${i}" aria-label="Carta ${i+1}"><div class="card-in">
+    <div class="card-head">${tag}<span class="eyebrow">${esc(L.code)}</span></div>
+    <div class="card-mid">${mid}</div>
+    ${act?`<div class="actions">${act}</div>`:''}
+    <div class="swipe-hint">arraste pra cima</div>
+  </div></section>`;
+}
+
+/* =====================================================================
+   MONITOR DE ENGAJAMENTO: percebe queda de interesse e muda o estado
+   ===================================================================== */
+const eng={log:[],cur:null,start:0,lastBoost:0,breaks:0,streakOk:0};
+function engEnter(i){
+  const now=Date.now();
+  if(eng.cur){const r=eng.cur;r.dwell=now-r.t;eng.log.push(r);engCheck();}
+  eng.cur={i,t:now,inter:false};
+}
+function engInteract(){if(eng.cur)eng.cur.inter=true;}
+function engCheck(){
+  const p=P();if(!p)return;const now=Date.now();
+  const last=eng.log.slice(-6);if(last.length<5)return;
+  const skips=last.filter(r=>r.dwell<2200&&!r.inter).length;
+  const inter=last.filter(r=>r.inter).length/last.length;
+  if((skips>=3||inter<.34)&&now-eng.lastBoost>90e3){
+    eng.lastBoost=now;
+    const worlds=worldsOf(p);
+    const from=worlds[p.themeIdx%worlds.length];p.themeIdx=(p.themeIdx+1)%worlds.length;const to=worlds[p.themeIdx];
+    p.engLog.push({at:now,reason:skips>=3?'muitas cartas puladas':'pouca interação',from,to,lang:p.lang});
+    if(p.engLog.length>40)p.engLog.shift();
+    touch(p);applyTheme(p);
+    const msg=`Bora mudar de ares: bem-vindo ao ${THEMES[to].l}!`;
+    toast(msg);insertAfterCurrent([{type:'boost',msg},...boostCards(p)]);
+  }
+  const mins=(now-eng.start)/60e3;
+  if(mins>p.map.spanMin*(eng.breaks+1)){eng.breaks++;insertAfterCurrent([{type:'break'}]);}
+}
+function boostCards(p){
+  const l=cardLang(eng.cur?eng.cur.i:null);const pref={V:['quiz','quiz','culture'],A:['speak','speak','learn'],K:['write','speak','write']}[p.map.vak];
+  if(likesGames(p))pref.unshift('gamechat');
+  return pref.map(t=>{const c=makeCard(p,l,t);if(c)c.l=l;return c;}).filter(Boolean);
+}
+
+/* =====================================================================
+   RENDERIZAÇÃO DAS TELAS
+   ===================================================================== */
+let view='picker';let qStep=0;let draft=null;let sheet=null;let dict=null;let sampleFn=null;
+const P=()=>S.profiles[S.active];
+
+function render(){
+  const app=$('#app');
+  if(view!=='app'){closeObserver();}
+  if(view==='picker'){applyTheme(null);app.innerHTML=pickerHTML();}
+  else if(view==='quiz'){app.innerHTML=quizHTML();}
+  else if(view==='parents'){applyTheme(null);app.innerHTML=parentsHTML();}
+  else if(view==='app'){renderApp();}
+}
+
+function pickerHTML(){
+  const ps=Object.values(S.profiles);
+  return `<div class="picker">
+    <div class="brand">${BRAND}<div><h1>Órbita Idiomas</h1><div class="muted">Tutor de idiomas do Felipe e do Lucas</div></div></div>
+    <p class="lead">Sete idiomas prontos: inglês, italiano, francês, japonês, alemão, espanhol e mandarim. Cada aula mistura escrita, pronúncia e cultura com as matérias da escola, no ritmo e no estilo de cada um.</p>
+    <div class="kids">${ps.map(p=>{
+      const l=level(p.xp);
+      return `<article class="kid">
+        <div class="kid-top">${avatarSVG(p,l)}<div style="min-width:0"><h2>${esc(p.ans.nick||p.name)}</h2>
+          <div class="muted" style="font-size:.9em">${p.done?`Nível ${l} · ${p.xp} XP · ${p.streak} dia${p.streak===1?'':'s'} seguidos`:'Ainda não montou o personagem'}</div></div></div>
+        ${p.done&&(p.ans.start||[]).length?`<div class="row">${(p.map.active||[]).map(k=>`<span class="pill">${LANGS[k].name}</span>`).join('')}<span class="pill acc">${THEMES[p.ans.world]?.l||''}</span></div>`:''}
+        <button class="btn" data-act="enter" data-id="${p.id}">${!p.done?'Montar meu personagem':(p.ans.start||[]).length?'Entrar na aula':'Escolher meus idiomas'}</button>
+      </article>`;}).join('')}</div>
+    <div class="picker-foot"><button class="btn ghost" data-act="parents">Painel dos pais</button><button class="btn line" data-act="addkid">Adicionar aluno</button></div>
+    <div class="how">
+      <div><b>Personagem primeiro</b><p>Um questionário que parece criação de avatar descobre interesses, ritmo de atenção e como cada um aprende melhor.</p></div>
+      <div><b>Feed de cartas</b><p>Cartas curtas em tela cheia, como vídeos curtos, só que cada deslize ensina algo.</p></div>
+      <div><b>Percebe o tédio</b><p>Se o aluno começa a pular cartas, o tutor troca o cenário e muda o tipo de atividade.</p></div>
+      <div><b>Celular e computador</b><p>Funciona no iPhone e no desktop. Quando a sincronização está disponível, o progresso segue entre os aparelhos.</p></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Questionário ---------- */
+function quizHTML(){
+  const q=QUIZ[qStep];const a=draft.ans;const pos=qPos();const pct=Math.round(pos.i/pos.n*100);
+  let body='';
+  const pressed=(k,v)=>Array.isArray(a[k])?a[k].includes(v):a[k]===v;
+  switch(q.type){
+    case 'text':body=`<input type="text" id="q-nick" value="${esc(a.nick||draft.name)}" maxlength="20" autocomplete="off">`;break;
+    case 'text2':body=`<input type="text" id="q-now" value="${esc(a.nowGame||'')}" maxlength="40" autocomplete="off" placeholder="Nome do jogo">`;break;
+    case 'age':if(draft.birth){body=`<div class="panel"><b style="font-family:var(--display);font-size:1.3em">${ageOf(draft.birth)} voltas ao Sol</b><span class="muted">Os registros da nave dizem que você nasceu em ${draft.birth.split('-').reverse().join('/')}. No seu aniversário tem surpresa.</span></div>
+      <label class="eyebrow" for="q-grade">Ano escolar</label><select id="q-grade">${GRADES.map(g=>`<option ${(a.grade||gradeFor(draft.birth))===g?'selected':''}>${g}</option>`).join('')}</select>`;break;}
+      body=`<label class="eyebrow" for="q-birth">Data de nascimento</label><input type="date" id="q-birth" min="2004-01-01" max="${new Date().toISOString().slice(0,10)}" style="max-width:240px">
+      <p class="muted" style="margin:0;font-size:.9em">Fica guardada só neste aparelho. Serve para calcular sua idade e lembrar do seu aniversário.</p>
+      <span class="eyebrow">Ou toque na sua idade</span><div class="ages">${Array.from({length:12},(_,i)=>i+7).map(n=>`<button class="opt" data-q="age" data-v="${n}" aria-pressed="${a.age===n}">${n}</button>`).join('')}</div>
+      <label class="eyebrow" for="q-grade">Ano escolar</label><select id="q-grade">${GRADES.map(g=>`<option ${a.grade===g?'selected':''}>${g}</option>`).join('')}</select>`;break;
+    case 'world':case 'reserve':{
+      const ks=Object.keys(THEMES).filter(k=>q.type==='world'||k!==a.world);
+      const prev=k=>`<div class="world-prev" data-skin="${k}" style="background:var(--bg);position:relative;overflow:hidden"><div class="bgfx" style="position:absolute;--accent:${THEMES[k].a[0]};--accent2:${THEMES[k].a[1]}"></div></div>`;
+      body=`<div class="opts">${ks.map(k=>`<button class="opt" data-q="${q.k}" data-v="${k}" aria-pressed="${pressed(q.k,k)}">${prev(k)}${THEMES[k].l}</button>`).join('')}</div>`;break;}
+    case 'colors':body=`<div class="opts">${PALETTES.map((pp,k)=>`<button class="opt" data-q="colors" data-v="${k}" aria-pressed="${a.colors&&a.colors[0]===pp[0]}"><span class="sw"><i style="background:${pp[0]}"></i><i style="background:${pp[1]}"></i></span></button>`).join('')}</div>`;break;
+    case 'avatar':{
+      const av=draft.av;
+      const grp=(lbl,key,obj,isColor)=>`<div class="av-group"><span class="eyebrow">${lbl}</span><div class="chips">${(isColor?obj:Object.keys(obj)).map(v=>isColor?`<button class="chip dot" data-av="${key}" data-v="${v}" aria-label="${lbl} ${v}" aria-pressed="${av[key]===v}" style="background:${v}"></button>`:`<button class="chip" data-av="${key}" data-v="${v}" aria-pressed="${av[key]===v}">${obj[v]}</button>`).join('')}</div></div>`;
+      body=`<div class="av-builder"><div id="avprev">${avatarSVG(draft,1)}</div><div>${grp('Pele','skin',SKINS,true)}${grp('Cabelo','hair',HAIRS)}${grp('Cor do cabelo','hairc',HAIRC,true)}${grp('Acessório','acc',ACCS)}</div></div>`;break;}
+    case 'start':{
+      const n=Number(a.pace||1);
+      body=`<p class="muted" style="margin:0">A escolha é sua. ${n===1?'Escolha 1 idioma.':`Escolha ${n} idiomas: eles vão se revezar nas suas aulas.`} Você pode trocar quando quiser na tela de progresso.</p>
+        <div class="opts">${LKEYS.map(k=>`<button class="opt" data-q="start" data-v="${k}" aria-pressed="${(a.start||[]).includes(k)}"><span style="font-size:1.05em">${LANGS[k].name}</span><small lang="${LANGS[k].tts}" style="font-family:${LANGS[k].cjk?'var(--cjk)':'inherit'}">${LANGS[k].native}</small></button>`).join('')}</div>`;break;}
+    case 'single':case 'multi':body=`<div class="opts">${q.opts.map(o=>`<button class="opt" data-q="${q.k}" data-v="${o.v}" aria-pressed="${pressed(q.k,o.v)}">${esc(o.l)}</button>`).join('')}</div>`;break;
+  }
+  return `<div class="quiz">
+    <div class="quiz-head"><button class="btn ghost sm" data-act="qback" aria-label="Voltar">‹</button><div class="bar"><i style="width:${pct}%"></i></div><span class="eyebrow">${pos.i+1}/${pos.n}</span></div>
+    <div class="quiz-body"><h2>${esc(q.t)}</h2>${q.s?`<p class="muted" style="margin:0">${esc(q.s)}</p>`:''}${body}</div>
+    <div class="quiz-foot"><button class="btn line" data-act="qcancel">Sair</button><button class="btn" data-act="qnext" ${qValid()?'':'disabled'}>${qIsLast()?(qOnly?'Montar minha aula':'Começar a aventura'):'Próximo'}</button></div>
+  </div>`;
+}
+/* qOnly: quando só falta escolher os idiomas, o questionário mostra apenas essas perguntas */
+let qOnly=null;
+const qIdx=k=>QUIZ.findIndex(q=>q.k===k);
+function qPos(){if(!qOnly)return {i:qStep,n:QUIZ.length};return {i:Math.max(0,qOnly.indexOf(QUIZ[qStep].k)),n:qOnly.length};}
+function qIsLast(){const {i,n}=qPos();return i>=n-1;}
+function qNext(){if(!qOnly)return qStep+1;return qIdx(qOnly[qOnly.indexOf(QUIZ[qStep].k)+1]);}
+function qPrev(){if(!qOnly)return qStep-1;const j=qOnly.indexOf(QUIZ[qStep].k);return j>0?qIdx(qOnly[j-1]):-1;}
+function startLangChoice(p){draft=JSON.parse(JSON.stringify(p));qOnly=['pace','start'];qStep=qIdx('pace');view='quiz';render();}
+function qValid(){
+  const q=QUIZ[qStep],a=draft.ans;
+  switch(q.type){case 'text':case 'text2':return true;case 'age':return !!a.age||!!draft.birth;case 'avatar':return true;
+    case 'reserve':return (a.reserve||[]).length===2;
+    case 'start':return (a.start||[]).length===Number(a.pace||1);
+    case 'multi':return (a[q.k]||[]).length>0;default:return a[q.k]!==undefined;}
+}
+function quizClick(t){
+  const q=QUIZ[qStep],a=draft.ans;
+  if(t.dataset.q){
+    const k=t.dataset.q;let v=t.dataset.v;
+    if(k==='age')a.age=+v;
+    else if(k==='colors')a.colors=PALETTES[+v];
+    else if(q.type==='multi'||q.type==='reserve'||q.type==='start'){const max=q.type==='start'?Number(a.pace||1):(q.max||9);a[k]=a[k]||[];const i=a[k].indexOf(v);if(i>=0)a[k].splice(i,1);else{a[k].push(v);if(a[k].length>max)a[k].shift();}}
+    else a[k]=v;
+    if(k==='pace'&&a.start)a.start=a.start.slice(0,Number(v));
+    if(k==='world'){draft.themeIdx=0;applyTheme({...draft,done:true,ans:{...a,reserve:[]}});}
+    if(k==='colors')setAcc(a.colors);
+    $('#app').innerHTML=quizHTML();
+    if(q.type==='single'&&k!=='world'){setTimeout(()=>{if(QUIZ[qStep]===q&&!qIsLast()){qStep=qNext();$('#app').innerHTML=quizHTML();}},260);}
+    return;
+  }
+  if(t.dataset.av){draft.av[t.dataset.av]=t.dataset.v;$('#app').innerHTML=quizHTML();return;}
+}
+function quizSaveInputs(){
+  const n=$('#q-nick');if(n)draft.ans.nick=n.value.trim()||draft.name;
+  const g=$('#q-grade');if(g)draft.ans.grade=g.value;
+  const w=$('#q-now');if(w)draft.ans.nowGame=w.value.trim();
+}
+function finishQuiz(mini){
+  if(draft.birth){draft.ans.age=ageOf(draft.birth);draft.ans.grade=draft.ans.grade||gradeFor(draft.birth);}
+  draft.done=true;draft.map=deriveMap(draft.ans);draft.lang=draft.map.active[0];draft.mix=draft.map.active.length>1;draft.themeIdx=0;
+  S.profiles[draft.id]=draft;S.active=draft.id;touch(draft);
+  view='app';feedCards=[];render();
+  setTimeout(()=>{burst();chime(true);const names=draft.map.active.map(k=>LANGS[k].name).join(' + ');toast(mini?`Aula montada do seu jeito: ${names}.`:`Personagem pronto, ${draft.ans.nick}! Sua aula: ${names}.`,4200);},300);
+}
+
+/* ---------- App principal ---------- */
+function statsHTML(p){
+  const l=p.lang,st=stats(p,l),lv=level(p.xp),[a,b]=lvlRange(lv);const pctp=n=>n.n?Math.round(n.ok/n.n*100):0;
+  const escola=Object.values(st.escola).reduce((s,v)=>s+v,0);
+  return `<div class="panel me-big">${avatarSVG(p,lv)}<h3 style="font-size:1.2em">${esc(p.ans.nick)}</h3>
+      <div class="muted" style="font-size:.88em">Nível ${lv} · ${p.xp} XP · ${p.streak} dia${p.streak===1?'':'s'} seguidos</div>
+      <div class="xpbar" aria-label="Progresso do nível"><i style="width:${Math.round((p.xp-a)/(b-a)*100)}%"></i></div>
+      <div class="muted" style="font-size:.8em">${b-p.xp} XP para o nível ${lv+1}${(lv+1)%3===1?' (anel novo no avatar)':''}</div></div>
+    <div class="panel"><h3>${esc(LANGS[l].name)}: os três pilares</h3><div class="pillars">
+      <div class="pillar"><span>Pronúncia</span><div class="xpbar"><i style="width:${pctp(st.pron)}%"></i></div><span>${pctp(st.pron)}%</span></div>
+      <div class="pillar"><span>Escrita</span><div class="xpbar"><i style="width:${pctp(st.escr)}%"></i></div><span>${pctp(st.escr)}%</span></div>
+      <div class="pillar"><span>Cultura</span><div class="xpbar"><i style="width:${Math.min(100,st.cult*12)}%"></i></div><span>${st.cult}</span></div>
+      <div class="pillar"><span>Bíblia</span><div class="xpbar"><i style="width:${Math.min(100,(st.biblia||0)*9)}%"></i></div><span>${st.biblia||0}</span></div>
+      <div class="pillar"><span>Escola</span><div class="xpbar"><i style="width:${Math.min(100,escola*8)}%"></i></div><span>${escola}</span></div>
+    </div></div>
+    ${scoreboardHTML(p)}
+    <div class="panel"><h3>Estudando agora</h3><p class="muted" style="margin:0;font-size:.85em">Marque 1, 2 ou 3 idiomas. Com mais de um, eles se revezam no feed.</p>
+      <div class="gchips">${LKEYS.map(k=>`<button class="chip" data-act="toggleactive" data-l="${k}" aria-pressed="${p.map.active.includes(k)}">${LANGS[k].name}</button>`).join('')}</div></div>
+    <div class="panel"><h3>Idiomas</h3><div class="langs-grid">${p.map.langs.map(k=>`<button class="lang-b" data-act="setlang" data-l="${k}" aria-pressed="${k===l}">${LANGS[k].name}<small>${stats(p,k).xp} XP</small></button>`).join('')}</div></div>`;
+}
+function scoreboardHTML(p){
+  const ps=Object.values(S.profiles).filter(x=>x.done).sort((a,b)=>b.xp-a.xp);
+  if(ps.length<2)return '';
+  const top=Math.max(1,ps[0].xp);
+  return `<div class="panel"><h3>Placar dos irmãos</h3><div class="scoreboard">${ps.map((x,k)=>`<div class="score-row">${avatarSVG(x,level(x.xp))}<div style="min-width:0">${k===0?'🏆 ':''}${esc(x.ans.nick||x.name)}${x.id===p.id?' <span class="muted">(você)</span>':''}<div class="xpbar"><i style="width:${Math.round(x.xp/top*100)}%"></i></div></div><span style="font-variant-numeric:tabular-nums">${x.xp} XP</span></div>`).join('')}</div>${dbRef?'':'<div class="muted" style="font-size:.78em">O placar junta os dois quando a sincronização entre aparelhos está ativa.</div>'}</div>`;
+}
+function tutorHTML(p){
+  return `<div class="panel" style="flex:1;min-height:0"><div style="display:flex;align-items:center;gap:8px"><h3 style="flex:1">Tutor de ${esc(LANGS[p.lang].name)}</h3><span class="pill">${esc(LABELS.humor[p.map.humor]||'')}</span></div>
+    <div class="chat"><div class="msgs" id="msgs" aria-live="polite"></div>
+      <div class="suggest">${[...(favGame(p)?['Vamos falar de '+favGame(p)+'?']:[]),'Me ensina 3 frases de '+(INTERESTS.find(x=>x.id===p.map.interests[0])?.l||'games').toLowerCase(),'Explica '+(p.map.boss[0]||'Biologia')+' usando o idioma','Corrige minha frase'].map(s=>`<button class="chip" data-act="sug" data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+      <div class="composer"><textarea id="chat-in" rows="1" placeholder="Escreva em português ou em ${esc(LANGS[p.lang].name)}"></textarea><button class="btn" data-act="send">Enviar</button></div>
+      <div class="muted" id="tutor-note" style="font-size:.8em"></div></div></div>`;
+}
+function renderApp(){
+  const p=P();applyTheme(p);
+  const l=p.lang;
+  $('#app').innerHTML=`<div class="shell">
+    <header class="topbar">
+      <button class="me" data-act="sheet" data-s="prog" aria-label="Ver progresso">${avatarSVG(p,level(p.xp))}<b>${esc(p.ans.nick)}</b></button>
+      <span class="spacer"></span>
+      <span class="stat" title="Dias seguidos" id="st-streak">🔥 ${p.streak}</span>
+      <span class="stat" title="Pontos de experiência" id="st-xp">${p.xp} XP</span>
+      <select class="langsel" id="langsel" aria-label="Idioma">${p.map.active.length>1?`<option value="mix" ${mixing(p)?'selected':''}>Mix: ${p.map.active.map(k=>LANGS[k].code).join('+')}</option>`:''}${p.map.langs.map(k=>`<option value="${k}" ${!mixing(p)&&k===l?'selected':''}>${LANGS[k].name}</option>`).join('')}</select>
+    </header>
+    <div class="main">
+      <aside class="side left" id="side-left">${statsHTML(p)}<button class="btn line" data-act="home">Trocar de aluno</button></aside>
+      <div class="feed" id="feed"></div>
+      <aside class="side right" id="side-right">${tutorHTML(p)}</aside>
+    </div>
+    <nav class="nav" aria-label="Navegação">
+      <button aria-current="true" data-act="sheet" data-s="">${ICON.feed}Aulas</button>
+      <button data-act="sheet" data-s="tutor">${ICON.tutor}Tutor</button>
+      <button data-act="sheet" data-s="prog">${ICON.prog}Progresso</button>
+      <button data-act="home">${ICON.people}Alunos</button>
+    </nav>
+  </div><div id="sheet-host"></div>`;
+  eng.start=Date.now();eng.log=[];eng.cur=null;eng.breaks=0;
+  feedCards=[];lastTypes=[];mixCount=0;mixLang=null;appendCards(buildBatch(p,l));
+  renderChat();
+}
+function appendCards(cards){
+  const p=P(),l=p.lang,feed=$('#feed');if(!feed)return;
+  const start=feedCards.length;feedCards.push(...cards);
+  feed.insertAdjacentHTML('beforeend',cards.map((c,k)=>cardHTML(c,start+k,p,l)).join(''));
+  feed.querySelectorAll('.card').forEach(el=>{if(!el._obs){observer().observe(el);el._obs=1;}});
+  feed.querySelectorAll('canvas[data-i]').forEach(cv=>{if(!cv._init)initTrace(cv);});
+}
+function insertAfterCurrent(cards){
+  const feed=$('#feed');if(!feed||!eng.cur)return appendCards(cards);
+  const p=P(),l=p.lang;
+  // insere logo depois da carta atual, renumerando
+  const at=eng.cur.i+1;feedCards.splice(at,0,...cards);
+  feed.innerHTML=feedCards.map((c,k)=>cardHTML(c,k,p,l)).join('');
+  closeObserver();feed.querySelectorAll('.card').forEach(el=>observer().observe(el));
+  feed.querySelectorAll('canvas[data-i]').forEach(initTrace);
+  const target=feed.querySelector(`.card[data-i="${eng.cur.i}"]`);if(target)feed.scrollTop=target.offsetTop;
+}
+let obs=null;
+function observer(){
+  if(obs)return obs;
+  obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>.6){
+      const i=+e.target.dataset.i;if(eng.cur&&eng.cur.i===i)return;engEnter(i);
+      document.querySelectorAll('.card.active').forEach(c=>c.classList.remove('active'));e.target.classList.add('active');
+      if(i>=feedCards.length-3){const p=P();appendCards(buildBatch(p,p.lang));}
+    }});
+  },{root:$('#feed'),threshold:[.6]});
+  return obs;
+}
+function closeObserver(){if(obs){obs.disconnect();obs=null;}}
+function refreshStats(){
+  const p=P();if(!p||view!=='app')return;
+  const sl=$('#side-left');if(sl)sl.innerHTML=statsHTML(p)+'<button class="btn line" data-act="home">Trocar de aluno</button>';
+  const x=$('#st-xp');if(x)x.textContent=p.xp+' XP';const s=$('#st-streak');if(s)s.textContent='🔥 '+p.streak;
+  if(sheet==='prog'){const b=$('#sheet-body');if(b)b.innerHTML=statsHTML(p);}
+  const me=$('.topbar .me svg');if(me)me.outerHTML=avatarSVG(p,level(p.xp));
+}
+function openSheet(s){
+  sheet=s||null;const host=$('#sheet-host');if(!host)return;
+  document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current',String((b.dataset.s??'x')===(s||''))));
+  if(!s){host.innerHTML='';renderChat();return;}
+  const p=P();
+  host.innerHTML=`<div class="sheet" role="dialog" aria-label="${s==='tutor'?'Tutor':'Progresso'}"><div class="sheet-head"><h2>${s==='tutor'?'Tutor':'Seu progresso'}</h2><button class="btn ghost sm" data-act="sheet" data-s="">Voltar às aulas</button></div>
+    <div class="sheet-body" id="sheet-body">${s==='tutor'?tutorHTML(p):statsHTML(p)}</div></div>`;
+  if(s==='tutor')renderChat();
+}
+
+/* ---------- Ações das cartas ---------- */
+function cardOf(i){return feedCards[+i];}
+function resEl(i){return document.querySelector(`.card[data-i="${i}"] .res`);}
+function grade(i,score,kind){
+  const p=P(),l=cardLang(i),c=cardOf(i),st=stats(p,l);const r=resEl(i);
+  const ok=score>=.8,mid=score>=.5;
+  const bucket=kind==='pron'?st.pron:st.escr;bucket.n++;if(ok)bucket.ok++;
+  srsMark(p,l,c.it.id,ok);
+  if(r){r.className='res result '+(ok?'ok':mid?'mid':'bad');
+    r.innerHTML=ok?`Mandou bem! ${Math.round(score*100)}% de precisão.`:mid?`Quase lá (${Math.round(score*100)}%). Resposta: <b lang="${LANGS[l].tts}">${esc(c.it.t)}</b>${c.it.r?' · '+esc(c.it.r):''}`:`Vamos de novo? Resposta: <b lang="${LANGS[l].tts}">${esc(c.it.t)}</b>${c.it.r?' · '+esc(c.it.r):''}`;}
+  if(ok){eng.streakOk++;chime(true);addXP(p,kind==='pron'?10:8,l);if(eng.streakOk%5===0){burst();toast(`${eng.streakOk} acertos seguidos! Você está em chamas.`);}}
+  else{eng.streakOk=0;chime(false);if(mid)addXP(p,3,l);else touch(p);}
+}
+function onFeedClick(t){
+  const act=t.dataset.act;const ci=t.closest?t.closest('.card')?.dataset.i:undefined;const i=t.dataset.i??ci;const p=P(),l=cardLang(i);engInteract();
+  switch(act){
+    case 'play':speak(t.dataset.t,l,false);break;
+    case 'slow':speak(t.dataset.t,l,true);break;
+    case 'reveal':{t.hidden=true;const pt=t.parentElement.querySelector('.pt');if(pt)pt.hidden=false;const c=cardOf(i);srsMark(p,l,c.it.id,true);addXP(p,2,l);break;}
+    case 'checksay':{const v=$('#say-'+i).value;const c=cardOf(i);if(!v.trim())return toast('Fale ou digite primeiro.');grade(i,Math.max(sim(v,c.it.t),sim(v,c.it.r)),'pron');break;}
+    case 'self':{const ok=t.dataset.v==='1';grade(i,ok?.85:.3,'pron');break;}
+    case 'mic':micToggle(t,i);break;
+    case 'checkw':{const v=$('#w-'+i).value;const c=cardOf(i);if(!v.trim())return toast('Escreva sua resposta primeiro.');grade(i,Math.max(sim(v,c.it.t),sim(v,c.it.r)),'escr');break;}
+    case 'hint':{const c=cardOf(i);const r=resEl(i);r.className='res result';r.textContent=`Começa com "${[...c.it.t].slice(0,Math.max(1,Math.ceil([...c.it.t].length/3))).join('')}…"`;break;}
+    case 'tclear':{const cv=document.querySelector(`canvas[data-i="${i}"]`);cv.getContext('2d').clearRect(0,0,cv.width,cv.height);cv._ink=0;break;}
+    case 'tdone':{const cv=document.querySelector(`canvas[data-i="${i}"]`);if((cv._ink||0)<20)return toast('Trace os caracteres por cima do modelo primeiro.');const st=stats(p,l);st.escr.n++;st.escr.ok++;srsMark(p,l,cardOf(i).it.id,true);chime(true);addXP(p,6,l);t.disabled=true;t.textContent='Traçado!';break;}
+    case 'mcq':{
+      const c=cardOf(i),k=+t.dataset.k,box=t.parentElement;if(box._done)return;box._done=1;
+      const right=c.opts.findIndex(o=>o.id===c.it.id);box.children[right].classList.add('right');
+      if(k!==right){t.classList.add('wrong');chime(false);srsMark(p,l,c.it.id,false);eng.streakOk=0;}else{chime(true);srsMark(p,l,c.it.id,true);addXP(p,5,l);eng.streakOk++;}
+      speak(c.it.t,l,false);break;}
+    case 'gotit':{const c=cardOf(i),st=stats(p,l);st.escola[c.it.subj]=(st.escola[c.it.subj]||0)+1;srsMark(p,l,c.it.id,true);addXP(p,6,l);chime(true);t.disabled=true;t.textContent='Guardado!';break;}
+    case 'culture':{stats(p,l).cult++;addXP(p,3,l);chime(true);t.disabled=true;t.textContent='Curtido';break;}
+    case 'playen':speak(t.dataset.t,'en',false);break;
+    case 'gameans':gameAnswer(t,i);break;
+    case 'gameex':{const c=cardOf(i),ex=c.q.ans[l],g=favGame(p)||'Minecraft';const r=resEl(i);r.className='res result';r.innerHTML=`Exemplo: <b lang="${LANGS[l].tts}">${esc(ex[0].replace('{g}',g))}</b>${ex[1]?' · '+esc(ex[1].replace('{g}',g)):''}`;speak(ex[0].replace('{g}',g),l,false);break;}
+    case 'gpick':{const c=cardOf(i),g=t.dataset.g,k=c.sel.indexOf(g);if(k>=0)c.sel.splice(k,1);else if(c.sel.length<4)c.sel.push(g);t.setAttribute('aria-pressed',String(c.sel.includes(g)));break;}
+    case 'gpsave':{const c=cardOf(i),other=($('#gp-'+i).value||'').trim();if(!c.sel.length&&!other)return toast('Escolha pelo menos um jogo.');p.ans.games=c.sel.slice();if(other)p.ans.nowGame=other;if(!p.map.interests.includes('games'))p.map.interests.unshift('games');addXP(p,5,l);t.disabled=true;t.textContent='Salvo!';insertAfterCurrent([{type:'gamechat',q:GAMEQ[0],l}]);toast('Anotado! Agora o tutor quer saber mais.');break;}
+    case 'bday':{speak(t.dataset.t,l,false);burst();chime(true);if(!t.disabled){addXP(p,20,l);t.disabled=true;}break;}
+    case 'biblia':{const c=cardOf(i);const st=stats(p,l);st.biblia=(st.biblia||0)+1;p.bibleSeen=p.bibleSeen||[];if(!p.bibleSeen.includes(c.b.id))p.bibleSeen.push(c.b.id);if(p.bibleSeen.length>=BIBLE.length)p.bibleSeen=[];addXP(p,4,l);chime(true);t.disabled=true;t.textContent='Guardado';break;}
+    case 'mission':{addXP(p,4,l);chime(true);t.disabled=true;t.textContent='Missão aceita';toast('Conte depois pro tutor como foi!');break;}
+    case 'brk':{let s=60;t.disabled=true;const el=$('#brk-'+i);const h=setInterval(()=>{s--;if(el)el.textContent=s;if(s<=0){clearInterval(h);chime(true);toast('Cérebro recarregado! Bora continuar.');}},1000);break;}
+    case 'aigen':aiGenerate(t,i);break;
+  }
+}
+
+/* ---------- Ditado (pronúncia) ---------- */
+let micCard=null,micText='';
+function micToggle(btn,i){
+  if(!dict)return;
+  if(dict.active()){dict.stop().catch(()=>{});return;}
+  micCard=i;micText='';const c=cardOf(i);
+  const heard=btn.parentElement.querySelector('.heard');heard.innerHTML='<i>Ouvindo…</i>';
+  dict.start({language:LANGS[cardLang(i)].dict}).catch(e=>{
+    btn.classList.remove('on');
+    if(e.code==='unavailable'||e.code==='not_granted'){heard.innerHTML='<i>Microfone indisponível aqui. Use “Ouvir” e repita, ou digite.</i>';}
+    else if(e.code==='dismissed'){heard.innerHTML='<i>Toque de novo e permita o microfone.</i>';}
+    else heard.innerHTML='<i>Não consegui ouvir. Tente de novo.</i>';
+  });
+}
+function setupDictation(d){
+  dict=d;
+  d.onPartial(({text})=>{const h=document.querySelector(`.card[data-i="${micCard}"] .heard`);if(h&&text)h.textContent=micText+text;});
+  d.onFinal(({text})=>{micText+=micText?text:text.trimStart();const h=document.querySelector(`.card[data-i="${micCard}"] .heard`);if(h)h.textContent=micText;});
+  d.onState(({state})=>{
+    const b=document.querySelector(`.card[data-i="${micCard}"] .mic`);if(b)b.classList.toggle('on',state==='listening'||state==='starting');
+    if(state==='idle'&&micCard!=null&&micText.trim()){const c=cardOf(micCard);grade(micCard,Math.max(sim(micText,c.it.t),sim(micText,c.it.r)),'pron');micText='';}
+  });
+}
+
+/* ---------- Escrita à mão (traçado) ---------- */
+function initTrace(cv){
+  cv._init=1;const ctx=cv.getContext('2d');let drawing=false;
+  const size=()=>{const r=cv.getBoundingClientRect();if(!r.width)return;const d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;ctx.scale(d,d);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=7;ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();};
+  requestAnimationFrame(size);
+  const pos=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];};
+  cv.addEventListener('pointerdown',e=>{if(!cv.width||cv.width<10)size();drawing=true;cv.setPointerCapture(e.pointerId);const [x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y);engInteract();});
+  cv.addEventListener('pointermove',e=>{if(!drawing)return;const [x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke();cv._ink=(cv._ink||0)+1;});
+  ['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,()=>drawing=false));
+}
+
+/* ---------- Tutor com IA ---------- */
+function tutorRules(p){
+  const L=LANGS[p.lang];const m=p.map;
+  const ints=m.interests.map(id=>INTERESTS.find(x=>x.id===id)?.l).filter(Boolean).join(', ');
+  return `Você é o tutor de idiomas do app Órbita, conversando com ${p.ans.nick}, ${p.ans.age} anos, ${p.ans.grade}. Idioma em estudo agora: ${L.name} (${L.native}).
+Estilo de aprendizagem: ${LABELS.vak[m.vak]}. Perfil de motivação: ${LABELS.play[m.play]}. Tom pedido: ${LABELS.humor[m.humor]}.
+Interesses: ${ints}. Jogos favoritos: ${[...(p.ans.games||[]),p.ans.nowGame].filter(Boolean).join(', ')||'ainda não contou'}${p.ans.gstyle?` (estilo: ${GSTYLES.find(s=>s.v===p.ans.gstyle)?.l})`:''}. O que já contou sobre games: ${(p.gameTalk||[]).slice(-4).map(t=>`"${t.q}" → "${t.a}"`).join('; ')||'nada ainda'}.
+Puxe papo sobre esses jogos de vez em quando (personagens, partidas, estratégias) e use o vocabulário deles para ensinar o idioma, sem inventar detalhes de jogos que você não conhece bem. Matérias que precisa reforçar: ${m.boss.join(', ')||'nenhuma'}. Matéria forte: ${m.power}.
+Regras: escreva em português simples, adequado à idade. Traga frases curtas em ${L.name}${L.cjk?' sempre com romanização (romaji ou pinyin com tons)':''} e a tradução. Corrija erros com gentileza mostrando a forma certa. Conecte o idioma aos interesses e, quando couber, a um conteúdo escolar correto. Use técnicas de PNL aplicada de forma natural: espelhe o vocabulário do aluno, ancore conquistas com elogios específicos, use projeção futura ("imagine você em…") e quebre padrões quando a conversa esfriar. Quando fizer sentido (valores, história antiga, coragem, perdão, línguas), traga uma história bíblica de forma natural, com o contexto histórico e a mensagem espiritual, numa perspectiva cristã respeitosa. Cite versículos em inglês pela King James (1611) com a referência; em português, parafraseie e indique a referência para o aluno ler na Almeida Revista e Atualizada, sem inventar texto bíblico. Respostas de no máximo 90 palavras, terminando com uma pergunta ou mini desafio. Sem conteúdo impróprio para menores.`;
+}
+function renderChat(){
+  const p=P();const box=$('#sheet-host .msgs')||$('#side-right .msgs');if(!box||!p)return;
+  // sempre renderiza nas duas posições possíveis
+  document.querySelectorAll('.msgs').forEach(b=>{
+    const h=(p.chat[p.lang]||[]);
+    b.innerHTML=(h.length?h:[{role:'assistant',content:`Oi, ${p.ans.nick}! Sou seu tutor de ${LANGS[p.lang].name}. Me pergunte qualquer coisa, peça pra eu corrigir uma frase ou pra explicar uma matéria usando o idioma.`}]).map(m=>`<div class="msg ${m.role==='user'?'me':'bot'}">${esc(m.content)}</div>`).join('');
+    b.scrollTop=b.scrollHeight;
+  });
+  const note=document.querySelectorAll('#tutor-note');note.forEach(n=>n.textContent=sampleFn?'':'O tutor conversa quando o app está aberto no Claude com a conta conectada. As cartas funcionam sempre.');
+}
+let chatBusy=false;
+async function sendChat(text){
+  const p=P();text=(text||'').trim();if(!text||chatBusy)return;
+  if(!sampleFn){toast('O tutor por IA não está disponível nesta tela. As cartas continuam funcionando.');return;}
+  const h=p.chat[p.lang]=p.chat[p.lang]||[];h.push({role:'user',content:text});if(h.length>16)h.splice(0,h.length-16);
+  renderChat();chatBusy=true;
+  document.querySelectorAll('.msgs').forEach(b=>{b.insertAdjacentHTML('beforeend','<div class="msg bot typing">Pensando…</div>');b.scrollTop=b.scrollHeight;});
+  try{
+    const {text:ans}=await sampleFn([{role:'user',content:tutorRules(p)},{role:'assistant',content:'Combinado.'},...h],{cache:false,modelTier:'quick',onText:({text})=>{document.querySelectorAll('.msg.typing').forEach(el=>el.textContent=text);}});
+    h.push({role:'assistant',content:ans});engInteract();addXP(p,2,p.lang);
+  }catch(e){
+    h.pop();toast(e.code==='not_granted'?'Sem permissão para usar o tutor por IA.':e.code==='rate_limited'?'O tutor está ocupado. Tente daqui a pouco.':'Não consegui responder agora. Tente de novo.');
+    if(e.code==='not_granted'||e.code==='sampling_disabled')sampleFn=null;
+  }finally{chatBusy=false;touch(p);renderChat();}
+}
+async function gameAnswer(btn,i){
+  const p=P(),l=cardLang(i),L=LANGS[l],c=cardOf(i),inp=$('#gc-'+i),a=(inp.value||'').trim(),r=resEl(i);
+  if(!a)return toast('Escreva sua resposta primeiro.');
+  p.gameTalk=p.gameTalk||[];p.gameTalk.push({q:c.q.pt,a,lang:l,at:Date.now()});if(p.gameTalk.length>30)p.gameTalk.shift();
+  stats(p,l).escr.n++;stats(p,l).escr.ok++;addXP(p,6,l);chime(true);
+  btn.disabled=true;
+  const ex=c.q.ans[l],g=favGame(p)||'Minecraft';
+  const fallback=()=>{r.className='res result ok';r.innerHTML=`Anotado! Em ${esc(L.name)} dá pra dizer assim: <b lang="${L.tts}">${esc(ex[0].replace('{g}',g))}</b>${ex[1]?' · '+esc(ex[1].replace('{g}',g)):''}`;};
+  if(!sampleFn){fallback();return;}
+  r.className='res result';r.textContent='O tutor está lendo…';
+  try{
+    await sampleFn(`${tutorRules(p)}
+
+O tutor perguntou em ${L.name}: "${c.q[l][0]}" (${c.q.pt}).
+O aluno respondeu: "${a}".
+Responda em até 60 palavras, como um amigo gamer animado: comente o que ele disse sem inventar fatos sobre o jogo se não tiver certeza; se a resposta estiver em ${L.name}, corrija com gentileza mostrando a forma certa; se estiver em português, mostre como dizer em ${L.name}${L.cjk?' com romanização':''}. Ensine 1 palavra útil ligada ao jogo e termine com uma pergunta curta em ${L.name} com tradução.`,{cache:false,modelTier:'quick',onText:({text})=>{r.textContent=text;}});
+    r.className='res result ok';
+  }catch(e){fallback();if(e.code==='not_granted'||e.code==='sampling_disabled')sampleFn=null;}
+  finally{btn.disabled=false;btn.textContent='Responder de novo';touch(p);}
+}
+async function aiGenerate(btn,i){
+  const p=P(),l=cardLang(i),L=LANGS[l];const r=resEl(i);
+  if(!sampleFn){r.className='res result';r.textContent='O tutor por IA não está disponível nesta tela. Continue arrastando: as cartas prontas não acabam.';return;}
+  btn.disabled=true;btn.textContent='Criando…';
+  const ints=p.map.interests.map(id=>INTERESTS.find(x=>x.id===id)?.l).join(', ');
+  const prompt=`Crie micro-aulas para um app de idiomas em formato de feed para ${p.ans.nick}, ${p.ans.age} anos (${p.ans.grade}), brasileiro.
+Idioma alvo: ${L.name} (${L.native}). Nível do aluno: ${level(stats(p,l).xp/2+1)<=2?'iniciante':'iniciante avançado'}.
+Interesses: ${ints}. Jogos favoritos: ${[...(p.ans.games||[]),p.ans.nowGame].filter(Boolean).join(', ')||'não informado'}. Estilo: ${LABELS.vak[p.map.vak]}. Matérias a reforçar: ${p.map.boss.join(', ')||'variadas'}.
+Responda SOMENTE com um array JSON de 6 objetos, misturando estes formatos:
+{"type":"learn","t":"frase curta no idioma alvo","r":"${L.cjk?'romanização (romaji ou pinyin com tons)':''}","pt":"tradução","hook":"1 frase em português ligando ao interesse"}
+{"type":"school","subj":"Biologia|Física|Química|Matemática|Geografia|História|Artes|Português","t":"termo no idioma alvo","r":"${L.cjk?'romanização':''}","pt":"termo em português","fact":"fato escolar correto em português, até 35 palavras"}
+{"type":"culture","title":"título curto","text":"curiosidade cultural correta, até 40 palavras","w":"palavra-chave no idioma alvo","wr":"${L.cjk?'romanização':''}"}
+Inclua pelo menos 2 cartas "school" sobre as matérias a reforçar e 2 "learn" sobre os interesses. Tudo correto e adequado à idade.`;
+  try{
+    const arr=await sampleFn.json(prompt,{modelTier:'default'});
+    const ok=(Array.isArray(arr)?arr:[]).filter(x=>x&&typeof x==='object');
+    const cards=[];p.custom[l]=p.custom[l]||[];
+    ok.forEach((x,k)=>{
+      const id='ai:'+Date.now().toString(36)+k;
+      if(x.type==='culture'&&x.title&&x.text){cards.push({type:'culture',c:{title:String(x.title),text:String(x.text),w:[String(x.w||''),String(x.wr||'')]}});}
+      else if((x.type==='learn'||x.type==='school')&&x.t&&x.pt){
+        const it={id,kind:x.type==='school'?'concept':'phrase',subj:x.type==='school'?String(x.subj||'Escola'):undefined,t:String(x.t),r:String(x.r||''),pt:String(x.pt),hook:x.hook?String(x.hook):'',fact:x.fact?String(x.fact):''};
+        p.custom[l].push(it);cards.push({type:x.type==='school'?'school':'learn',it});
+        if(x.type==='learn')cards.push({type:'speak',it});
+      }
+    });
+    if(p.custom[l].length>80)p.custom[l].splice(0,p.custom[l].length-80);
+    touch(p);
+    if(!cards.length)throw {code:'invalid_json'};
+    btn.textContent='Pronto! Arraste pra cima';r.className='res result ok';r.textContent=`${cards.length} cartas novas logo abaixo.`;
+    cards.forEach(c=>c.l=l);insertAfterCurrent(cards);
+  }catch(e){
+    btn.disabled=false;btn.textContent='Tentar de novo';r.className='res result bad';
+    r.textContent=e.code==='not_granted'?'Sem permissão para usar o tutor por IA.':e.code==='rate_limited'?'O tutor está ocupado. Tente daqui a pouco.':'Não deu certo desta vez. Tente de novo.';
+  }
+}
+
+/* ---------- Painel dos pais ---------- */
+let confirmDel=null;
+function parentsHTML(){
+  const ps=Object.values(S.profiles);
+  const TECH=[
+    ['Canal preferido (VAK)','Três perguntas indiretas (caminho, jogo novo, palavra nova) identificam se o aluno é mais visual, auditivo ou cinestésico. O feed dá mais peso às cartas desse canal.'],
+    ['Ancoragem','Cada acerto dispara o mesmo som e animação. Com o tempo, o estímulo fica associado à sensação de conquista.'],
+    ['Recordação ativa','O significado fica escondido até o aluno tentar adivinhar. Tentar lembrar fixa mais do que só ler.'],
+    ['Repetição espaçada','Cada palavra vai para uma "caixa" (1, 2, 4, 8, 16 dias). Errou, volta em 5 minutos.'],
+    ['Quebra de padrão','Ao detectar cartas puladas ou pouca interação, o tutor troca o cenário por um dos mundos reserva escolhidos pelo aluno e muda o tipo de atividade.'],
+    ['Projeção futura','Cartas de missão e a abertura da aula fazem o aluno se imaginar usando o idioma num lugar que ele escolheu.'],
+    ['Shadowing','Ouvir a voz modelo e repetir em seguida, normal e devagar, treina ritmo e entonação.'],
+    ['Blocos de atenção','O tamanho do bloco segue a resposta sobre vídeos. Ao fim de cada bloco aparece uma pausa ativa de 60 segundos.'],
+  ];
+  return `<div class="parents">
+    <div class="brand">${BRAND}<div><h1>Painel dos pais</h1><div class="muted">O que o questionário revelou e como cada um está indo</div></div><span class="spacer"></span><button class="btn ghost" data-act="home">Voltar</button></div>
+    ${ps.map(p=>{
+      if(!p.done)return `<section class="panel"><h2 style="font-size:1.2em">${esc(p.name)}</h2><p class="muted">Ainda não respondeu o questionário inicial.</p><div><button class="btn" data-act="enter" data-id="${p.id}">Começar agora</button></div></section>`;
+      const m=p.map;
+      return `<section class="panel">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="width:64px">${avatarSVG(p,level(p.xp))}</div><div style="flex:1;min-width:0"><h2 style="font-size:1.2em">${esc(p.name)} <span class="muted" style="font-size:.7em">(${esc(p.ans.nick)})</span></h2><div class="muted">${p.ans.age} anos · ${esc(p.ans.grade)} · Nível ${level(p.xp)} · ${p.xp} XP · ${p.streak} dias seguidos</div></div></div>
+        <div class="two">
+          <dl class="kv">
+            <dt>Aprende melhor</dt><dd>${esc(LABELS.vak[m.vak])} <span class="muted">(V${m.vakCount.V} A${m.vakCount.A} K${m.vakCount.K})</span></dd>
+            <dt>Motivação</dt><dd>${esc(LABELS.play[m.play])}</dd>
+            <dt>Atenção</dt><dd>${esc(LABELS.span[m.span])}</dd>
+            <dt>Nascimento</dt><dd>${p.birth?esc(p.birth.split('-').reverse().join('/'))+` (${ageOf(p.birth)} anos)`:'não informado'}</dd>
+            <dt>Idiomas ativos</dt><dd>${esc((m.active||[]).map(k=>LANGS[k].name).join(', '))} <span class="muted">(${(m.active||[]).length>1?'revezando ao mesmo tempo':'um de cada vez'})</span></dd>
+            <dt>Jogos favoritos</dt><dd>${esc([...(p.ans.games||[]),p.ans.nowGame].filter(Boolean).join(', ')||'não informado')}${p.ans.gstyle?` · ${esc(GSTYLES.find(s=>s.v===p.ans.gstyle)?.l||'')}`:''}</dd>
+            <dt>Interesses</dt><dd>${esc(m.interests.map(id=>INTERESTS.find(x=>x.id===id)?.l).join(', '))}</dd>
+            <dt>Matérias difíceis</dt><dd>${esc(m.boss.join(', ')||'Nenhuma marcada')}</dd>
+            <dt>Matéria forte</dt><dd>${esc(m.power)}</dd>
+            <dt>Recompensa</dt><dd>${esc(LABELS.reward[m.reward])}</dd>
+            <dt>Áudio</dt><dd>${esc(LABELS.audio[m.audio])}</dd>
+            <dt>Horário turbo</dt><dd>${esc(LABELS.time[m.time])}</dd>
+            <dt>Cenários</dt><dd>${esc([p.ans.world,...p.ans.reserve].map(w=>THEMES[w].l).join(' → '))}</dd>
+          </dl>
+          <div class="tbl-wrap"><table><thead><tr><th>Idioma</th><th>XP</th><th>Pronúncia</th><th>Escrita</th><th>Cultura</th><th>Bíblia</th><th>Escola</th></tr></thead><tbody>
+            ${m.langs.map(k=>{const st=p.stats[k];if(!st)return `<tr><td>${LANGS[k].name}</td><td colspan="6" class="muted">não iniciado</td></tr>`;const f=o=>o.n?`${Math.round(o.ok/o.n*100)}% (${o.n})`:'–';return `<tr><td>${LANGS[k].name}</td><td>${st.xp}</td><td>${f(st.pron)}</td><td>${f(st.escr)}</td><td>${st.cult}</td><td>${st.biblia||0}</td><td>${Object.values(st.escola).reduce((s,v)=>s+v,0)}</td></tr>`;}).join('')}
+          </tbody></table></div>
+        </div>
+        <div><h3 style="margin-bottom:6px">Quando o tutor percebeu queda de interesse</h3>${p.engLog.length?`<div class="tbl-wrap"><table><thead><tr><th>Quando</th><th>Idioma</th><th>Motivo</th><th>Cenário</th></tr></thead><tbody>${p.engLog.slice(-8).reverse().map(e=>`<tr><td>${new Date(e.at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</td><td>${LANGS[e.lang]?.name||''}</td><td>${esc(e.reason)}</td><td>${THEMES[e.from]?.l} → ${THEMES[e.to]?.l}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted" style="margin:0">Nenhuma queda registrada até agora.</p>'}</div>
+        ${(p.gameTalk||[]).length?`<div><h3 style="margin-bottom:6px">Papo gamer com o tutor</h3><div class="tbl-wrap"><table><thead><tr><th>Pergunta</th><th>Resposta</th><th>Idioma</th></tr></thead><tbody>${p.gameTalk.slice(-6).reverse().map(t=>`<tr><td>${esc(t.q)}</td><td style="white-space:normal">${esc(t.a)}</td><td>${LANGS[t.lang]?.name||''}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" data-act="redo" data-id="${p.id}">Refazer questionário</button><button class="btn ghost sm" data-act="relangs" data-id="${p.id}">Escolher idiomas de novo</button><button class="btn line sm" data-act="askdel" data-id="${p.id}">Apagar progresso</button></div>
+        ${confirmDel===p.id?`<div class="confirm"><span>Apagar todo o progresso de ${esc(p.name)}? Não dá para desfazer.</span><button class="btn sm" style="background:var(--bad);color:#fff" data-act="del" data-id="${p.id}">Apagar</button><button class="btn ghost sm" data-act="askdel" data-id="">Cancelar</button></div>`:''}
+      </section>`;}).join('')}
+    <section class="panel"><h2 style="font-size:1.1em">Técnicas de neurolinguística usadas</h2><div class="tech">${TECH.map(([a,b])=>`<div><b>${a}.</b> ${b}</div>`).join('')}</div></section>
+    <section class="panel"><h2 style="font-size:1.1em">Dicas de uso</h2><div class="tech">
+      <div><b>Histórias bíblicas.</b> Aparecem no feed com contexto histórico e mensagem espiritual, ligadas a História, Física, Geografia e Português. O versículo vem em inglês pela King James (1611) e em português como paráfrase com a referência, para ler junto na Almeida Revista e Atualizada.</div>
+      <div><b>Fones de ouvido.</b> Recomendados para a pronúncia: o microfone capta só a voz do aluno, sem o eco da voz modelo.</div>
+      <div><b>iPhone.</b> Abra o link no Safari e use Compartilhar › Adicionar à Tela de Início para virar um ícone de app. Para treinar pronúncia, adicione o teclado do idioma e use o microfone do teclado.</div>
+      <div><b>Desktop.</b> No Chrome ou no app Claude, o botão de microfone corrige a pronúncia direto na carta.</div>
+    </div></section>
+  </div>`;
+}
+
+/* =====================================================================
+   EVENTOS GLOBAIS
+   ===================================================================== */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,[data-act]');if(!t)return;
+  if(view==='quiz'&&(t.dataset.q||t.dataset.av)){quizClick(t);return;}
+  const act=t.dataset.act;if(!act)return;
+  switch(act){
+    case 'enter':{const p=S.profiles[t.dataset.id];S.active=p.id;saveLocal();qOnly=null;
+      if(p.done&&!(p.ans.start||[]).length){startLangChoice(p);return;}
+      if(p.done){view='app';render();}else{draft=JSON.parse(JSON.stringify(p));qStep=0;view='quiz';applyTheme(null);render();}return;}
+    case 'redo':{const p=S.profiles[t.dataset.id];S.active=p.id;qOnly=null;draft=JSON.parse(JSON.stringify(p));draft.done=false;qStep=0;view='quiz';render();return;}
+    case 'relangs':{const p=S.profiles[t.dataset.id];S.active=p.id;startLangChoice(p);return;}
+    case 'askdel':confirmDel=t.dataset.id||null;render();return;
+    case 'del':{const id=t.dataset.id;const n=S.profiles[id].name;S.profiles[id]=blankProfile(n);confirmDel=null;touch(S.profiles[id]);render();return;}
+    case 'parents':view='parents';render();return;
+    case 'addkid':{let n='Aluno '+(Object.keys(S.profiles).length+1);const p=blankProfile(n);p.id='a'+Date.now().toString(36);S.profiles[p.id]=p;saveLocal();qOnly=null;draft=JSON.parse(JSON.stringify(p));qStep=0;view='quiz';render();return;}
+    case 'home':try{speechSynthesis.cancel();}catch(e){}view='picker';sheet=null;render();return;
+    case 'qback':{quizSaveInputs();const pv=qPrev();if(pv>=0){qStep=pv;render();}else{qOnly=null;view='picker';render();}return;}
+    case 'qcancel':qOnly=null;view='picker';render();return;
+    case 'qnext':quizSaveInputs();if(!qValid())return;if(!qIsLast()){qStep=qNext();render();}else{const mini=!!qOnly;qOnly=null;finishQuiz(mini);}return;
+    case 'sheet':openSheet(t.dataset.s);return;
+    case 'setlang':setLang(t.dataset.l);return;
+    case 'toggleactive':toggleActive(t.dataset.l);return;
+    case 'send':{const ta=t.parentElement.querySelector('textarea');const v=ta.value;ta.value='';sendChat(v);return;}
+    case 'sug':sendChat(t.dataset.s);return;
+  }
+  if(t.closest('#feed'))onFeedClick(t);
+});
+document.addEventListener('input',e=>{
+  if(view==='quiz'&&e.target.id==='q-nick'){draft.ans.nick=e.target.value;}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='langsel')setLang(e.target.value);
+  if(e.target.id==='q-grade')draft.ans.grade=e.target.value;
+  if(e.target.id==='q-birth'&&/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){const a=ageOf(e.target.value);if(a>=5&&a<=25){draft.birth=e.target.value;draft.ans.age=a;draft.ans.grade=gradeFor(draft.birth);$('#app').innerHTML=quizHTML();}}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='chat-in'){e.preventDefault();const v=e.target.value;e.target.value='';sendChat(v);}
+  if(e.key==='Enter'&&e.target.id&&/^w-\d+$/.test(e.target.id)){e.preventDefault();onFeedClick({dataset:{act:'checkw',i:e.target.id.slice(2)}});}
+  if(e.key==='Enter'&&e.target.id&&/^say-\d+$/.test(e.target.id)){e.preventDefault();onFeedClick({dataset:{act:'checksay',i:e.target.id.slice(4)}});}
+  if(e.key==='Enter'&&e.target.id&&/^gc-\d+$/.test(e.target.id)){e.preventDefault();const b=document.querySelector(`[data-act="gameans"][data-i="${e.target.id.slice(3)}"]`);if(b&&!b.disabled)gameAnswer(b,e.target.id.slice(3));}
+  if(e.key==='Enter'&&e.target.id==='q-nick'){e.preventDefault();quizSaveInputs();qStep++;render();}
+});
+function setLang(l){
+  const p=P();if(!p)return;
+  if(l==='mix'){if(p.map.active.length<2)return;p.mix=true;p.lang=p.map.active[0];touch(p);sheet=null;renderApp();toast(`Misturando ${p.map.active.map(k=>LANGS[k].name).join(', ')}.`);return;}
+  if(!LANGS[l])return;p.lang=l;p.mix=false;touch(p);try{speechSynthesis.cancel();}catch(e){}sheet=null;renderApp();toast(`Agora só ${LANGS[l].name}. ${LANGS[l].native}!`);
+}
+function toggleActive(k){
+  const p=P();const a=p.map.active;const i=a.indexOf(k);
+  if(i>=0){if(a.length===1)return toast('Deixe pelo menos um idioma ativo.');a.splice(i,1);}
+  else{if(a.length>=3)return toast('Máximo de 3 idiomas ao mesmo tempo. Desmarque um antes.');a.push(k);}
+  p.map.pace=String(a.length);p.ans.start=a.slice();p.ans.pace=String(a.length);p.mix=a.length>1;if(!a.includes(p.lang))p.lang=a[0];
+  p.map.langs=[...a,...p.map.langs.filter(x=>!a.includes(x))];
+  touch(p);sheet=null;renderApp();toast(a.length>1?`Agora ${a.length} idiomas se revezando: ${a.map(x=>LANGS[x].name).join(', ')}.`:`Foco total em ${LANGS[a[0]].name}.`);
+}
+
+/* =====================================================================
+   INÍCIO
+   ===================================================================== */
+render();
+startSync();
+if(window.claude&&window.claude.use){
+  window.claude.use('dictation').then(d=>{if(d){setupDictation(d);if(view==='app')renderApp();}}).catch(()=>{});
+  window.claude.use('sample').then(s=>{sampleFn=s||null;if(view==='app')renderChat();}).catch(()=>{});
+}
+
+if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}
+</script>
+
+</body>
+</html>
