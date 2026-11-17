@@ -191,6 +191,13 @@ textarea{resize:vertical}
 .sw-photo{display:grid;place-items:center}
 .sw-photo canvas{border-radius:12px;cursor:crosshair;touch-action:manipulation;max-width:100%}
 .sw-found{display:flex;gap:12px;flex-wrap:wrap;font-weight:800}
+.sw-photo{position:relative}
+.sw-photo.small canvas{max-height:26vh}
+.sw-scan{position:absolute;inset:0;margin:auto;width:60%;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 1.4s ease-in-out infinite alternate}
+@keyframes scan{from{transform:translateY(-120px)}to{transform:translateY(120px)}}
+.memoji-row{gap:8px}
+.paste-zone{flex:1;min-width:170px;min-height:44px;border:2px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:.88em;color:var(--muted);font-weight:700;-webkit-user-select:text;user-select:text;outline:none}
+.paste-zone:focus{border-color:var(--accent);color:var(--ink)}
 .sw-found span{display:flex;align-items:center;gap:6px}
 .sw-found i{width:22px;height:22px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--line)}
 .speak-zone{display:flex;flex-direction:column;gap:10px}
@@ -364,7 +371,7 @@ th{color:var(--muted);font-size:.8em;text-transform:uppercase;letter-spacing:.06
 
 <script>
 "use strict";
-const APP_VERSION='16/11/2026 21:44';
+const APP_VERSION='16/11/2026 21:53';
 /* =====================================================================
    DADOS: idiomas, frases, conceitos escolares, cultura, interesses
    ===================================================================== */
@@ -936,6 +943,11 @@ function avatarSVG(p,lvl=1){
   }[p.ans?.pet]||'';
   const pet=p.ans?.pet?`<g transform="translate(84 84)"><clipPath id="${id}pc"><circle cx="15" cy="15" r="15"/></clipPath><circle cx="15" cy="15" r="16.5" fill="#fff"/><g clip-path="url(#${id}pc)"><rect width="30" height="30" fill="#1d1a8c"/>${petVec}<image href="art/pet-${p.ans.pet}.webp" x="-3" y="-3" width="36" height="36" preserveAspectRatio="xMidYMid slice"/></g></g>`:'';
   const ringsSvg=Array.from({length:rings},(_,i)=>`<ellipse cx="60" cy="62" rx="${57-i*2}" ry="${14+i*5}" fill="none" stroke="${i%2?pal[1]:pal[0]}" stroke-width="2" opacity=".75" transform="rotate(${-18+i*24} 60 62)"/>`).join('');
+  if(av.photo)return `<svg viewBox="0 0 120 120" role="img" aria-label="Avatar de ${esc(p.ans?.nick||p.name)} (Memoji)">
+    <defs><radialGradient id="${id}b" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="${pal[0]}" stop-opacity=".45"/><stop offset="1" stop-color="${pal[1]}" stop-opacity=".25"/></radialGradient><clipPath id="${id}c"><circle cx="60" cy="60" r="58"/></clipPath></defs>
+    <circle cx="60" cy="60" r="58" fill="url(#${id}b)"/>${ringsSvg}
+    <image href="${av.photo}" x="4" y="6" width="112" height="112" clip-path="url(#${id}c)" preserveAspectRatio="xMidYMid meet"/>${pet}
+  </svg>`;
   return `<svg viewBox="0 0 120 120" role="img" aria-label="Avatar de ${esc(p.ans?.nick||p.name)}">
     <defs>
       <radialGradient id="${id}s" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="${shade(sk,.16)}"/><stop offset=".65" stop-color="${sk}"/><stop offset="1" stop-color="${skd}"/></radialGradient>
@@ -1478,7 +1490,11 @@ function quizHTML(){
       const av=draft.av;
       const dots=(lbl,key,cols,names)=>{const k=cols.indexOf(av[key]);return `<div class="av-group"><span class="eyebrow">${lbl}${k>=0?` · <span class="sel-name">${esc(names[k])}</span>`:''}</span><div class="chips">${cols.map((v,i)=>`<button class="dotc" data-av="${key}" data-v="${v}" aria-label="${lbl}: ${esc(names[i])}" title="${esc(names[i])}" aria-pressed="${av[key]===v}" style="--c:${v}"></button>`).join('')}</div></div>`;};
       const grp=(lbl,key,obj)=>`<div class="av-group"><span class="eyebrow">${lbl}</span><div class="chips">${Object.keys(obj).map(v=>`<button class="chip" data-av="${key}" data-v="${v}" aria-pressed="${(av[key]||Object.keys(obj)[0])===v}">${obj[v]}</button>`).join('')}</div></div>`;
-      body=`<div class="selfie-row"><label class="btn alt" for="selfie-in" role="button">📷 Criar pela selfie</label><input type="file" id="selfie-in" accept="image/*" capture="user" hidden><span class="muted" id="selfie-note">Abre a câmera frontal. Você toca no rosto e no cabelo e eu monto o avatar. A foto não fica salva.</span></div>
+      body=`<div class="selfie-row"><label class="btn alt" for="selfie-in" role="button">📷 Criar pela selfie</label><input type="file" id="selfie-in" accept="image/*" capture="user" hidden><span class="muted" id="selfie-note">Abre a câmera frontal e eu acho seu rosto sozinho. A foto não fica salva.</span></div>
+      <div class="selfie-row memoji-row"><label class="btn ghost" for="memoji-in" role="button">🙂 Usar meu Memoji</label><input type="file" id="memoji-in" accept="image/*" hidden>
+        <div class="paste-zone" id="memoji-paste" contenteditable="true" role="textbox" aria-label="Toque aqui e cole o Memoji">Ou toque aqui e cole o Memoji</div>
+        ${draft.av.photo?`<button class="btn line sm" data-act="memojioff">Voltar ao avatar desenhado</button>`:''}
+        <details class="muted" style="font-size:.85em;flex-basis:100%"><summary>Como pegar meu Memoji</summary>No app Mensagens, abra uma conversa, toque no ícone de figurinhas (Memoji), toque e segure o seu e escolha Copiar. Volte aqui e cole no quadro acima. Também dá para salvar a imagem nas Fotos e escolher pelo botão.</details></div>
       <div class="av-builder"><div id="avprev">${avatarSVG(draft,1)}</div><div>${dots('Pele','skin',SKINS,SKIN_N)}${dots('Olhos','eyes',EYES,EYES_N)}${grp('Cabelo','hair',HAIRS)}${dots('Cor do cabelo','hairc',HAIRC,HAIRC_N)}${grp('Sardas','sardas',{nao:'Sem sardas',sim:'Com sardas'})}${grp('Barba','barba',BEARDS)}${grp('Acessório','acc',ACCS)}</div></div>`;break;}
     case 'start':{
       const n=Number(a.pace||1);
@@ -1937,6 +1953,7 @@ document.addEventListener('click',e=>{
     case 'qback':{quizSaveInputs();const pv=qPrev();if(pv>=0){qStep=pv;render();}else{leaveQuiz();}return;}
     case 'qcancel':leaveQuiz();return;
     case 'editav':{const p=S.profiles[t.dataset.id||S.active];if(p&&p.done)startAvatarEdit(p);return;}
+    case 'memojioff':delete draft.av.photo;$('#app').innerHTML=quizHTML();return;
     case 'dobreset':draft.birth=null;draft.dob={};draft.ans.age=undefined;$('#app').innerHTML=quizHTML();return;
     case 'qnext':quizSaveInputs();if(!qValid())return;if(!qIsLast()){qStep=qNext();render();}else if(qMode==='avatar'){saveAvatarEdit();}else{const mini=!!qOnly;qOnly=null;qMode=null;finishQuiz(mini);}return;
     case 'sheet':openSheet(t.dataset.s);return;
@@ -1958,6 +1975,60 @@ function toLab([r,g,b]){const f=v=>{v/=255;return v>.04045?Math.pow((v+.055)/1.0
   const k=t=>t>.008856?Math.cbrt(t):7.787*t+16/116;return [116*k(Y)-16,500*(k(X)-k(Y)),200*(k(Y)-k(Z))];}
 function nearest(list,rgb){const a=toLab(rgb);let best=0,bd=1e9;list.forEach((h,i)=>{const b=toLab(hexRgb(h));const d=(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;if(d<bd){bd=d;best=i;}});return best;}
 let SW=null;
+/* Detecção automática do rosto: MediaPipe Face Landmarker (Apache-2.0), arquivos dentro do app.
+   Só no app instalado (no Claude a página não pode carregar o modelo). */
+let FL=null,flLoading=null;
+function getLandmarker(){
+  if(FL)return Promise.resolve(FL);
+  if(inClaude())return Promise.reject(new Error('indisponível'));
+  if(!flLoading)flLoading=(async()=>{
+    const mod=await import('./vendor/mediapipe/vision_bundle.mjs');
+    const fs=await mod.FilesetResolver.forVisionTasks('./vendor/mediapipe/wasm');
+    FL=await mod.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:'./vendor/mediapipe/face_landmarker.task',delegate:'CPU'},runningMode:'IMAGE',numFaces:1});
+    return FL;
+  })().catch(e=>{flLoading=null;throw e;});
+  return flLoading;
+}
+function dE(a,b){const A=toLab(a),B=toLab(b);return Math.hypot(A[0]-B[0],A[1]-B[1],A[2]-B[2]);}
+function autoAnalyze(lm){
+  const c=SW.work,W=c.width,H=c.height,P=k=>[lm[k].x*W,lm[k].y*H];
+  const xs=lm.map(q=>q.x*W),ys=lm.map(q=>q.y*H);
+  const fx0=Math.min(...xs),fx1=Math.max(...xs),fy0=Math.min(...ys),fy1=Math.max(...ys),fw=fx1-fx0,fh=fy1-fy0;
+  const inside=(x,y)=>x>2&&y>2&&x<W-2&&y<H-2;
+  const marks=[];
+  /* pele: testa e bochechas; escolhe a mais iluminada sem estourar */
+  let best=null;
+  for(const k of [151,9,50,280]){const [x,y]=P(k);const smp=swSample(x,y,.5,.9);const L=toLab(smp)[0];if(L<93&&(!best||L>best.L))best={smp,L,x,y};}
+  if(!best)return null;
+  const skin=best.smp;marks.push([best.x,best.y,'pele']);
+  /* fundo: bem para fora do rosto, na altura dos olhos */
+  const bgs=[[fx0-fw*.45,fy0+fh*.35],[fx1+fw*.45,fy0+fh*.35],[fx0+fw*.5,Math.max(4,fy0-fh*.45)]].filter(([x,y])=>inside(x,y)).map(([x,y])=>swSample(x,y,.3,.7));
+  const bgDist=c=>bgs.length?Math.min(...bgs.map(b=>dE(c,b))):40;
+  /* cabelo: acima da testa e dos lados do rosto; vence o que mais difere da pele e do fundo */
+  let hair=null;
+  for(const [x,y] of [[P(10)[0],fy0-fh*.07],[fx0-fw*.07,fy0+fh*.4],[fx1+fw*.07,fy0+fh*.4],[fx0+fw*.18,fy0+fh*.02],[fx1-fw*.18,fy0+fh*.02]]){
+    if(!inside(x,y))continue;const smp=swSample(x,y,.45,.92);const score=Math.min(dE(smp,skin),bgDist(smp));
+    if(!hair||score>hair.score)hair={smp,score,x,y};
+  }
+  let hairIdx=null,len='';
+  if(hair&&hair.score>10){
+    const lb=toLab(hair.smp),C=Math.hypot(lb[1],lb[2]);hairIdx=nearest(HAIRC.slice(0,C<7?9:8),hair.smp);marks.push([hair.x,hair.y,'cabelo']);
+    /* comprimento: o cabelo aparece abaixo do queixo? na altura do queixo? */
+    const like=(x,y)=>inside(x,y)&&dE(swSample(x,y,.3,.8),hair.smp)<16&&dE(swSample(x,y,.3,.8),skin)>12;
+    const below=[[fx0-fw*.05,fy1+fh*.3],[fx1+fw*.05,fy1+fh*.3]].some(([x,y])=>like(x,y));
+    const chin=[[fx0-fw*.06,fy1-fh*.05],[fx1+fw*.06,fy1-fh*.05]].some(([x,y])=>like(x,y));
+    len=below?'longo':chin?'medio':'curto';
+  }
+  /* olhos: centro das íris (pontos 468 e 473) */
+  let eyes=null;
+  try{const r=Math.max(2,Math.hypot((lm[469].x-lm[471].x)*W,(lm[469].y-lm[471].y)*H)*.28);
+    const cols=[468,473].map(k=>{const [x,y]=P(k);const ctx=c.getContext('2d',{willReadFrequently:true});const d=ctx.getImageData(Math.round(x-r),Math.round(y-r),Math.round(r*2)||1,Math.round(r*2)||1).data;const px=[];for(let i=0;i<d.length;i+=4)px.push([d[i],d[i+1],d[i+2]]);px.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));const m=px.slice(Math.floor(px.length*.2),Math.max(1,Math.floor(px.length*.6)));const sm=[0,0,0];m.forEach(q=>{sm[0]+=q[0];sm[1]+=q[1];sm[2]+=q[2];});return sm.map(v=>v/m.length);});
+    const avg=[0,1,2].map(i=>(cols[0][i]+cols[1][i])/2);
+    /* olhos muito escuros na foto: castanhos ou pretos; só sugere claro quando há cor de verdade */
+    const lb=toLab(avg),C=Math.hypot(lb[1],lb[2]);eyes=C<6&&lb[0]<30?4:nearest(EYES,avg);
+  }catch(e){}
+  return {skin:nearest(SKINS,skin),hair:hairIdx,eyes,len,marks};
+}
 async function openSelfieWizard(file){
   const url=URL.createObjectURL(file);
   try{
@@ -1966,7 +2037,17 @@ async function openSelfieWizard(file){
     const M=640,sc=Math.min(1,M/Math.max(img.naturalWidth,img.naturalHeight));
     const work=document.createElement('canvas');work.width=Math.round(img.naturalWidth*sc);work.height=Math.round(img.naturalHeight*sc);
     work.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,work.width,work.height);
-    SW={work,step:'skin',skin:null,hair:null,mark:{},opts:{len:'',type:'',oculos:'',sardas:''}};
+    SW={work,step:'detect',skin:null,hair:null,eyes:null,mark:{},auto:null,opts:{len:'',type:'',oculos:'',sardas:''}};
+    renderSelfieWizard();
+    let res=null;
+    try{
+      const fl=await Promise.race([getLandmarker(),new Promise((_,rej)=>setTimeout(()=>rej(new Error('tempo')),25000))]);
+      const out=fl.detect(work);const lm=out&&out.faceLandmarks&&out.faceLandmarks[0];
+      if(lm&&lm.length>=478)res=autoAnalyze(lm);
+    }catch(e){res=null;}
+    if(!SW)return;
+    if(res&&res.hair!=null){SW.skin=res.skin;SW.hair=res.hair;SW.eyes=res.eyes;SW.auto=res.marks;if(res.len)SW.opts.len=res.len;SW.step='opts';}
+    else{SW.note=res?'Achei seu rosto, mas não o cabelo. Toque na testa e depois no cabelo.':'Não consegui achar seu rosto sozinho. Vamos pelos toques.';SW.step='skin';}
     renderSelfieWizard();
   }catch(e){toast('Não consegui abrir a foto. Tente de novo.');}
   finally{URL.revokeObjectURL(url);}
@@ -1982,23 +2063,32 @@ function renderSelfieWizard(){
   let host=$('#sw-host');if(!host){host=document.createElement('div');host.id='sw-host';document.body.appendChild(host);}
   if(!SW){host.innerHTML='';return;}
   const st=SW.step;
-  const title={skin:'1/3 · Toque na sua testa',hair:'2/3 · Agora toque no seu cabelo',opts:'3/3 · Só confirme'}[st];
-  const sub={skin:'Escolha a parte mais iluminada do rosto: assim o tom de pele sai certo.',hair:'Toque numa mecha do cabelo, longe da parede ou do fundo.',opts:'A cor eu peguei da foto. O resto é mais fácil você me dizer.'}[st];
+  const title={detect:'Procurando seu rosto…',skin:'1/3 · Toque na sua testa',hair:'2/3 · Agora toque no seu cabelo',opts:SW.auto?'Achei! Confira':'3/3 · Só confirme'}[st];
+  const sub={detect:'Leva alguns segundos. Na primeira vez o app baixa o detector de rosto e depois funciona sem internet.',skin:(SW.note?SW.note+' ':'')+'Escolha a parte mais iluminada do rosto: assim o tom de pele sai certo.',hair:'Toque numa mecha do cabelo, longe da parede ou do fundo.',opts:SW.auto?'Os pontos mostram onde medi pele e cabelo. Confirme o resto.':'A cor eu peguei da foto. O resto é mais fácil você me dizer.'}[st];
   const chip=(k,v,l)=>`<button class="chip" data-sw="${k}" data-v="${v}" aria-pressed="${SW.opts[k]===v}">${l}</button>`;
   host.innerHTML=`<div class="sw-overlay" role="dialog" aria-label="Avatar pela selfie"><div class="sw-box">
     <div class="sw-head"><b>${title}</b><button class="btn ghost sm" data-act="swclose">Cancelar</button></div>
     <p class="muted" style="margin:0;font-size:.9em">${sub}</p>
-    ${st!=='opts'?`<div class="sw-photo"><canvas id="sw-cv"></canvas></div>`:`
-      <div class="sw-found"><span><i style="background:${SKINS[SW.skin]}"></i>Pele: ${esc(SKIN_N[SW.skin])}</span><span><i style="background:${HAIRC[SW.hair]}"></i>Cabelo: ${esc(HAIRC_N[SW.hair])}</span></div>
+    ${st==='detect'?`<div class="sw-photo"><canvas id="sw-cv"></canvas><div class="sw-scan" aria-hidden="true"></div></div>`:st!=='opts'?`<div class="sw-photo"><canvas id="sw-cv"></canvas></div>`:`
+      ${SW.auto?`<div class="sw-photo small"><canvas id="sw-cv"></canvas></div>`:''}
+      <div class="sw-found"><span><i style="background:${SKINS[SW.skin]}"></i>Pele: ${esc(SKIN_N[SW.skin])}</span><span><i style="background:${HAIRC[SW.hair]}"></i>Cabelo: ${esc(HAIRC_N[SW.hair])}</span>${SW.eyes!=null?`<span><i style="background:${EYES[SW.eyes]}"></i>Olhos: ${esc(EYES_N[SW.eyes])}</span>`:''}</div>
       <div class="av-group"><span class="eyebrow">Comprimento do cabelo</span><div class="chips">${chip('len','curto','Curto')}${chip('len','medio','Médio')}${chip('len','longo','Longo')}</div></div>
       <div class="av-group"><span class="eyebrow">Tipo de cabelo</span><div class="chips">${chip('type','liso','Liso')}${chip('type','ondulado','Ondulado')}${chip('type','cacheado','Cacheado')}${chip('type','afro','Black power')}</div></div>
       <div class="av-group"><span class="eyebrow">Usa óculos?</span><div class="chips">${chip('oculos','sim','Sim')}${chip('oculos','nao','Não')}</div></div>
       <div class="av-group"><span class="eyebrow">Sardas?</span><div class="chips">${chip('sardas','sim','Sim')}${chip('sardas','nao','Não')}</div></div>
-      <button class="btn" data-act="swapply" ${SW.opts.len&&SW.opts.type?'':'disabled'}>Aplicar no meu avatar</button>`}
+      <button class="btn" data-act="swapply" ${SW.opts.len&&SW.opts.type?'':'disabled'}>Aplicar no meu avatar</button>
+      ${SW.auto?`<button class="btn line sm" data-act="swmanual">Não ficou certo? Ajustar tocando</button>`:''}`}
     ${st==='hair'?`<button class="btn line sm" data-act="swback">‹ Tocar na testa de novo</button>`:''}
     <p class="muted" style="margin:0;font-size:.78em">A foto fica só na tela e é descartada ao terminar.</p>
   </div></div>`;
-  if(st!=='opts'){
+  const cvEl=$('#sw-cv');
+  if(cvEl&&(st==='detect'||st==='opts')){
+    const src=SW.work,small=st==='opts',maxW=Math.min(innerWidth-48,small?220:420),maxH=innerHeight*(small?.26:.52);
+    const k=Math.min(maxW/src.width,maxH/src.height);cvEl.width=Math.round(src.width*k);cvEl.height=Math.round(src.height*k);
+    const ctx=cvEl.getContext('2d');ctx.drawImage(src,0,0,cvEl.width,cvEl.height);
+    (SW.auto||[]).forEach(([x,y])=>{ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x*k,y*k,9,0,7);ctx.stroke();ctx.strokeStyle='#e5484d';ctx.lineWidth=1.5;ctx.stroke();});
+  }
+  if(st==='skin'||st==='hair'){
     const cv=$('#sw-cv'),src=SW.work,maxW=Math.min(innerWidth-48,420),maxH=innerHeight*.52;
     const k=Math.min(maxW/src.width,maxH/src.height);cv.width=Math.round(src.width*k);cv.height=Math.round(src.height*k);
     const ctx=cv.getContext('2d');ctx.drawImage(src,0,0,cv.width,cv.height);
@@ -2011,6 +2101,29 @@ function renderSelfieWizard(){
     });
   }
 }
+async function useMemoji(file){
+  const url=URL.createObjectURL(file);
+  try{
+    const img=new Image();
+    await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url;setTimeout(()=>rej(new Error('tempo')),15000);});
+    /* corta as bordas transparentes e centraliza num quadrado de 256 px (mantém o fundo transparente) */
+    const t=document.createElement('canvas');t.width=img.naturalWidth;t.height=img.naturalHeight;const tx=t.getContext('2d',{willReadFrequently:true});tx.drawImage(img,0,0);
+    let x0=t.width,y0=t.height,x1=0,y1=0;
+    try{const d=tx.getImageData(0,0,t.width,t.height).data;for(let y=0;y<t.height;y+=2)for(let x=0;x<t.width;x+=2){if(d[(y*t.width+x)*4+3]>16){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}}}catch(e){}
+    if(x1<=x0||y1<=y0){x0=0;y0=0;x1=t.width;y1=t.height;}
+    const side=Math.max(x1-x0,y1-y0)*1.06,cx=(x0+x1)/2,cy=(y0+y1)/2;
+    const o=document.createElement('canvas');o.width=o.height=256;o.getContext('2d').drawImage(t,cx-side/2,cy-side/2,side,side,0,0,256,256);
+    draft.av.photo=o.toDataURL('image/png');
+    $('#app').innerHTML=quizHTML();chime(true);toast('Memoji aplicado. O mascote e os anéis de nível continuam.');
+  }catch(e){toast('Não consegui usar essa imagem. Tente outra.');}
+  finally{URL.revokeObjectURL(url);}
+}
+document.addEventListener('paste',e=>{
+  if(!e.target||!e.target.closest||!e.target.closest('#memoji-paste'))return;
+  const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'))||[...(e.clipboardData?.items||[])].map(i=>i.kind==='file'&&i.getAsFile()).find(x=>x&&x.type.startsWith('image/'));
+  e.preventDefault();e.target.textContent='Ou toque aqui e cole o Memoji';
+  if(f)useMemoji(f);else toast('Não encontrei uma imagem para colar. Copie o Memoji no app Mensagens e cole de novo.');
+});
 function swStyle(len,type){
   if(type==='afro')return 'afro';
   if(len==='curto')return type==='cacheado'?'cacheado':'curto';
@@ -2019,7 +2132,8 @@ function swStyle(len,type){
 }
 function swApply(){
   const o=SW.opts;
-  draft.av.skin=SKINS[SW.skin];draft.av.hairc=HAIRC[SW.hair];draft.av.hair=swStyle(o.len,o.type);
+  draft.av.skin=SKINS[SW.skin];draft.av.hairc=HAIRC[SW.hair];draft.av.hair=swStyle(o.len,o.type);delete draft.av.photo;
+  if(SW.eyes!=null)draft.av.eyes=EYES[SW.eyes];
   if(o.oculos==='sim')draft.av.acc='oculos';else if(o.oculos==='nao'&&draft.av.acc==='oculos')draft.av.acc='nenhum';
   if(o.sardas)draft.av.sardas=o.sardas;
   SW=null;renderSelfieWizard();$('#app').innerHTML=quizHTML();chime(true);toast('Avatar montado pela sua selfie. Ajuste o que quiser.');
@@ -2030,9 +2144,11 @@ document.addEventListener('click',e=>{
   const a=t.dataset.act;
   if(a==='swclose'){SW=null;renderSelfieWizard();}
   else if(a==='swback'){SW.step='skin';SW.mark={};renderSelfieWizard();}
+  else if(a==='swmanual'){SW.step='skin';SW.mark={};SW.auto=null;SW.note='';renderSelfieWizard();}
   else if(a==='swapply'){if(SW.opts.len&&SW.opts.type)swApply();}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='memoji-in'&&e.target.files&&e.target.files[0]){const f=e.target.files[0];e.target.value='';useMemoji(f);return;}
   if(e.target.id==='selfie-in'&&e.target.files&&e.target.files[0]){const f=e.target.files[0];e.target.value='';openSelfieWizard(f);return;}
   if(e.target.id==='langsel')setLang(e.target.value);
   if(e.target.id==='q-grade')draft.ans.grade=e.target.value;
