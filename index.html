@@ -185,6 +185,13 @@ textarea{resize:vertical}
 .pal-demo{display:flex;gap:6px}
 .pal-demo b{font-size:.72em;padding:.2em .6em;border-radius:999px}
 .av-group .chips{padding:6px 6px 4px}
+.me-av{position:relative;display:inline-block;line-height:0}
+.me-av i{position:absolute;right:-4px;bottom:-2px;font-style:normal;font-size:11px;line-height:1;background:var(--surface);border:1px solid var(--line);border-radius:50%;padding:3px}
+.home-hero{align-items:center;text-align:center;gap:6px}
+.home-hero svg{width:168px;height:168px}
+.home-actions{display:grid;gap:10px}
+.home-actions .btn{flex-direction:column;align-items:flex-start;text-align:left;padding:14px 16px;font-size:1.02em}
+.home-actions .btn small{font-weight:600;font-size:.78em;opacity:.8}
 .selfie-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px}
 .selfie-row .muted{font-size:.85em;flex:1;min-width:180px}
 .dotc{width:38px;height:38px;border-radius:50%;padding:0;border:0;background:var(--c);box-shadow:inset 0 -4px 8px rgba(0,0,0,.18),0 0 0 2px var(--surface),0 0 0 3.5px color-mix(in srgb,var(--ink) 20%,transparent);position:relative;transition:transform .15s}
@@ -1387,10 +1394,12 @@ function qNext(){const s=qSteps();return qIdx(s[s.indexOf(QUIZ[qStep].k)+1]);}
 function qPrev(){const s=qSteps();const j=s.indexOf(QUIZ[qStep].k);return j>0?qIdx(s[j-1]):-1;}
 /* Editor de avatar: pode ser aberto a qualquer momento, sem refazer o questionário */
 let qMode=null;
-function startAvatarEdit(p){S.active=p.id;draft=JSON.parse(JSON.stringify(p));qOnly=['avatar','pet','colors'];qMode='avatar';qStep=qIdx('avatar');view='quiz';applyTheme(p);render();}
+function startAvatarEdit(p){S.active=p.id;draft=JSON.parse(JSON.stringify(p));qOnly=['avatar','pet','colors','world'];qMode='avatar';qStep=qIdx('avatar');view='quiz';applyTheme(p);render();}
 function saveAvatarEdit(){
   const p=S.profiles[draft.id];if(!p)return leaveQuiz();
-  p.av={...draft.av};p.ans.pet=draft.ans.pet;p.ans.colors=draft.ans.colors;p.themeIdx=0;
+  p.av={...draft.av};p.ans.pet=draft.ans.pet;p.ans.colors=draft.ans.colors;
+  if(draft.ans.world){p.ans.world=draft.ans.world;p.ans.reserve=(p.ans.reserve||[]).filter(w=>w!==draft.ans.world);}
+  p.themeIdx=0;
   touch(p);qOnly=null;qMode=null;qMode=null;S.active=p.id;view='app';render();chime(true);burst();toast('Avatar atualizado.');
 }
 function leaveQuiz(){const wasAvatar=qMode==='avatar';qOnly=null;qMode=null;qMode=null;if(wasAvatar&&P()&&P().done){view='app';}else view='picker';render();}
@@ -1472,7 +1481,7 @@ function renderApp(){
   const l=p.lang;
   $('#app').innerHTML=`<div class="shell">
     <header class="topbar">
-      <button class="me" data-act="sheet" data-s="prog" aria-label="Ver progresso">${avatarSVG(p,level(p.xp))}<b>${esc(p.ans.nick)}</b></button>
+      <button class="me" data-act="sheet" data-s="home" aria-label="Início: editar avatar e opções"><span class="me-av">${avatarSVG(p,level(p.xp))}<i aria-hidden="true">✏️</i></span><b>${esc(p.ans.nick)}</b></button>
       <span class="spacer"></span>
       <span class="stat" title="Dias seguidos" id="st-streak">🔥 ${p.streak}</span>
       <span class="stat" title="Pontos de experiência" id="st-xp">${p.xp} XP</span>
@@ -1487,7 +1496,7 @@ function renderApp(){
       <button aria-current="true" data-act="sheet" data-s="">${ICON.feed}Aulas</button>
       <button data-act="sheet" data-s="tutor">${ICON.tutor}Tutor</button>
       <button data-act="sheet" data-s="prog">${ICON.prog}Progresso</button>
-      <button data-act="home">${ICON.people}Alunos</button>
+      <button data-act="sheet" data-s="home">${ICON.people}Início</button>
     </nav>
   </div><div id="sheet-host"></div>`;
   eng.start=Date.now();eng.log=[];eng.cur=null;eng.breaks=0;
@@ -1531,13 +1540,29 @@ function refreshStats(){
   if(sheet==='prog'){const b=$('#sheet-body');if(b)b.innerHTML=statsHTML(p);}
   const me=$('.topbar .me svg');if(me)me.outerHTML=avatarSVG(p,level(p.xp));
 }
+/* Tela "Início" dentro das aulas: avatar em destaque e atalhos */
+function homeHTML(p){
+  const lv=level(p.xp);
+  return `<div class="panel home-hero">${avatarSVG(p,lv)}
+      <h3 style="font-size:1.35em">${esc(p.ans.nick||p.name)}</h3>
+      <div class="muted" style="font-size:.9em">Nível ${lv} · ${p.xp} XP · ${p.streak} dia${p.streak===1?'':'s'} seguidos</div>
+      <div class="muted" style="font-size:.85em">${esc((p.map.active||[]).map(k=>LANGS[k].name).join(' + '))} · ${esc(THEMES[worldsOf(p)[p.themeIdx%worldsOf(p).length]]?.l||'')}</div>
+    </div>
+    <div class="home-actions">
+      <button class="btn" data-act="editav">✏️ Editar avatar<small>Rosto, cabelo, cores, mascote e cenário</small></button>
+      <button class="btn ghost" data-act="relangs" data-id="${p.id}">🌍 Escolher idiomas<small>Quais e quantos ao mesmo tempo</small></button>
+      <button class="btn ghost" data-act="sheet" data-s="prog">📊 Ver progresso<small>Pilares, idiomas e placar</small></button>
+      <button class="btn ghost" data-act="home">👥 Trocar de pessoa<small>Volta para a tela de perfis</small></button>
+    </div>`;
+}
 function openSheet(s){
   sheet=s||null;const host=$('#sheet-host');if(!host)return;
   document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current',String((b.dataset.s??'x')===(s||''))));
   if(!s){host.innerHTML='';renderChat();return;}
   const p=P();
-  host.innerHTML=`<div class="sheet" role="dialog" aria-label="${s==='tutor'?'Tutor':'Progresso'}"><div class="sheet-head"><h2>${s==='tutor'?'Tutor':'Seu progresso'}</h2><button class="btn ghost sm" data-act="sheet" data-s="">Voltar às aulas</button></div>
-    <div class="sheet-body" id="sheet-body">${s==='tutor'?tutorHTML(p):statsHTML(p)}</div></div>`;
+  const title={tutor:'Tutor',prog:'Seu progresso',home:'Início'}[s]||'Início';
+  host.innerHTML=`<div class="sheet" role="dialog" aria-label="${title}"><div class="sheet-head"><h2>${title}</h2><button class="btn ghost sm" data-act="sheet" data-s="">Voltar às aulas</button></div>
+    <div class="sheet-body" id="sheet-body">${s==='tutor'?tutorHTML(p):s==='home'?homeHTML(p):statsHTML(p)}</div></div>`;
   if(s==='tutor')renderChat();
 }
 
