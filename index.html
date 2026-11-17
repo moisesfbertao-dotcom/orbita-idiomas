@@ -185,6 +185,14 @@ textarea{resize:vertical}
 .pal-demo{display:flex;gap:6px}
 .pal-demo b{font-size:.72em;padding:.2em .6em;border-radius:999px}
 .av-group .chips{padding:6px 6px 4px}
+.sw-overlay{position:fixed;inset:0;z-index:70;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));overflow-y:auto}
+.sw-box{width:min(460px,100%);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px}
+.sw-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sw-photo{display:grid;place-items:center}
+.sw-photo canvas{border-radius:12px;cursor:crosshair;touch-action:manipulation;max-width:100%}
+.sw-found{display:flex;gap:12px;flex-wrap:wrap;font-weight:800}
+.sw-found span{display:flex;align-items:center;gap:6px}
+.sw-found i{width:22px;height:22px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--line)}
 .speak-zone{display:flex;flex-direction:column;gap:10px}
 .mic-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
 .mic.big{width:92px;height:92px;box-shadow:0 10px 30px -8px color-mix(in srgb,var(--accent) 70%,transparent)}
@@ -356,7 +364,7 @@ th{color:var(--muted);font-size:.8em;text-transform:uppercase;letter-spacing:.06
 
 <script>
 "use strict";
-const APP_VERSION='16/11/2026 21:38';
+const APP_VERSION='16/11/2026 21:44';
 /* =====================================================================
    DADOS: idiomas, frases, conceitos escolares, cultura, interesses
    ===================================================================== */
@@ -1470,7 +1478,7 @@ function quizHTML(){
       const av=draft.av;
       const dots=(lbl,key,cols,names)=>{const k=cols.indexOf(av[key]);return `<div class="av-group"><span class="eyebrow">${lbl}${k>=0?` · <span class="sel-name">${esc(names[k])}</span>`:''}</span><div class="chips">${cols.map((v,i)=>`<button class="dotc" data-av="${key}" data-v="${v}" aria-label="${lbl}: ${esc(names[i])}" title="${esc(names[i])}" aria-pressed="${av[key]===v}" style="--c:${v}"></button>`).join('')}</div></div>`;};
       const grp=(lbl,key,obj)=>`<div class="av-group"><span class="eyebrow">${lbl}</span><div class="chips">${Object.keys(obj).map(v=>`<button class="chip" data-av="${key}" data-v="${v}" aria-pressed="${(av[key]||Object.keys(obj)[0])===v}">${obj[v]}</button>`).join('')}</div></div>`;
-      body=`<div class="selfie-row"><label class="btn alt" for="selfie-in" role="button">📷 Criar pela selfie</label><input type="file" id="selfie-in" accept="image/*" capture="user" hidden><span class="muted" id="selfie-note">Abre a câmera frontal. A foto não fica salva: serve só para sugerir pele, cabelo e olhos.</span></div>
+      body=`<div class="selfie-row"><label class="btn alt" for="selfie-in" role="button">📷 Criar pela selfie</label><input type="file" id="selfie-in" accept="image/*" capture="user" hidden><span class="muted" id="selfie-note">Abre a câmera frontal. Você toca no rosto e no cabelo e eu monto o avatar. A foto não fica salva.</span></div>
       <div class="av-builder"><div id="avprev">${avatarSVG(draft,1)}</div><div>${dots('Pele','skin',SKINS,SKIN_N)}${dots('Olhos','eyes',EYES,EYES_N)}${grp('Cabelo','hair',HAIRS)}${dots('Cor do cabelo','hairc',HAIRC,HAIRC_N)}${grp('Sardas','sardas',{nao:'Sem sardas',sim:'Com sardas'})}${grp('Barba','barba',BEARDS)}${grp('Acessório','acc',ACCS)}</div></div>`;break;}
     case 'start':{
       const n=Number(a.pace||1);
@@ -1942,48 +1950,90 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{
   if(view==='quiz'&&e.target.id==='q-nick'){draft.ans.nick=e.target.value;}
 });
-/* Avatar a partir de selfie: análise no aparelho (cores) + sugestão do Claude quando disponível */
+/* Avatar a partir de selfie: assistente guiado, tudo no aparelho, a foto não é salva.
+   1) toque na testa (pele)  2) toque no cabelo (cor)  3) comprimento, tipo, óculos e sardas. */
 function hexRgb(h){const n=parseInt(h.slice(1),16);return [(n>>16)&255,(n>>8)&255,n&255];}
-function nearest(list,rgb){let best=0,bd=1e9;list.forEach((h,i)=>{const c=hexRgb(h);const d=(c[0]-rgb[0])**2*0.3+(c[1]-rgb[1])**2*0.59+(c[2]-rgb[2])**2*0.11;if(d<bd){bd=d;best=i;}});return best;}
-async function avatarFromSelfie(file){
-  const note=$('#selfie-note');if(note)note.textContent='Analisando a foto…';
+function toLab([r,g,b]){const f=v=>{v/=255;return v>.04045?Math.pow((v+.055)/1.055,2.4):v/12.92;};const R=f(r),G=f(g),B=f(b);
+  const X=(R*.4124+G*.3576+B*.1805)/.95047,Y=R*.2126+G*.7152+B*.0722,Z=(R*.0193+G*.1192+B*.9505)/1.08883;
+  const k=t=>t>.008856?Math.cbrt(t):7.787*t+16/116;return [116*k(Y)-16,500*(k(X)-k(Y)),200*(k(Y)-k(Z))];}
+function nearest(list,rgb){const a=toLab(rgb);let best=0,bd=1e9;list.forEach((h,i)=>{const b=toLab(hexRgb(h));const d=(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;if(d<bd){bd=d;best=i;}});return best;}
+let SW=null;
+async function openSelfieWizard(file){
   const url=URL.createObjectURL(file);
   try{
     const img=new Image();
     await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url;setTimeout(()=>rej(new Error('timeout')),15000);});
-    const S=240,c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d',{willReadFrequently:true});
-    const r=Math.min(img.naturalWidth,img.naturalHeight);x.drawImage(img,(img.naturalWidth-r)/2,(img.naturalHeight-r)/2,r,r,0,0,S,S);
-    const med=(x0,y0,w,h)=>{const d=x.getImageData(x0|0,y0|0,w|0,h|0).data;const px=[];for(let i=0;i<d.length;i+=4)px.push([d[i],d[i+1],d[i+2]]);px.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));const m=px.slice(px.length*.3|0,px.length*.7|0);const s=[0,0,0];m.forEach(p=>{s[0]+=p[0];s[1]+=p[1];s[2]+=p[2];});return s.map(v=>v/Math.max(1,m.length));};
-    const skin=med(S*.36,S*.48,S*.28,S*.14);const hair=med(S*.32,S*.04,S*.36,S*.1);
-    draft.av.skin=SKINS[nearest(SKINS,skin)];draft.av.hairc=HAIRC[nearest(HAIRC.slice(0,9),hair)];
-    let msg='Pele e cabelo sugeridos pela foto. Ajuste o que quiser.';
-    /* Na versão do Claude: sugestão completa (penteado, olhos, óculos, sardas) */
-    const lim=sampleFn?await sampleFn.limits().catch(()=>null):null;
-    if(sampleFn&&lim&&lim.images){
-      if(note)note.textContent='O tutor está olhando a foto…';
-      const big=document.createElement('canvas');big.width=big.height=512;big.getContext('2d').drawImage(img,(img.naturalWidth-r)/2,(img.naturalHeight-r)/2,r,r,0,0,512,512);
-      const blob=await new Promise(res=>big.toBlob(res,'image/jpeg',.85));
-      try{
-        const out=await sampleFn.json(`A imagem é uma selfie enviada pelo próprio usuário para montar um avatar de desenho animado. Não identifique a pessoa; descreva só características visuais para o desenho.
-Responda SOMENTE com JSON: {"skin":0-7,"hairStyle":"${Object.keys(HAIRS).join('|')}","hairColor":0-${HAIRC.length-1},"eyes":0-${EYES.length-1},"glasses":true|false,"freckles":true|false}
-Tons de pele (0 a 7): ${SKIN_N.join(', ')}. Cores de cabelo: ${HAIRC_N.map((n,i)=>i+'='+n).join(', ')}. Olhos: ${EYES_N.map((n,i)=>i+'='+n).join(', ')}.`,{images:[blob],modelTier:'quick'});
-        if(out&&typeof out==='object'){
-          if(SKINS[out.skin])draft.av.skin=SKINS[out.skin];
-          if(HAIRS[out.hairStyle])draft.av.hair=out.hairStyle;
-          if(HAIRC[out.hairColor])draft.av.hairc=HAIRC[out.hairColor];
-          if(EYES[out.eyes])draft.av.eyes=EYES[out.eyes];
-          if(out.glasses===true)draft.av.acc='oculos';
-          draft.av.sardas=out.freckles?'sim':'nao';
-          msg='Avatar montado a partir da sua selfie. Ajuste o que quiser.';
-        }
-      }catch(e){/* sem permissão ou indisponível: fica a sugestão feita no aparelho */}
-    }
-    $('#app').innerHTML=quizHTML();chime(true);toast(msg);
-  }catch(e){toast('Não consegui ler a foto. Tente de novo.');if(note)note.textContent='Não consegui ler a foto. Tente de novo.';}
+    const M=640,sc=Math.min(1,M/Math.max(img.naturalWidth,img.naturalHeight));
+    const work=document.createElement('canvas');work.width=Math.round(img.naturalWidth*sc);work.height=Math.round(img.naturalHeight*sc);
+    work.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,work.width,work.height);
+    SW={work,step:'skin',skin:null,hair:null,mark:{},opts:{len:'',type:'',oculos:'',sardas:''}};
+    renderSelfieWizard();
+  }catch(e){toast('Não consegui abrir a foto. Tente de novo.');}
   finally{URL.revokeObjectURL(url);}
 }
+function swSample(x,y,lo,hi){
+  const c=SW.work,ctx=c.getContext('2d',{willReadFrequently:true}),r=Math.max(6,Math.round(Math.min(c.width,c.height)*.035));
+  const x0=Math.max(0,Math.round(x-r)),y0=Math.max(0,Math.round(y-r)),w=Math.min(c.width-x0,r*2),h=Math.min(c.height-y0,r*2);
+  const d=ctx.getImageData(x0,y0,w,h).data;const px=[];for(let i=0;i<d.length;i+=4)px.push([d[i],d[i+1],d[i+2]]);
+  px.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));const m=px.slice(Math.floor(px.length*lo),Math.max(Math.floor(px.length*lo)+1,Math.floor(px.length*hi)));
+  const s=[0,0,0];m.forEach(p=>{s[0]+=p[0];s[1]+=p[1];s[2]+=p[2];});return s.map(v=>v/m.length);
+}
+function renderSelfieWizard(){
+  let host=$('#sw-host');if(!host){host=document.createElement('div');host.id='sw-host';document.body.appendChild(host);}
+  if(!SW){host.innerHTML='';return;}
+  const st=SW.step;
+  const title={skin:'1/3 · Toque na sua testa',hair:'2/3 · Agora toque no seu cabelo',opts:'3/3 · Só confirme'}[st];
+  const sub={skin:'Escolha a parte mais iluminada do rosto: assim o tom de pele sai certo.',hair:'Toque numa mecha do cabelo, longe da parede ou do fundo.',opts:'A cor eu peguei da foto. O resto é mais fácil você me dizer.'}[st];
+  const chip=(k,v,l)=>`<button class="chip" data-sw="${k}" data-v="${v}" aria-pressed="${SW.opts[k]===v}">${l}</button>`;
+  host.innerHTML=`<div class="sw-overlay" role="dialog" aria-label="Avatar pela selfie"><div class="sw-box">
+    <div class="sw-head"><b>${title}</b><button class="btn ghost sm" data-act="swclose">Cancelar</button></div>
+    <p class="muted" style="margin:0;font-size:.9em">${sub}</p>
+    ${st!=='opts'?`<div class="sw-photo"><canvas id="sw-cv"></canvas></div>`:`
+      <div class="sw-found"><span><i style="background:${SKINS[SW.skin]}"></i>Pele: ${esc(SKIN_N[SW.skin])}</span><span><i style="background:${HAIRC[SW.hair]}"></i>Cabelo: ${esc(HAIRC_N[SW.hair])}</span></div>
+      <div class="av-group"><span class="eyebrow">Comprimento do cabelo</span><div class="chips">${chip('len','curto','Curto')}${chip('len','medio','Médio')}${chip('len','longo','Longo')}</div></div>
+      <div class="av-group"><span class="eyebrow">Tipo de cabelo</span><div class="chips">${chip('type','liso','Liso')}${chip('type','ondulado','Ondulado')}${chip('type','cacheado','Cacheado')}${chip('type','afro','Black power')}</div></div>
+      <div class="av-group"><span class="eyebrow">Usa óculos?</span><div class="chips">${chip('oculos','sim','Sim')}${chip('oculos','nao','Não')}</div></div>
+      <div class="av-group"><span class="eyebrow">Sardas?</span><div class="chips">${chip('sardas','sim','Sim')}${chip('sardas','nao','Não')}</div></div>
+      <button class="btn" data-act="swapply" ${SW.opts.len&&SW.opts.type?'':'disabled'}>Aplicar no meu avatar</button>`}
+    ${st==='hair'?`<button class="btn line sm" data-act="swback">‹ Tocar na testa de novo</button>`:''}
+    <p class="muted" style="margin:0;font-size:.78em">A foto fica só na tela e é descartada ao terminar.</p>
+  </div></div>`;
+  if(st!=='opts'){
+    const cv=$('#sw-cv'),src=SW.work,maxW=Math.min(innerWidth-48,420),maxH=innerHeight*.52;
+    const k=Math.min(maxW/src.width,maxH/src.height);cv.width=Math.round(src.width*k);cv.height=Math.round(src.height*k);
+    const ctx=cv.getContext('2d');ctx.drawImage(src,0,0,cv.width,cv.height);
+    const m=SW.mark.skin;if(m&&st==='hair'){ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(m[0]*k,m[1]*k,12,0,7);ctx.stroke();}
+    cv.addEventListener('click',e=>{
+      const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*src.width,y=(e.clientY-r.top)/r.height*src.height;
+      if(SW.step==='skin'){SW.skin=nearest(SKINS,swSample(x,y,.5,.9));SW.mark.skin=[x,y];SW.step='hair';}
+      else{const smp=swSample(x,y,.3,.8),lb=toLab(smp),C=Math.hypot(lb[1],lb[2]);SW.hair=nearest(HAIRC.slice(0,C<7?9:8),smp);SW.step='opts';}
+      renderSelfieWizard();
+    });
+  }
+}
+function swStyle(len,type){
+  if(type==='afro')return 'afro';
+  if(len==='curto')return type==='cacheado'?'cacheado':'curto';
+  if(len==='medio')return type==='cacheado'?'cacheado':'medio';
+  return type==='cacheado'?'cachlongo':type==='ondulado'?'ondulado':'longo';
+}
+function swApply(){
+  const o=SW.opts;
+  draft.av.skin=SKINS[SW.skin];draft.av.hairc=HAIRC[SW.hair];draft.av.hair=swStyle(o.len,o.type);
+  if(o.oculos==='sim')draft.av.acc='oculos';else if(o.oculos==='nao'&&draft.av.acc==='oculos')draft.av.acc='nenhum';
+  if(o.sardas)draft.av.sardas=o.sardas;
+  SW=null;renderSelfieWizard();$('#app').innerHTML=quizHTML();chime(true);toast('Avatar montado pela sua selfie. Ajuste o que quiser.');
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-sw],[data-act^="sw"]');if(!t||!SW)return;
+  if(t.dataset.sw){SW.opts[t.dataset.sw]=t.dataset.v;renderSelfieWizard();return;}
+  const a=t.dataset.act;
+  if(a==='swclose'){SW=null;renderSelfieWizard();}
+  else if(a==='swback'){SW.step='skin';SW.mark={};renderSelfieWizard();}
+  else if(a==='swapply'){if(SW.opts.len&&SW.opts.type)swApply();}
+});
 document.addEventListener('change',e=>{
-  if(e.target.id==='selfie-in'&&e.target.files&&e.target.files[0]){const f=e.target.files[0];e.target.value='';avatarFromSelfie(f);return;}
+  if(e.target.id==='selfie-in'&&e.target.files&&e.target.files[0]){const f=e.target.files[0];e.target.value='';openSelfieWizard(f);return;}
   if(e.target.id==='langsel')setLang(e.target.value);
   if(e.target.id==='q-grade')draft.ans.grade=e.target.value;
   if(/^dob-[dmy]$/.test(e.target.id)){
