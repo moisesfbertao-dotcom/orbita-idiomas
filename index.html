@@ -345,6 +345,7 @@ th{color:var(--muted);font-size:.8em;text-transform:uppercase;letter-spacing:.06
 
 <script>
 "use strict";
+const APP_VERSION='16/11/2026 21:35';
 /* =====================================================================
    DADOS: idiomas, frases, conceitos escolares, cultura, interesses
    ===================================================================== */
@@ -1585,7 +1586,8 @@ function homeHTML(p){
       <button class="btn ghost" data-act="relangs" data-id="${p.id}">🌍 Escolher idiomas<small>Quais e quantos ao mesmo tempo</small></button>
       <button class="btn ghost" data-act="sheet" data-s="prog">📊 Ver progresso<small>Pilares, idiomas e placar</small></button>
       <button class="btn ghost" data-act="home">👥 Trocar de pessoa<small>Volta para a tela de perfis</small></button>
-    </div>`;
+    </div>
+    <p class="muted" style="text-align:center;font-size:.75em;margin:0">Versão do app: ${esc(APP_VERSION)}</p>`;
 }
 function openSheet(s){
   sheet=s||null;const host=$('#sheet-host');if(!host)return;
@@ -1821,6 +1823,7 @@ function parentsHTML(){
         ${confirmDel===p.id?`<div class="confirm"><span>Apagar todo o progresso de ${esc(p.name)}? Não dá para desfazer.</span><button class="btn sm" style="background:var(--bad);color:#fff" data-act="del" data-id="${p.id}">Apagar</button><button class="btn ghost sm" data-act="askdel" data-id="">Cancelar</button></div>`:''}
       </section>`;}).join('')}
     <section class="panel"><h2 style="font-size:1.1em">Técnicas de neurolinguística usadas</h2><div class="tech">${TECH.map(([a,b])=>`<div><b>${a}.</b> ${b}</div>`).join('')}</div></section>
+    <p class="muted" style="font-size:.8em;margin:0">Versão do app: ${esc(APP_VERSION)}</p>
     <section class="panel"><h2 style="font-size:1.1em">Dicas de uso</h2><div class="tech">
       <div><b>Histórias bíblicas.</b> Aparecem no feed com contexto histórico e mensagem espiritual, ligadas a História, Física, Geografia e Português. O versículo vem em inglês pela King James (1611) e em português como paráfrase com a referência, para ler junto na Almeida Revista e Atualizada.</div>
       <div><b>Fones de ouvido.</b> Recomendados para a pronúncia: o microfone capta só a voz do aluno, sem o eco da voz modelo.</div>
@@ -1952,7 +1955,15 @@ if(window.claude&&window.claude.use){
   window.claude.use('sample').then(s=>{sampleFn=s||null;if(view==='app')renderChat();}).catch(()=>{});
 }
 
-if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}
+if('serviceWorker' in navigator){addEventListener('load',()=>{
+  const hadOld=!!navigator.serviceWorker.controller;let reloaded=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadOld||reloaded)return;reloaded=true;location.reload();});
+  navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>{
+    const chk=()=>reg.update().catch(()=>{});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chk();});
+    addEventListener('pageshow',chk);setInterval(chk,20*60e3);
+  }).catch(()=>{});
+});}
 </script>
 
 </body>
