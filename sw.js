@@ -1,4 +1,4 @@
-const V='orbita-b09860447b37e326';
+const V='orbita-4687ee344937e326';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png',"./art/espaco.webp", "./art/estudio.webp", "./art/floresta.webp", "./art/games.webp", "./art/neon.webp", "./art/neve.webp", "./art/oceano.webp", "./art/zen.webp"];
 const FONTS="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Press+Start+2P&family=Unbounded:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap";
 self.addEventListener('install',e=>{e.waitUntil((async()=>{

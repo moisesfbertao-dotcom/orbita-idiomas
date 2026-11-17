@@ -175,6 +175,9 @@ textarea{resize:vertical}
 .opt .sw i{width:28px;height:28px;border-radius:50%;display:block;border:2px solid var(--surface)}
 .world-prev{height:120px;border-radius:calc(var(--radius) * .6);border:1px solid var(--line)}
 .ages{display:flex;flex-wrap:wrap;gap:8px}
+.quiz-foot .btn.line,.quiz-head .btn{background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.dob{display:grid;grid-template-columns:.8fr 1.4fr 1fr;gap:8px;max-width:440px}
+.dob select{min-height:48px;font-weight:700}
 .ages .opt{min-height:48px;min-width:56px;align-items:center;padding:10px}
 .quiz-foot{display:flex;gap:10px;justify-content:space-between;padding-top:10px}
 .av-builder{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
@@ -588,7 +591,7 @@ const PETS = {robo:'Robô',gato:'Gato',raposa:'Raposa',dragao:'Dragão',axolote:
 const GRADES = ['3º ano EF','4º ano EF','5º ano EF','6º ano EF','7º ano EF','8º ano EF','9º ano EF','1º ano EM','2º ano EM','3º ano EM'];
 const QUIZ = [
   {k:'nick',type:'text',t:'Primeiro: como a Órbita deve te chamar?',s:'Pode ser seu nome ou um apelido de jogador.'},
-  {k:'age',type:'age',t:'Quantas voltas ao Sol você já deu?',s:'É a sua idade. E em que ano você está na escola?'},
+  {k:'age',type:'age',t:'Quantas voltas ao Sol você já deu?',s:'É a sua idade. E em que ano você está na escola?',sAdult:'Escolha o dia, o mês e o ano em que você nasceu.'},
   {k:'world',type:'world',t:'Escolha o mundo onde suas aulas vão acontecer'},
   {k:'reserve',type:'reserve',max:2,t:'Agora escolha 2 mundos reserva',s:'Se a aula ficar chata, eu troco o cenário sozinho pra um desses.'},
   {k:'colors',type:'colors',t:'Qual dupla de cores é a sua cara?'},
@@ -1263,8 +1266,12 @@ function quizHTML(){
     case 'age':{
       const ad=isAdult(draft);
       const gradeSel=g=>ad?'':`<label class="eyebrow" for="q-grade">Ano escolar</label><select id="q-grade">${GRADES.map(x=>`<option ${g===x?'selected':''}>${x}</option>`).join('')}</select>`;
-      if(draft.birth){body=`<div class="panel"><b style="font-family:var(--display);font-size:1.3em">${ageOf(draft.birth)} voltas ao Sol</b><span class="muted">Nascimento em ${draft.birth.split('-').reverse().join('/')}. No seu aniversário tem surpresa.</span></div>${gradeSel(a.grade||gradeFor(draft.birth))}`;break;}
-      body=`<label class="eyebrow" for="q-birth">Data de nascimento</label><input type="date" id="q-birth" min="1930-01-01" max="${new Date().toISOString().slice(0,10)}" style="max-width:240px">
+      if(draft.birth){body=`<div class="panel"><b style="font-family:var(--display);font-size:1.3em">${ageOf(draft.birth)} voltas ao Sol</b><span class="muted">Nascimento em ${draft.birth.split('-').reverse().join('/')}. No seu aniversário tem surpresa.</span><div><button class="btn ghost sm" data-act="dobreset">Corrigir a data</button></div></div>${gradeSel(a.grade||gradeFor(draft.birth))}`;break;}
+      const dt=draft.dob||{};const yNow=new Date().getFullYear();
+      const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+      const sel=(id,label,opts)=>`<select id="${id}" aria-label="${label}"><option value="">${label}</option>${opts.map(([v,t])=>`<option value="${v}" ${String(dt[id])===String(v)?'selected':''}>${t}</option>`).join('')}</select>`;
+      body=`<span class="eyebrow">Data de nascimento</span>
+      <div class="dob">${sel('dob-d','Dia',Array.from({length:31},(_,i)=>[i+1,i+1]))}${sel('dob-m','Mês',MESES.map((m,i)=>[i+1,m]))}${sel('dob-y','Ano',Array.from({length:yNow-1930+1},(_,i)=>[yNow-i,yNow-i]))}</div>
       <p class="muted" style="margin:0;font-size:.9em">Fica guardada só neste aparelho. Serve para calcular a idade e lembrar do aniversário.</p>
       ${ad?'':`<span class="eyebrow">Ou toque na sua idade</span><div class="ages">${Array.from({length:12},(_,i)=>i+7).map(n=>`<button class="opt" data-q="age" data-v="${n}" aria-pressed="${a.age===n}">${n}</button>`).join('')}</div>`}
       ${gradeSel(a.grade)}`;break;}
@@ -1284,9 +1291,9 @@ function quizHTML(){
     case 'single':case 'multi':body=`<div class="opts">${qOpts(q).map(o=>`<button class="opt" data-q="${q.k}" data-v="${o.v}" aria-pressed="${pressed(q.k,o.v)}">${esc(o.l)}</button>`).join('')}</div>`;break;
   }
   return `<div class="quiz">
-    <div class="quiz-head"><button class="btn ghost sm" data-act="qback" aria-label="Voltar">‹</button><div class="bar"><i style="width:${pct}%"></i></div><span class="eyebrow">${pos.i+1}/${pos.n}</span></div>
+    <div class="quiz-head"><button class="btn ghost sm" data-act="qcancel">Sair</button><div class="bar"><i style="width:${pct}%"></i></div><span class="eyebrow">${pos.i+1}/${pos.n}</span></div>
     <div class="quiz-body"><h2>${esc(qT(q))}</h2>${qS(q)?`<p class="muted" style="margin:0">${esc(qS(q))}</p>`:''}${body}</div>
-    <div class="quiz-foot"><button class="btn line" data-act="qcancel">Sair</button><button class="btn" data-act="qnext" ${qValid()?'':'disabled'}>${qIsLast()?(qOnly?'Montar minha aula':'Começar a aventura'):'Próximo'}</button></div>
+    <div class="quiz-foot"><button class="btn line" data-act="qback">‹ Voltar</button><button class="btn" data-act="qnext" ${qValid()?'':'disabled'}>${qIsLast()?(qOnly?'Montar minha aula':'Começar a aventura'):'Próximo'}</button></div>
   </div>`;
 }
 /* qOnly: quando só falta escolher os idiomas, o questionário mostra apenas essas perguntas */
@@ -1333,6 +1340,7 @@ function quizSaveInputs(){
   const w=$('#q-text2');if(w)draft.ans[QUIZ[qStep].k]=w.value.trim();
 }
 function finishQuiz(mini){
+  delete draft.dob;
   if(draft.birth){draft.ans.age=ageOf(draft.birth);if(!isAdult(draft))draft.ans.grade=draft.ans.grade||gradeFor(draft.birth);}
   if(isAdult(draft)){draft.ans.grade='';draft.ans.boss=[];draft.ans.power='';}
   draft.done=true;draft.map=deriveMap(draft.ans);draft.lang=draft.map.active[0];draft.mix=draft.map.active.length>1;draft.themeIdx=0;
@@ -1700,6 +1708,7 @@ document.addEventListener('click',e=>{
     case 'home':try{speechSynthesis.cancel();}catch(e){}view='picker';sheet=null;render();return;
     case 'qback':{quizSaveInputs();const pv=qPrev();if(pv>=0){qStep=pv;render();}else{qOnly=null;view='picker';render();}return;}
     case 'qcancel':qOnly=null;view='picker';render();return;
+    case 'dobreset':draft.birth=null;draft.dob={};draft.ans.age=undefined;$('#app').innerHTML=quizHTML();return;
     case 'qnext':quizSaveInputs();if(!qValid())return;if(!qIsLast()){qStep=qNext();render();}else{const mini=!!qOnly;qOnly=null;finishQuiz(mini);}return;
     case 'sheet':openSheet(t.dataset.s);return;
     case 'setlang':setLang(t.dataset.l);return;
@@ -1715,7 +1724,18 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',e=>{
   if(e.target.id==='langsel')setLang(e.target.value);
   if(e.target.id==='q-grade')draft.ans.grade=e.target.value;
-  if(e.target.id==='q-birth'&&/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){const a=ageOf(e.target.value);if(a>=5&&a<=110){draft.birth=e.target.value;draft.ans.age=a;if(a<18)draft.ans.grade=gradeFor(draft.birth);$('#app').innerHTML=quizHTML();}}
+  if(/^dob-[dmy]$/.test(e.target.id)){
+    draft.dob=draft.dob||{};draft.dob[e.target.id]=e.target.value;
+    const d=+draft.dob['dob-d'],m=+draft.dob['dob-m'],y=+draft.dob['dob-y'];
+    if(d&&m&&y){
+      const dateOk=new Date(y,m-1,d).getMonth()===m-1;
+      if(!dateOk){toast('Essa data não existe. Confira o dia.');return;}
+      const iso=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const a=ageOf(iso);
+      if(a<5||a>110){toast('Confira o ano de nascimento.');return;}
+      draft.birth=iso;draft.ans.age=a;if(a<18)draft.ans.grade=gradeFor(iso);else draft.ans.grade='';
+      $('#app').innerHTML=quizHTML();
+    }
+  }
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='chat-in'){e.preventDefault();const v=e.target.value;e.target.value='';sendChat(v);}
