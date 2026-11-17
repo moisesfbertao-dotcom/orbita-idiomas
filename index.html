@@ -761,15 +761,47 @@ function burst(){
 let voices=[];
 function loadVoices(){try{voices=speechSynthesis.getVoices()||[];}catch(e){voices=[];}}
 try{loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}catch(e){}
+/* iPhone: (1) o modo silencioso cala a voz do navegador; a Audio Session API (iOS 17+) pede o
+   modo "reprodução", que toca mesmo com a chave no silencioso. (2) cancel() seguido de speak()
+   no mesmo instante faz o Safari descartar a fala; só cancelamos se houver algo tocando e
+   esperamos um instante. (3) o primeiro toque na tela "destrava" o áudio. */
+let audioUnlocked=false;
+function unlockAudio(){
+  if(audioUnlocked)return;audioUnlocked=true;
+  try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();}catch(e){}
+  try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}
+  loadVoices();
+}
+['touchstart','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{passive:true,capture:true}));
+const helpShown={};
+function audioHelp(lang){
+  if(helpShown[lang])return;helpShown[lang]=true;
+  toast(`Não saiu som? Tire o iPhone do silencioso (chave na lateral), aumente o volume e confira se há voz em ${LANGS[lang]?.name||'esse idioma'}: Ajustes › Acessibilidade › Conteúdo Falado › Vozes.`,9000);
+}
 function speak(text,lang,slow){
-  try{
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text.replace(/\s*\/\s*/g,', '));
-    const tag=LANGS[lang]?.tts||lang;u.lang=tag;u.rate=slow?.6:.92;
-    const v=voices.find(v=>v.lang===tag)||voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(lang));
-    if(v)u.voice=v;
-    speechSynthesis.speak(u);return true;
-  }catch(e){toast('Este aparelho não tem voz para '+(LANGS[lang]?.name||lang)+'.');return false;}
+  if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){toast('Este navegador não tem voz. Abra pelo Safari ou pelo app instalado.');return false;}
+  unlockAudio();
+  const synth=window.speechSynthesis;
+  const tag=LANGS[lang]?.tts||lang;
+  const go=()=>{
+    try{
+      const u=new SpeechSynthesisUtterance(text.replace(/\s*\/\s*/g,', '));
+      u.lang=tag;u.rate=slow?.6:.92;u.volume=1;u.pitch=1;
+      if(!voices.length)loadVoices();
+      const norm=v=>(v.lang||'').replace('_','-').toLowerCase();
+      const v=voices.find(v=>norm(v)===tag.toLowerCase())||voices.find(v=>norm(v).startsWith(lang));
+      if(v)u.voice=v;
+      let started=false;
+      u.onstart=()=>{started=true;};
+      u.onerror=e=>{if(e&&e.error!=='interrupted'&&e.error!=='canceled')audioHelp(lang);};
+      synth.speak(u);
+      if(synth.paused)synth.resume();
+      setTimeout(()=>{if(!started&&!synth.speaking)audioHelp(lang);},2500);
+    }catch(e){audioHelp(lang);}
+  };
+  if(synth.speaking||synth.pending){synth.cancel();setTimeout(go,120);}else go();
+  return true;
 }
 
 /* =====================================================================
