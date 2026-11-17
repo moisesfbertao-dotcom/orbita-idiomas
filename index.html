@@ -409,6 +409,12 @@ const INTERESTS = [
   {id:'animais',pt:'animal',l:'Animais',en:['animal'],it:['animale'],fr:['animal'],ja:['動物','dōbutsu'],de:['Tier'],es:['animal'],zh:['动物','dòngwù']},
   {id:'viagem',pt:'viagem',l:'Viajar',en:['trip'],it:['viaggio'],fr:['voyage'],ja:['旅行','ryokō'],de:['Reise'],es:['viaje'],zh:['旅行','lǚxíng']},
   {id:'comida',pt:'comida',l:'Cozinhar / comer bem',en:['food'],it:['cibo'],fr:['nourriture'],ja:['食べ物','tabemono'],de:['Essen'],es:['comida'],zh:['食物','shíwù']},
+  {id:'crossfit',pt:'treino',l:'Crossfit',en:['workout'],it:['allenamento'],fr:['entraînement'],ja:['トレーニング','torēningu'],de:['Training'],es:['entrenamiento'],zh:['训练','xùnliàn'],
+   cult:{title:'CrossFit e o WOD',text:'O CrossFit surgiu nos EUA por volta do ano 2000. Muitos termos vêm do inglês: WOD é "workout of the day", o treino do dia. Na Física, cada levantamento mostra que força = massa × aceleração.'}},
+  {id:'karate',pt:'faixa preta',l:'Karatê',en:['black belt'],it:['cintura nera'],fr:['ceinture noire'],ja:['黒帯','kuro-obi'],de:['schwarzer Gürtel'],es:['cinturón negro'],zh:['黑带','hēidài'],
+   cult:{title:'Karatê, a mão vazia',text:'O karatê nasceu em Okinawa, no Japão. "Kara-te" quer dizer "mão vazia": luta sem armas. Antes e depois do treino, todos se cumprimentam com uma reverência, o rei (礼), sinal de respeito.'}},
+  {id:'jiujitsu',pt:'tatame',l:'Jiu-jítsu',en:['mat'],it:['tatami'],fr:['tatami'],ja:['畳','tatami'],de:['Matte'],es:['tatami'],zh:['垫子','diànzi'],
+   cult:{title:'Do Japão para o Brasil',text:'O jiu-jítsu chegou ao Brasil com o japonês Mitsuyo Maeda, no começo do século XX. A família Gracie, no Rio de Janeiro, adaptou a arte e criou o jiu-jítsu brasileiro, hoje praticado no mundo inteiro.'}},
   {id:'carros',adult:1,pt:'carro',l:'Carros',en:['car'],it:['macchina'],fr:['voiture'],ja:['車','kuruma'],de:['Auto'],es:['coche'],zh:['汽车','qìchē']},
   {id:'cafe',adult:1,pt:'café',l:'Café e vinhos',en:['coffee'],it:['caffè'],fr:['café'],ja:['コーヒー','kōhī'],de:['Kaffee'],es:['café'],zh:['咖啡','kāfēi']},
   {id:'leitura',adult:1,pt:'livro',l:'Leitura',en:['book'],it:['libro'],fr:['livre'],ja:['本','hon'],de:['Buch'],es:['libro'],zh:['书','shū']},
@@ -597,11 +603,12 @@ const THEMES = {
 const PALETTES = [['#ff3d9a','#2ef2ff','Neon rosa e ciano'],['#3fe0c5','#ff7a8a','Água e coral'],['#8ea8ff','#ffb86b','Lavanda e âmbar'],['#4f9a4a','#e3892f','Musgo e laranja'],['#2f6fde','#e8455a','Azul e vermelho'],['#8a3ffc','#ffb000','Violeta e ouro'],['#ff6b2b','#1fb6ff','Laranja e céu'],['#a6d72c','#7a5cff','Lima e roxo'],['#8fb79a','#e7a9a4','Sálvia e rosé'],['#9aa7b8','#d9b45a','Grafite e dourado']];
 const SKINS = ['#fbe3d2','#f3cfb3','#e6b48e','#cf9670','#b07650','#8d5a3b','#6b4029','#4a2b1b'];
 const SKIN_N = ['Muito clara','Clara','Clara dourada','Morena clara','Morena','Morena escura','Escura','Muito escura'];
-const HAIRS = {curto:'Curto',franja:'Franja',cacheado:'Cacheado',afro:'Black power',longo:'Longo liso',ondulado:'Longo ondulado',coque:'Coque',rabo:'Rabo de cavalo',trancas:'Tranças',moicano:'Moicano',raspado:'Raspado'};
+const HAIRS = {curto:'Curto',franja:'Franja',medio:'Médio (chanel)',cacheado:'Cacheado curto',cachlongo:'Cacheado longo',afro:'Black power',longo:'Longo liso',ondulado:'Longo ondulado',coque:'Coque',rabo:'Rabo de cavalo',trancas:'Tranças',moicano:'Moicano',raspado:'Raspado'};
 const HAIRC = ['#1b1512','#3b2618','#6b4226','#a8743e','#e2c07a','#b5532a','#d9441e','#f08a3c','#a8a8a8','#e0457b','#3d7bff'];
 const HAIRC_N = ['Preto','Castanho escuro','Castanho','Castanho claro','Loiro','Ruivo acobreado','Ruivo vivo','Ruivo alaranjado','Grisalho','Rosa','Azul'];
 const EYES = ['#5a3a22','#9a6a2a','#2f6b3a','#3a6fb0','#1b1b1b'];
 const EYES_N = ['Castanhos','Mel','Verdes','Azuis','Pretos'];
+const BEARDS = {sem:'Sem barba',rala:'Barba rala',cheia:'Barba cheia'};
 const ACCS = {nenhum:'Nada',fones:'Fones',oculos:'Óculos',bone:'Boné',coroa:'Coroa',brincos:'Brincos',esteto:'Estetoscópio'};
 const PETS = {robo:'Robô',gato:'Gato',raposa:'Raposa',dragao:'Dragão',axolote:'Axolote'};
 
@@ -617,9 +624,9 @@ const QUIZ = [
   {k:'colors',type:'colors',t:'Qual dupla de cores é a sua cara?'},
   {k:'avatar',type:'avatar',t:'Monte seu avatar'},
   {k:'pet',type:'single',t:'Todo viajante tem um parceiro. Qual é o seu?',opts:Object.entries(PETS).map(([v,l])=>({v,l}))},
-  {k:'interests',type:'multi',max:4,t:'Sábado livre! O que você faria?',s:'Escolha até 4.',opts:INTERESTS.filter(i=>!i.adult).map(i=>({v:i.id,l:i.l})),
+  {k:'interests',type:'multi',max:5,t:'Sábado livre! O que você faria?',s:'Escolha até 5.',opts:INTERESTS.filter(i=>!i.adult).map(i=>({v:i.id,l:i.l})),
    tAdult:'No seu tempo livre, o que você mais curte?',sAdult:'Escolha até 5. Suas aulas vão girar em torno disso.',maxAdult:5,
-   optsAdult:['filmes','futebol','carros','viagem','comida','cafe','musica','leitura','museus','moda','praia','tecno','fe','foto','animais'].map(id=>{const i=INTERESTS.find(x=>x.id===id);return {v:id,l:{filmes:'Filmes e séries',futebol:'Esportes',comida:'Gastronomia',viagem:'Viagens'}[id]||i.l};})},
+   optsAdult:['filmes','futebol','crossfit','karate','jiujitsu','carros','viagem','comida','cafe','musica','leitura','museus','moda','praia','tecno','fe','foto','animais'].map(id=>{const i=INTERESTS.find(x=>x.id===id);return {v:id,l:{filmes:'Filmes e séries',futebol:'Esportes',comida:'Gastronomia',viagem:'Viagens'}[id]||i.l};})},
   {k:'watching',type:'text2',adultOnly:1,t:'Que filme ou série você está assistindo agora?',s:'O tutor pode usar para conversar com você. Se preferir, deixe em branco.',ph:'Nome do filme ou série'},
   {k:'games',type:'multi',max:4,t:'Quais jogos você mais curte?',s:'Escolha até 4. Eles vão aparecer nas suas aulas.',opts:GAMES.map(v=>({v,l:v}))},
   {k:'gstyle',type:'single',t:'E qual é o seu estilo de jogo favorito?',opts:GSTYLES},
@@ -770,6 +777,8 @@ function avatarSVG(p,lvl=1){
   const hair=av.hair||'curto';
   /* camadas de cabelo atrás da cabeça */
   const back={
+    medio:`<path d="M27 58 Q26 25 60 24 Q94 25 93 58 L94 84 Q86 90 78 84 L78 72 L42 72 L42 84 Q34 90 26 84 Z" fill="url(#${id}h)"/>`,
+    cachlongo:[[28,52],[24,64],[26,76],[24,88],[30,98],[92,52],[96,64],[94,76],[96,88],[90,98],[36,40],[84,40]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="9" fill="${i%2?hc:hd}"/>`).join(''),
     longo:`<path d="M27 58 Q26 25 60 24 Q94 25 93 58 L95 104 Q84 110 76 102 L76 74 L44 74 L44 102 Q36 110 25 104 Z" fill="url(#${id}h)"/>`,
     ondulado:`<path d="M27 58 Q26 25 60 24 Q94 25 93 58 Q99 72 92 84 Q99 96 90 106 Q80 110 76 100 L76 74 L44 74 L44 100 Q40 110 30 106 Q21 96 28 84 Q21 72 27 58Z" fill="url(#${id}h)"/>`,
     afro:`<circle cx="60" cy="50" r="38" fill="url(#${id}h)"/>${[[28,40],[40,22],[60,15],[80,22],[92,40],[96,60],[24,60]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="10" fill="${hc}"/>`).join('')}`,
@@ -782,6 +791,8 @@ function avatarSVG(p,lvl=1){
     curto:cap,
     franja:`<path d="M30 60 Q28 27 60 26 Q92 27 90 60 L87 50 Q81 47 75 50 L71 44 Q64 51 56 46 Q48 52 40 48 Q34 52 33 58Z" fill="url(#${id}h)"/>`,
     cacheado:[[34,46],[40,36],[50,30],[60,28],[70,30],[80,36],[86,46],[45,40],[75,40],[60,36]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${i>6?7:8.5}" fill="${i%3?hc:hd}"/>`).join(''),
+    cachlongo:[[33,48],[39,37],[50,30],[60,28],[70,30],[81,37],[87,48],[45,40],[75,40],[60,36]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${i>6?7:8.5}" fill="${i%3?hc:hd}"/>`).join(''),
+    medio:`<path d="M30 62 Q28 27 60 26 Q92 27 90 62 Q86 44 70 40 Q60 47 46 43 Q34 48 30 62Z" fill="url(#${id}h)"/>`,
     afro:`<path d="M32 54 Q36 36 60 34 Q84 36 88 54 Q80 44 60 44 Q40 44 32 54Z" fill="${hc}"/>`,
     longo:`<path d="M30 62 Q28 27 60 26 Q92 27 90 62 Q84 40 62 38 Q56 50 40 46 Q33 52 30 62Z" fill="url(#${id}h)"/>`,
     ondulado:`<path d="M30 62 Q28 27 60 26 Q92 27 90 62 Q84 40 62 38 Q56 50 40 46 Q33 52 30 62Z" fill="url(#${id}h)"/>`,
@@ -829,6 +840,7 @@ function avatarSVG(p,lvl=1){
     <ellipse cx="31" cy="63" rx="5" ry="7" fill="${skd}"/><ellipse cx="89" cy="63" rx="5" ry="7" fill="${skd}"/>
     <ellipse cx="60" cy="60" rx="29" ry="31" fill="url(#${id}s)"/>
     <ellipse cx="44" cy="71" rx="5" ry="3.2" fill="#ff6f7d" opacity=".22"/><ellipse cx="76" cy="71" rx="5" ry="3.2" fill="#ff6f7d" opacity=".22"/>
+    ${av.barba==='cheia'?`<path d="M31 62 Q32 90 60 95 Q88 90 89 62 Q86 78 76 80 Q68 74 60 75 Q52 74 44 80 Q34 78 31 62Z" fill="url(#${id}h)"/>`:av.barba==='rala'?`<path d="M32 64 Q34 90 60 94 Q86 90 88 64 Q85 80 75 82 Q68 76 60 77 Q52 76 45 82 Q35 80 32 64Z" fill="${hd}" opacity=".28"/>`:''}
     ${freckles}${eye(48)}${eye(72)}${brow}
     <path d="M60 63 Q57.2 70 60.6 71.4" stroke="${shade(sk,-.32)}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     <path d="M51.5 77 Q60 85 68.5 77 Q60 80.5 51.5 77Z" fill="#7a2e33"/><path d="M54 78.4 Q60 80.6 66 78.4 L65 79.6 Q60 81 55 79.6Z" fill="#fff" opacity=".9"/>
@@ -1071,7 +1083,8 @@ function makeCard(p,l,type){
         if(Math.random()<.3){return {type:'culture',c:{...MEDHIST[l],med:true}};}
         const it=pickItem(p,l,i=>i.kind==='med');return it&&{type:Math.random()<.5?'speak':'learn',it};
       }{const boss=p.map.boss.filter(s=>CONCEPTS.some(c=>c.subj===s));const it=pickItem(p,l,i=>i.kind==='concept'&&(!boss.length||Math.random()<.35||boss.includes(i.subj)))||pickItem(p,l,i=>i.kind==='concept');return it&&{type,it};}
-    case 'culture':{const seen=new Set(feedCards.filter(c=>c.type==='culture').map(c=>c.c.title));const src=likesGames(p)?[...CULTURE[l],...GAMECULT[l].map(g=>({...g,game:true}))]:CULTURE[l];const pool=src.filter(c=>!seen.has(c.title));return {type,c:rnd(pool.length?pool:src)};}
+    case 'culture':{const sport=INTERESTS.filter(i=>i.cult&&(p.map.interests||[]).includes(i.id));if(sport.length&&Math.random()<.45){const i=rnd(sport);return {type,c:{title:i.cult.title,text:i.cult.text,w:[i[l][0],i[l][1]||''],sport:true}};}
+      const seen=new Set(feedCards.filter(c=>c.type==='culture').map(c=>c.c.title));const src=likesGames(p)?[...CULTURE[l],...GAMECULT[l].map(g=>({...g,game:true}))]:CULTURE[l];const pool=src.filter(c=>!seen.has(c.title));return {type,c:rnd(pool.length?pool:src)};}
     case 'gamechat':{const asked=new Set(feedCards.filter(c=>c.type==='gamechat').map(c=>c.q.id));const pool=GAMEQ.filter(q=>!asked.has(q.id));return {type,q:rnd(pool.length?pool:GAMEQ)};}
     case 'biblia':{const seen=p.bibleSeen||[];const pool=BIBLE.filter(b=>!seen.includes(b.id)&&!feedCards.some(c=>c.type==='biblia'&&c.b.id===b.id));return {type,b:rnd(pool.length?pool:BIBLE)};}
     case 'mission':return {type,it:pickItem(p,l,i=>i.kind==='phrase')};
@@ -1166,7 +1179,7 @@ function cardHTML(c,i,p,l){
       act=`${audioBtns(c.it.t,l)}<button class="btn sm" data-act="gotit" data-i="${i}">Aprendi</button>`;
       break;}
     case 'culture':{
-      tag=`<span class="tag p-cult">${c.c.med?'História da medicina':c.c.game?'Cultura gamer':'Cultura'}</span>`;
+      tag=`<span class="tag p-cult">${c.c.sport?'Cultura do esporte':c.c.med?'História da medicina':c.c.game?'Cultura gamer':'Cultura'}</span>`;
       mid=`<h2 style="font-size:1.4em">${esc(c.c.title)}</h2><p class="fact">${esc(c.c.text)}</p><div class="big ${L.cjk?'cjk':''}" style="font-size:clamp(1.5em,7vw,2.2em)" lang="${L.tts}">${esc(c.c.w[0])}</div>${c.c.w[1]?`<div class="rom">${esc(c.c.w[1])}</div>`:''}`;
       act=`${audioBtns(c.c.w[0],l)}<button class="btn sm" data-act="culture" data-i="${i}">Curti</button>`;
       break;}
@@ -1301,8 +1314,9 @@ function pickerHTML(){
           <div class="muted" style="font-size:.9em">${p.done?`Nível ${l} · ${p.xp} XP · ${p.streak} dia${p.streak===1?'':'s'} seguidos`:'Ainda não montou o personagem'}</div></div></div>
         ${p.done&&(p.ans.start||[]).length?`<div class="row">${(p.map.active||[]).map(k=>`<span class="pill">${LANGS[k].name}</span>`).join('')}<span class="pill acc">${THEMES[p.ans.world]?.l||''}</span></div>`:''}
         <button class="btn" data-act="enter" data-id="${p.id}">${!p.done?'Montar meu personagem':(p.ans.start||[]).length?'Entrar na aula':'Escolher meus idiomas'}</button>
+        ${p.done?`<button class="btn ghost sm" data-act="editav" data-id="${p.id}">✏️ Editar avatar</button>`:''}
       </article>`;}).join('')}</div>
-    <div class="picker-foot"><button class="btn ghost" data-act="parents">Painel dos pais</button><button class="btn line" data-act="addkid">Adicionar aluno</button></div>
+    <div class="picker-foot"><button class="btn ghost" data-act="parents">Painel da família</button><button class="btn line" data-act="addkid">Adicionar aluno</button></div>
     <div class="how">
       <div><b>Personagem primeiro</b><p>Um questionário que parece criação de avatar descobre interesses, ritmo de atenção e como cada um aprende melhor.</p></div>
       <div><b>Feed de cartas</b><p>Cartas curtas em tela cheia, como vídeos curtos, só que cada deslize ensina algo.</p></div>
@@ -1343,9 +1357,9 @@ function quizHTML(){
     case 'avatar':{
       const av=draft.av;
       const dots=(lbl,key,cols,names)=>{const k=cols.indexOf(av[key]);return `<div class="av-group"><span class="eyebrow">${lbl}${k>=0?` · <span class="sel-name">${esc(names[k])}</span>`:''}</span><div class="chips">${cols.map((v,i)=>`<button class="dotc" data-av="${key}" data-v="${v}" aria-label="${lbl}: ${esc(names[i])}" title="${esc(names[i])}" aria-pressed="${av[key]===v}" style="--c:${v}"></button>`).join('')}</div></div>`;};
-      const grp=(lbl,key,obj)=>`<div class="av-group"><span class="eyebrow">${lbl}</span><div class="chips">${Object.keys(obj).map(v=>`<button class="chip" data-av="${key}" data-v="${v}" aria-pressed="${(av[key]||'')===v}">${obj[v]}</button>`).join('')}</div></div>`;
+      const grp=(lbl,key,obj)=>`<div class="av-group"><span class="eyebrow">${lbl}</span><div class="chips">${Object.keys(obj).map(v=>`<button class="chip" data-av="${key}" data-v="${v}" aria-pressed="${(av[key]||Object.keys(obj)[0])===v}">${obj[v]}</button>`).join('')}</div></div>`;
       body=`<div class="selfie-row"><label class="btn alt" for="selfie-in" role="button">📷 Criar pela selfie</label><input type="file" id="selfie-in" accept="image/*" capture="user" hidden><span class="muted" id="selfie-note">Abre a câmera frontal. A foto não fica salva: serve só para sugerir pele, cabelo e olhos.</span></div>
-      <div class="av-builder"><div id="avprev">${avatarSVG(draft,1)}</div><div>${dots('Pele','skin',SKINS,SKIN_N)}${dots('Olhos','eyes',EYES,EYES_N)}${grp('Cabelo','hair',HAIRS)}${dots('Cor do cabelo','hairc',HAIRC,HAIRC_N)}${grp('Sardas','sardas',{nao:'Sem sardas',sim:'Com sardas'})}${grp('Acessório','acc',ACCS)}</div></div>`;break;}
+      <div class="av-builder"><div id="avprev">${avatarSVG(draft,1)}</div><div>${dots('Pele','skin',SKINS,SKIN_N)}${dots('Olhos','eyes',EYES,EYES_N)}${grp('Cabelo','hair',HAIRS)}${dots('Cor do cabelo','hairc',HAIRC,HAIRC_N)}${grp('Sardas','sardas',{nao:'Sem sardas',sim:'Com sardas'})}${grp('Barba','barba',BEARDS)}${grp('Acessório','acc',ACCS)}</div></div>`;break;}
     case 'start':{
       const n=Number(a.pace||1);
       body=`<p class="muted" style="margin:0">A escolha é sua. ${n===1?'Escolha 1 idioma.':`Escolha ${n} idiomas: eles vão se revezar nas suas aulas.`} Você pode trocar quando quiser na tela de progresso.</p>
@@ -1355,7 +1369,7 @@ function quizHTML(){
   return `<div class="quiz">
     <div class="quiz-head"><button class="btn ghost sm" data-act="qcancel">Sair</button><div class="bar"><i style="width:${pct}%"></i></div><span class="eyebrow">${pos.i+1}/${pos.n}</span></div>
     <div class="quiz-body"><h2>${esc(qT(q))}</h2>${qS(q)?`<p class="muted" style="margin:0">${esc(qS(q))}</p>`:''}${body}</div>
-    <div class="quiz-foot"><button class="btn line" data-act="qback">‹ Voltar</button><button class="btn" data-act="qnext" ${qValid()?'':'disabled'}>${qIsLast()?(qOnly?'Montar minha aula':'Começar a aventura'):'Próximo'}</button></div>
+    <div class="quiz-foot"><button class="btn line" data-act="qback">‹ Voltar</button><button class="btn" data-act="qnext" ${qValid()?'':'disabled'}>${qIsLast()?(qMode==='avatar'?'Salvar avatar':qOnly?'Montar minha aula':'Começar a aventura'):'Próximo'}</button></div>
   </div>`;
 }
 /* qOnly: quando só falta escolher os idiomas, o questionário mostra apenas essas perguntas */
@@ -1371,7 +1385,16 @@ function qPos(){const s=qSteps();return {i:Math.max(0,s.indexOf(QUIZ[qStep].k)),
 function qIsLast(){const {i,n}=qPos();return i>=n-1;}
 function qNext(){const s=qSteps();return qIdx(s[s.indexOf(QUIZ[qStep].k)+1]);}
 function qPrev(){const s=qSteps();const j=s.indexOf(QUIZ[qStep].k);return j>0?qIdx(s[j-1]):-1;}
-function startLangChoice(p){draft=JSON.parse(JSON.stringify(p));qOnly=['pace','start'];qStep=qIdx('pace');view='quiz';render();}
+/* Editor de avatar: pode ser aberto a qualquer momento, sem refazer o questionário */
+let qMode=null;
+function startAvatarEdit(p){S.active=p.id;draft=JSON.parse(JSON.stringify(p));qOnly=['avatar','pet','colors'];qMode='avatar';qStep=qIdx('avatar');view='quiz';applyTheme(p);render();}
+function saveAvatarEdit(){
+  const p=S.profiles[draft.id];if(!p)return leaveQuiz();
+  p.av={...draft.av};p.ans.pet=draft.ans.pet;p.ans.colors=draft.ans.colors;p.themeIdx=0;
+  touch(p);qOnly=null;qMode=null;qMode=null;S.active=p.id;view='app';render();chime(true);burst();toast('Avatar atualizado.');
+}
+function leaveQuiz(){const wasAvatar=qMode==='avatar';qOnly=null;qMode=null;qMode=null;if(wasAvatar&&P()&&P().done){view='app';}else view='picker';render();}
+function startLangChoice(p){draft=JSON.parse(JSON.stringify(p));qOnly=['pace','start'];qMode=null;qStep=qIdx('pace');view='quiz';render();}
 function qValid(){
   const q=QUIZ[qStep],a=draft.ans;
   switch(q.type){case 'text':case 'text2':return true;case 'age':return !!a.age||!!draft.birth;case 'avatar':return true;
@@ -1415,7 +1438,7 @@ function finishQuiz(mini){
 function statsHTML(p){
   const l=p.lang,st=stats(p,l),lv=level(p.xp),[a,b]=lvlRange(lv);const pctp=n=>n.n?Math.round(n.ok/n.n*100):0;
   const escola=Object.values(st.escola).reduce((s,v)=>s+v,0);
-  return `<div class="panel me-big">${avatarSVG(p,lv)}<h3 style="font-size:1.2em">${esc(p.ans.nick)}</h3>
+  return `<div class="panel me-big">${avatarSVG(p,lv)}<h3 style="font-size:1.2em">${esc(p.ans.nick)}</h3><button class="btn ghost sm" data-act="editav">✏️ Editar avatar</button>
       <div class="muted" style="font-size:.88em">Nível ${lv} · ${p.xp} XP · ${p.streak} dia${p.streak===1?'':'s'} seguidos</div>
       <div class="xpbar" aria-label="Progresso do nível"><i style="width:${Math.round((p.xp-a)/(b-a)*100)}%"></i></div>
       <div class="muted" style="font-size:.8em">${b-p.xp} XP para o nível ${lv+1}${(lv+1)%3===1?' (anel novo no avatar)':''}</div></div>
@@ -1758,20 +1781,21 @@ document.addEventListener('click',e=>{
   if(view==='quiz'&&(t.dataset.q||t.dataset.av)){quizClick(t);return;}
   const act=t.dataset.act;if(!act)return;
   switch(act){
-    case 'enter':{const p=S.profiles[t.dataset.id];S.active=p.id;saveLocal();qOnly=null;
+    case 'enter':{const p=S.profiles[t.dataset.id];S.active=p.id;saveLocal();qOnly=null;qMode=null;
       if(p.done&&!(p.ans.start||[]).length){startLangChoice(p);return;}
       if(p.done){view='app';render();}else{draft=JSON.parse(JSON.stringify(p));qStep=0;view='quiz';applyTheme(null);render();}return;}
-    case 'redo':{const p=S.profiles[t.dataset.id];S.active=p.id;qOnly=null;draft=JSON.parse(JSON.stringify(p));draft.done=false;qStep=0;view='quiz';render();return;}
+    case 'redo':{const p=S.profiles[t.dataset.id];S.active=p.id;qOnly=null;qMode=null;draft=JSON.parse(JSON.stringify(p));draft.done=false;qStep=0;view='quiz';render();return;}
     case 'relangs':{const p=S.profiles[t.dataset.id];S.active=p.id;startLangChoice(p);return;}
     case 'askdel':confirmDel=t.dataset.id||null;render();return;
     case 'del':{const id=t.dataset.id;const n=S.profiles[id].name;S.profiles[id]=blankProfile(n);confirmDel=null;touch(S.profiles[id]);render();return;}
     case 'parents':view='parents';render();return;
-    case 'addkid':{let n='Aluno '+(Object.keys(S.profiles).length+1);const p=blankProfile(n);p.id='a'+Date.now().toString(36);S.profiles[p.id]=p;saveLocal();qOnly=null;draft=JSON.parse(JSON.stringify(p));qStep=0;view='quiz';render();return;}
+    case 'addkid':{let n='Aluno '+(Object.keys(S.profiles).length+1);const p=blankProfile(n);p.id='a'+Date.now().toString(36);S.profiles[p.id]=p;saveLocal();qOnly=null;qMode=null;draft=JSON.parse(JSON.stringify(p));qStep=0;view='quiz';render();return;}
     case 'home':try{speechSynthesis.cancel();}catch(e){}view='picker';sheet=null;render();return;
-    case 'qback':{quizSaveInputs();const pv=qPrev();if(pv>=0){qStep=pv;render();}else{qOnly=null;view='picker';render();}return;}
-    case 'qcancel':qOnly=null;view='picker';render();return;
+    case 'qback':{quizSaveInputs();const pv=qPrev();if(pv>=0){qStep=pv;render();}else{leaveQuiz();}return;}
+    case 'qcancel':leaveQuiz();return;
+    case 'editav':{const p=S.profiles[t.dataset.id||S.active];if(p&&p.done)startAvatarEdit(p);return;}
     case 'dobreset':draft.birth=null;draft.dob={};draft.ans.age=undefined;$('#app').innerHTML=quizHTML();return;
-    case 'qnext':quizSaveInputs();if(!qValid())return;if(!qIsLast()){qStep=qNext();render();}else{const mini=!!qOnly;qOnly=null;finishQuiz(mini);}return;
+    case 'qnext':quizSaveInputs();if(!qValid())return;if(!qIsLast()){qStep=qNext();render();}else if(qMode==='avatar'){saveAvatarEdit();}else{const mini=!!qOnly;qOnly=null;qMode=null;finishQuiz(mini);}return;
     case 'sheet':openSheet(t.dataset.s);return;
     case 'setlang':setLang(t.dataset.l);return;
     case 'toggleactive':toggleActive(t.dataset.l);return;
